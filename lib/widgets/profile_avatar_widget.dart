@@ -9,9 +9,10 @@ class ProfileAvatarWidget extends StatelessWidget {
       height: 44,
       width: 44,
       decoration: BoxDecoration(
-        color: CupertinoColors.activeBlue,
+        // color: CupertinoColors.activeBlue,
         borderRadius: BorderRadius.circular(50),
       ),
+      child: FlutterLogo(),
     );
   }
 }
