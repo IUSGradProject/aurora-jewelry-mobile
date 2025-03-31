@@ -6,13 +6,13 @@ class FilterBottomSheetWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: 16.0, right: 16,bottom: 16),
+      padding: const EdgeInsets.only(left: 0, right: 0,),
       child: CupertinoPopupSurface(
         child: Stack(
           children: [
             Container(
               padding: EdgeInsets.all(16),
-              height: 400, // Adjust height as needed
+              height: 500, // Adjust height as needed
               width: double.infinity,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

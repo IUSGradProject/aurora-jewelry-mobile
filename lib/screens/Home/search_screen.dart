@@ -1,3 +1,4 @@
+import 'package:aurora_jewelry/components/Search/category_component.dart';
 import 'package:aurora_jewelry/widgets/Search/filter_bottom_sheet_widget.dart';
 import 'package:aurora_jewelry/widgets/profile_avatar_widget.dart';
 import 'package:flutter/cupertino.dart';
@@ -33,11 +34,9 @@ class SearchScreen extends StatelessWidget {
                     // Use Flexible instead of Expanded
                     child: CupertinoButton(
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          CupertinoModalPopupRoute(
-                            builder: (context) => FilterBottomSheetWidget(),
-                          ),
+                        showCupertinoModalPopup(
+                          context: context,
+                          builder: (context) => FilterBottomSheetWidget(),
                         );
                       },
                       padding: EdgeInsets.zero,
@@ -110,9 +109,9 @@ class SearchScreen extends StatelessWidget {
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(8),
                               color: CupertinoColors.tertiarySystemFill,
-                              border: Border.all(
-                                color: CupertinoColors.activeBlue,
-                              ),
+                              // border: Border.all(
+                              //   color: CupertinoColors.activeBlue,
+                              // ),
                             ),
                             child: Center(
                               child: Row(
@@ -135,6 +134,77 @@ class SearchScreen extends StatelessWidget {
                           ),
                         );
                       },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          SliverPadding(padding: EdgeInsets.only(bottom: 80)),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: CategoryComponent(
+                      name: "Necklace",
+                      icon: CupertinoIcons.right_chevron,
+                    ),
+                  ),
+                  SizedBox(width: 8),
+                  Expanded(
+                    child: CategoryComponent(
+                      name: "Necklace",
+                      icon: CupertinoIcons.right_chevron,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          SliverPadding(padding: EdgeInsets.only(bottom: 8)),
+
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: CategoryComponent(
+                      name: "Necklace",
+                      icon: CupertinoIcons.right_chevron,
+                    ),
+                  ),
+                  SizedBox(width: 8),
+                  Expanded(
+                    child: CategoryComponent(
+                      name: "Necklace",
+                      icon: CupertinoIcons.right_chevron,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          SliverPadding(padding: EdgeInsets.only(bottom: 8)),
+
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: CategoryComponent(
+                      name: "Necklace",
+                      icon: CupertinoIcons.right_chevron,
+                    ),
+                  ),
+                  SizedBox(width: 8),
+                  Expanded(
+                    child: CategoryComponent(
+                      name: "Necklace",
+                      icon: CupertinoIcons.right_chevron,
                     ),
                   ),
                 ],
