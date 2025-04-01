@@ -1,5 +1,7 @@
+import 'package:aurora_jewelry/providers/Search/search_provider.dart';
 import 'package:aurora_jewelry/screens/Home/home_screen.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   runApp(const MyApp());
@@ -11,8 +13,15 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return CupertinoApp(
-      debugShowCheckedModeBanner: false,
-      home: HomeScreen());
+    return MultiProvider(
+      providers: [
+         ChangeNotifierProvider<SearchProvider>(
+          create: (_) => SearchProvider(),
+        ),
+      ],
+      child: CupertinoApp(
+        debugShowCheckedModeBanner: false,
+        home: HomeScreen()),
+    );
   }
 }

@@ -1,26 +1,63 @@
+import 'package:aurora_jewelry/models/Search/category_model.dart';
+import 'package:aurora_jewelry/providers/Search/search_provider.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
 class CategoryComponent extends StatelessWidget {
-  final String name;
-  final IconData icon;
-  const CategoryComponent({super.key, required this.name, required this.icon});
+  final CategoryModel category;
+  const CategoryComponent({super.key, required this.category});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 90,
-      padding: EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8),
-        color: CupertinoColors.secondarySystemFill,
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Align(alignment: Alignment.topLeft, child: Icon(icon)),
-          Align(alignment: Alignment.bottomRight, child: Text(name)),
-        ],
-      ),
+    return Consumer<SearchProvider>(
+      builder:
+          (context, searchProvider, child) => CupertinoButton(
+            padding: EdgeInsets.zero,
+            onPressed: () {
+              if (searchProvider.checkIfCategoryIsSelected(category)) {
+                searchProvider.deselectCategory(category);
+              } else {
+                searchProvider.selectCategory(category);
+              }
+              HapticFeedback.selectionClick();
+            },
+            child: Container(
+              padding: EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                color:
+                    MediaQuery.of(context).platformBrightness == Brightness.dark
+                        ? CupertinoColors.tertiarySystemFill
+                        : CupertinoColors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: CupertinoColors.black.withValues(
+                      alpha: 0.16,
+                    ), // Shadow color
+                    offset: const Offset(0, 4), // Shadow offset
+                    blurRadius: 12, // Shadow blur radius
+                  ),
+                ],
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: Icon(category.icon),
+                  ),
+                  Align(
+                    alignment: Alignment.bottomRight,
+                    child: Text(
+                      category.name,
+                      style: CupertinoTheme.of(context).textTheme.textStyle,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
     );
   }
 }
