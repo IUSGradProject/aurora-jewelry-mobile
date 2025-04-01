@@ -1,4 +1,3 @@
-import 'package:aurora_jewelry/screens/Home/profile_screen.dart';
 import 'package:flutter/cupertino.dart';
 
 class ProfileAvatarWidget extends StatelessWidget {
