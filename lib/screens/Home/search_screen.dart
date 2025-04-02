@@ -1,4 +1,5 @@
 import 'package:animations/animations.dart';
+import 'package:aurora_jewelry/components/Products/list_product_component.dart';
 import 'package:aurora_jewelry/components/Search/category_component.dart';
 import 'package:aurora_jewelry/providers/Search/search_provider.dart';
 import 'package:aurora_jewelry/widgets/Search/filter_bottom_sheet_widget.dart';
@@ -236,7 +237,7 @@ class SearchScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                SliverPadding(padding: EdgeInsets.only(bottom: 0)),
+                SliverPadding(padding: EdgeInsets.only(bottom: 32)),
                 SliverPadding(
                   padding: EdgeInsets.symmetric(horizontal: 16),
                   sliver: SliverFillRemaining(
@@ -262,8 +263,19 @@ class SearchScreen extends StatelessWidget {
                           },
                           child:
                               searchProvider.selectedCategories.isNotEmpty
-                                  ? Container() // Show empty container when a category is selected
+                                  ? ListView(
+                                    padding: EdgeInsets.zero,
+                                    physics: const NeverScrollableScrollPhysics(),
+                                    clipBehavior: Clip.none,
+                                    children: [
+                                      ListProductComponent(),
+                                      ListProductComponent(),
+                                      ListProductComponent(),
+                                      ListProductComponent(),
+                                    ],
+                                  ) // Show empty container when a category is selected
                                   : GridView.builder(
+                                    padding: EdgeInsets.zero,
                                     physics:
                                         const NeverScrollableScrollPhysics(),
                                     gridDelegate:
