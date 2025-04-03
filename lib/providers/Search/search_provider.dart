@@ -1,5 +1,6 @@
 import 'package:aurora_jewelry/models/Search/category_model.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 
 class SearchProvider extends ChangeNotifier {
   final List<CategoryModel> _categories = [
@@ -14,11 +15,20 @@ class SearchProvider extends ChangeNotifier {
 
   final List<String> _selectedSorting = [];
 
+  //Product Ordering Variables
+
+  ///Current product quantity minimul value should be 1.
+  int _currentProductQuantity = 1;
+
+  double _currentProductPrice = 1050;
+
   //Getters
 
   List<CategoryModel> get categories => _categories;
   List<CategoryModel> get selectedCategories => _selectedCategories;
   List<String> get selectedSorting => _selectedSorting;
+  int get currentProductQuantity => _currentProductQuantity;
+  double get currentProductPrice => _currentProductPrice;
 
   ///Select Category
 
@@ -73,6 +83,22 @@ class SearchProvider extends ChangeNotifier {
     } else {
       _selectedSorting.clear();
       _selectedSorting.add(sortName);
+    }
+    notifyListeners();
+  }
+
+  void incrementCurrentProductQuantity() {
+    _currentProductQuantity = _currentProductQuantity + 1;
+    _currentProductPrice = 1050.0 * currentProductQuantity;
+    HapticFeedback.mediumImpact();
+    notifyListeners();
+  }
+
+  void decrementCurrentProductQuantity() {
+    if (_currentProductQuantity > 1) {
+      _currentProductQuantity = _currentProductQuantity - 1;
+      _currentProductPrice = 1050.0 * currentProductQuantity;
+      HapticFeedback.mediumImpact();
     }
     notifyListeners();
   }
