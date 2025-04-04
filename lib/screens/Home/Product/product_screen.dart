@@ -1,11 +1,82 @@
 import 'package:animated_digit/animated_digit.dart';
+import 'package:aurora_jewelry/providers/Cart/cart_provider.dart';
 import 'package:aurora_jewelry/providers/Search/search_provider.dart';
 import 'package:aurora_jewelry/screens/Home/Product/checkout_screen.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
-class ProductScreen extends StatelessWidget {
+class ProductScreen extends StatefulWidget {
   const ProductScreen({super.key});
+
+  @override
+  State<ProductScreen> createState() => _ProductScreenState();
+}
+
+class _ProductScreenState extends State<ProductScreen>
+    with SingleTickerProviderStateMixin {
+  void animateProductToCart(
+    BuildContext context,
+    GlobalKey cartKey,
+    String imagePath,
+    Offset startPosition,
+  ) {
+    final overlay = Overlay.of(context);
+    final cartRenderBox =
+        cartKey.currentContext?.findRenderObject() as RenderBox?;
+
+    if (cartRenderBox == null) {
+      debugPrint(
+        "Cart Icon Button Key is NULL! Make sure it's assigned in Navbar.",
+      );
+      return;
+    }
+
+    final cartPosition = cartRenderBox.localToGlobal(Offset.zero);
+
+    final animationController = AnimationController(
+      duration: const Duration(milliseconds: 700),
+      vsync: Navigator.of(context),
+    );
+
+    final animation = Tween<Offset>(
+      begin: startPosition,
+      end: cartPosition,
+    ).animate(
+      CurvedAnimation(parent: animationController, curve: Curves.easeInOut),
+    );
+
+    OverlayEntry? overlayEntry;
+    overlayEntry = OverlayEntry(
+      builder: (context) {
+        return AnimatedBuilder(
+          animation: animation,
+          builder: (context, child) {
+            return Positioned(
+              left: animation.value.dx,
+              top: animation.value.dy,
+              child: Opacity(
+                opacity: 1 - animationController.value,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(16),
+                  child: Image.asset(imagePath, width: 60, height: 60),
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+
+    overlay.insert(overlayEntry);
+    animationController.forward().whenComplete(() {
+      overlayEntry?.remove();
+      animationController.dispose();
+
+      // Update the cart provider after animation completes
+      Provider.of<CartProvider>(context, listen: false).addToCart();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,9 +88,9 @@ class ProductScreen extends StatelessWidget {
         previousPageTitle: "Search",
         // middle: Text("Gucci"),
       ),
-      child: Consumer<SearchProvider>(
+      child: Consumer2<SearchProvider, CartProvider>(
         builder:
-            (context, searchProvider, child) => Container(
+            (context, searchProvider, cartProvider, child) => Container(
               padding: EdgeInsets.only(top: 16),
               child: ListView(
                 padding: EdgeInsets.only(bottom: 116, top: 100),
@@ -247,7 +318,32 @@ class ProductScreen extends StatelessWidget {
                               ),
                             ],
                           ),
-                          onPressed: () {},
+                          onPressed: () {
+                            // final renderBox =
+                            //     context.findRenderObject() as RenderBox?;
+                            // final position =
+                            //     renderBox?.localToGlobal(Offset.zero) ??
+                            //     Offset.zero;
+
+                            final positon = Offset(
+                              MediaQuery.of(context).size.width / 2,
+                              MediaQuery.of(context).size.width / 0.6,
+                            );
+
+                            if (cartProvider.cartIconButtonKey.currentContext ==
+                                null) {
+                              return;
+                            }
+
+                            animateProductToCart(
+                              context,
+                              cartProvider
+                                  .cartIconButtonKey, // ✅ Ensure this is assigned in navbar
+                              "lib/assets/necklace.jpg",
+                              positon,
+                            );
+                            HapticFeedback.mediumImpact();
+                          },
                         ),
                         SizedBox(height: 8),
                         CupertinoButton(
