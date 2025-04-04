@@ -1,5 +1,6 @@
 import 'package:aurora_jewelry/models/Search/category_model.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class SearchProvider extends ChangeNotifier {
@@ -10,10 +11,20 @@ class SearchProvider extends ChangeNotifier {
     CategoryModel(name: "Rings", icon: CupertinoIcons.capsule),
     CategoryModel(name: "Watches", icon: CupertinoIcons.time),
   ];
+  final List<String> _availableBrands = [
+    "Dior",
+    "Gucci",
+    "Versace",
+    "Balenciaga",
+    "Nike",
+    "Adidas",
+  ];
 
   final List<CategoryModel> _selectedCategories = [];
 
   final List<String> _selectedSorting = [];
+  final List<String> _selectedFilterBrands = [];
+  RangeValues _priceRange = RangeValues(10, 100);
 
   //Product Ordering Variables
 
@@ -29,6 +40,10 @@ class SearchProvider extends ChangeNotifier {
   List<String> get selectedSorting => _selectedSorting;
   int get currentProductQuantity => _currentProductQuantity;
   double get currentProductPrice => _currentProductPrice;
+
+  List<String> get selectedFilterBrands => _selectedFilterBrands;
+  RangeValues get priceRange => _priceRange;
+  List<String> get availableBrands => _availableBrands;
 
   ///Select Category
 
@@ -101,5 +116,60 @@ class SearchProvider extends ChangeNotifier {
       HapticFeedback.mediumImpact();
     }
     notifyListeners();
+  }
+
+  ///Filters
+
+  void setPriceRange(RangeValues rangeValues) {
+    _priceRange = rangeValues;
+    notifyListeners();
+  }
+
+  void restartPriceRange() {
+    _priceRange = RangeValues(10, 100);
+    notifyListeners();
+  }
+
+  bool checkIfBrandIsAdded(String brandName) {
+    if (_selectedFilterBrands.contains(brandName)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  void selectBrand(String brandName) {
+    if (checkIfBrandIsAdded(brandName)) {
+      _selectedFilterBrands.remove(brandName);
+    } else {
+      _selectedFilterBrands.add(brandName);
+    }
+    notifyListeners();
+  }
+
+  void clearSelectedBrands() {
+    _selectedFilterBrands.clear();
+    notifyListeners();
+  }
+
+  String formatBrandList() {
+    return selectedFilterBrands.join(', ');
+  }
+
+  bool checkIsRangeChanged() {
+    if (_priceRange != RangeValues(10, 100)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  bool checkIfThereWasChangesInFilters() {
+    if (_priceRange != RangeValues(10, 100) ||
+        _selectedFilterBrands.isNotEmpty) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }
