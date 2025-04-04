@@ -334,7 +334,6 @@ class _ProductScreenState extends State<ProductScreen>
                                 null) {
                               return;
                             }
-
                             animateProductToCart(
                               context,
                               cartProvider
