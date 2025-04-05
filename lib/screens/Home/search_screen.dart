@@ -55,6 +55,12 @@ class SearchScreen extends StatelessWidget {
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(8),
                                 color: CupertinoColors.tertiarySystemFill,
+                                border: Border.all(
+                                  color:
+                                      searchProvider.checkIfThereWasChangesInFilters()
+                                          ? CupertinoColors.activeBlue
+                                          : CupertinoColors.transparent,
+                                ),
                               ),
                               child: Center(
                                 child: Row(
@@ -265,7 +271,8 @@ class SearchScreen extends StatelessWidget {
                               searchProvider.selectedCategories.isNotEmpty
                                   ? ListView(
                                     padding: EdgeInsets.zero,
-                                    physics: const NeverScrollableScrollPhysics(),
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
                                     clipBehavior: Clip.none,
                                     children: [
                                       ListProductComponent(),

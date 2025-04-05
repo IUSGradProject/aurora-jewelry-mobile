@@ -32,7 +32,6 @@ class _FilterBottomSheetWidgetState extends State<FilterBottomSheetWidget> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         SizedBox(height: 96,),
-                    
                         Text(
                           "Price Range",
                           style:
@@ -53,9 +52,9 @@ class _FilterBottomSheetWidgetState extends State<FilterBottomSheetWidget> {
                             child: Column(
                               children: [
                                 RangeSlider(
-                                  min: 10,
-                                  max: 100,
-                                  divisions: 5,
+                                  min: 1,
+                                  max: 10000,
+                                  divisions: 15,
                                   labels: RangeLabels(
                                     searchProvider.priceRange.start
                                         .round()

@@ -24,7 +24,7 @@ class SearchProvider extends ChangeNotifier {
 
   final List<String> _selectedSorting = [];
   final List<String> _selectedFilterBrands = [];
-  RangeValues _priceRange = RangeValues(10, 100);
+  RangeValues _priceRange = RangeValues(10, 10000);
 
   //Product Ordering Variables
 
@@ -126,7 +126,7 @@ class SearchProvider extends ChangeNotifier {
   }
 
   void restartPriceRange() {
-    _priceRange = RangeValues(10, 100);
+    _priceRange = RangeValues(10, 10000);
     notifyListeners();
   }
 
@@ -157,7 +157,7 @@ class SearchProvider extends ChangeNotifier {
   }
 
   bool checkIsRangeChanged() {
-    if (_priceRange != RangeValues(10, 100)) {
+    if (_priceRange != RangeValues(10, 10000)) {
       return true;
     } else {
       return false;
@@ -165,7 +165,7 @@ class SearchProvider extends ChangeNotifier {
   }
 
   bool checkIfThereWasChangesInFilters() {
-    if (_priceRange != RangeValues(10, 100) ||
+    if (_priceRange != RangeValues(10, 10000) ||
         _selectedFilterBrands.isNotEmpty) {
       return true;
     } else {
