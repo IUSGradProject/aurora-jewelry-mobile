@@ -83,7 +83,7 @@ class _GridProductComponentState extends State<GridProductComponent>
         CupertinoButton(
           pressedOpacity: 0.6,
           onPressed: () {
-            Navigator.of(context, rootNavigator: true).push(
+            Navigator.of(context).push(
               CupertinoPageRoute<void>(
                 builder: (BuildContext context) => const ProductScreen(),
               ),

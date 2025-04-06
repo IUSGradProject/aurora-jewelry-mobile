@@ -1,6 +1,7 @@
 import 'package:animated_digit/animated_digit.dart';
 import 'package:aurora_jewelry/providers/Cart/cart_provider.dart';
 import 'package:aurora_jewelry/providers/Search/search_provider.dart';
+import 'package:aurora_jewelry/screens/Home/Product/image_preview_screen.dart';
 import 'package:aurora_jewelry/screens/Home/Product/invoice_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
@@ -103,14 +104,24 @@ class _ProductScreenState extends State<ProductScreen>
                       children: [
                         Padding(
                           padding: const EdgeInsets.only(left: 8.0),
-                          child: Container(
-                            height: 200,
-                            width: 200,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12),
-                              image: DecorationImage(
-                                image: AssetImage("lib/assets/necklace.jpg"),
-                                fit: BoxFit.cover,
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.of(context, rootNavigator: true).push(
+                                CupertinoDialogRoute(
+                                  builder: (context) => ImagePreviewScreen(),
+                                  context: context,
+                                ),
+                              );
+                            },
+                            child: Container(
+                              height: 200,
+                              width: 200,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(12),
+                                image: DecorationImage(
+                                  image: AssetImage("lib/assets/necklace2.jpg"),
+                                  fit: BoxFit.cover,
+                                ),
                               ),
                             ),
                           ),
@@ -387,10 +398,10 @@ class _ProductScreenState extends State<ProductScreen>
                             ],
                           ),
                           onPressed: () {
-                            Navigator.push(
-                              context,
-                              CupertinoPageRoute(
-                                builder: (context) => InvoiceScreen(),
+                            Navigator.of(context, rootNavigator: true).push(
+                              CupertinoPageRoute<void>(
+                                builder:
+                                    (BuildContext context) => InvoiceScreen(),
                               ),
                             );
                           },
