@@ -1,3 +1,5 @@
+import 'package:aurora_jewelry/components/Profile/previous_order_component.dart';
+import 'package:aurora_jewelry/models/Products/product_order_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -7,8 +9,52 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      child: Column(
-        children: [CircleAvatar(radius: 100, child: FlutterLogo())],
+      navigationBar: CupertinoNavigationBar(middle: Text("Profile")),
+      child: Padding(
+        padding: const EdgeInsets.only(top: 50.0, left: 16, right: 16),
+        child: Column(
+          children: [
+            Center(
+              child: CircleAvatar(
+                radius: 60,
+                child: Icon(CupertinoIcons.person, size: 50),
+              ),
+            ),
+            SizedBox(height: 8),
+            Text(
+              "Mirza",
+              style: TextStyle(fontSize: 32, fontWeight: FontWeight.w600),
+            ),
+            CupertinoButton(child: Text("Sign Out"), onPressed: () {}),
+            SizedBox(height: 32),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text("Previous Orders", style: TextStyle(fontSize: 17)),
+            ),
+            PreviousOrderComponent(
+              date: "12 Dec 2024",
+              time: "14:30",
+              items: [
+                ProductOrder(name: "Necklace", quantity: 1, price: 129.99),
+                ProductOrder(name: "Earrings", quantity: 2, price: 39.99),
+              ],
+              total: 209.97,
+            ),
+            PreviousOrderComponent(
+              date: "11 Dec 2024",
+              time: "14:30",
+              items: [
+                ProductOrder(
+                  name: "Necklace With Safire",
+                  quantity: 1,
+                  price: 129.99,
+                ),
+                ProductOrder(name: "Earrings", quantity: 2, price: 39.99),
+              ],
+              total: 209.97,
+            ),
+          ],
+        ),
       ),
     );
   }
