@@ -29,7 +29,7 @@ class ProfileScreen extends StatelessWidget {
             SizedBox(height: 32),
             Align(
               alignment: Alignment.centerLeft,
-              child: Text("Previous Orders", style: TextStyle(fontSize: 17)),
+              child: Text("Previous Orders 📦", style: TextStyle(fontSize: 17)),
             ),
             PreviousOrderComponent(
               date: "12 Dec 2024",
