@@ -15,7 +15,11 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final GlobalKey cartKey = GlobalKey();
-  final pages = [DiscoverScreen(), SearchScreen(), CartScreen()];
+  final pages = [
+    () => DiscoverScreen(),
+    () => SearchScreen(),
+    () => CartScreen(),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +59,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                   child:
                                       cartProvider.cartItems.length < 9
                                           ? AnimatedDigitWidget(
-                                            
                                             value:
                                                 cartProvider.cartItems.length,
                                             textStyle: TextStyle(
@@ -82,14 +85,10 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
             tabBuilder: (BuildContext context, index) {
-              return Stack(
-                children: [
-                  CupertinoTabView(
-                    builder: (BuildContext context) {
-                      return pages[index];
-                    },
-                  ),
-                ],
+              return CupertinoTabView(
+                builder: (BuildContext context) {
+                  return pages[index]();
+                },
               );
             },
           ),

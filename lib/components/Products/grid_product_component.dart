@@ -83,9 +83,10 @@ class _GridProductComponentState extends State<GridProductComponent>
         CupertinoButton(
           pressedOpacity: 0.6,
           onPressed: () {
-            Navigator.push(
-              context,
-              CupertinoPageRoute(builder: (context) => ProductScreen()),
+            Navigator.of(context, rootNavigator: true).push(
+              CupertinoPageRoute<void>(
+                builder: (BuildContext context) => const ProductScreen(),
+              ),
             );
           },
           padding: EdgeInsets.zero,
@@ -102,7 +103,7 @@ class _GridProductComponentState extends State<GridProductComponent>
                           : CupertinoColors.white,
                   boxShadow: [
                     BoxShadow(
-                      color: CupertinoColors.black.withOpacity(0.16),
+                      color: CupertinoColors.black.withValues(alpha: 0.16),
                       offset: Offset(0, 4),
                       blurRadius: 12,
                     ),

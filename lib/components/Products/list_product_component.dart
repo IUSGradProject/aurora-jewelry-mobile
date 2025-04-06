@@ -85,9 +85,10 @@ class _ListProductComponentState extends State<ListProductComponent>
           CupertinoButton(
             pressedOpacity: 0.6,
             onPressed: () {
-              Navigator.push(
-                context,
-                CupertinoPageRoute(builder: (context) => ProductScreen()),
+              Navigator.of(context, rootNavigator: true).push(
+                CupertinoPageRoute<void>(
+                  builder: (BuildContext context) => const ProductScreen(),
+                ),
               );
             },
             padding: EdgeInsets.zero,

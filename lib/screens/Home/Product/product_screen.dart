@@ -1,7 +1,7 @@
 import 'package:animated_digit/animated_digit.dart';
 import 'package:aurora_jewelry/providers/Cart/cart_provider.dart';
 import 'package:aurora_jewelry/providers/Search/search_provider.dart';
-import 'package:aurora_jewelry/screens/Home/Product/checkout_screen.dart';
+import 'package:aurora_jewelry/screens/Home/Product/invoice_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -372,7 +372,7 @@ class _ProductScreenState extends State<ProductScreen>
                             Navigator.push(
                               context,
                               CupertinoPageRoute(
-                                builder: (context) => CheckoutScreen(),
+                                builder: (context) => InvoiceScreen(),
                               ),
                             );
                           },
