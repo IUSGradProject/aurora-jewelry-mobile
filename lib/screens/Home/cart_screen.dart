@@ -2,6 +2,7 @@ import 'package:aurora_jewelry/components/Cart/cart_item_component.dart';
 import 'package:aurora_jewelry/screens/Home/Product/enter_address_screen.dart';
 import 'package:aurora_jewelry/widgets/profile_avatar_widget.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:lottie/lottie.dart';
 
 class CartScreen extends StatelessWidget {
   const CartScreen({super.key});
@@ -23,21 +24,43 @@ class CartScreen extends StatelessWidget {
               ),
             ),
           ),
-          SliverToBoxAdapter(
-            child: CartItemComponent(
-              itemName: "Necklace",
-              quantity: 2,
-              price: 129.99,
-              onFinishOrder: () {
-                Navigator.of(context, rootNavigator: true).push(
-                  CupertinoSheetRoute<void>(
-                    builder:
-                        (BuildContext context) => const EnterAddressScreen(),
+          SliverFillRemaining(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Spacer(),
+                LottieBuilder.asset(
+                  "lib/assets/empty-cart-animation.json",
+                  height: 200,
+                ),
+                SizedBox(height: 32,),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                  child: Text(
+                    "Added items to your Cart will be here.",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: CupertinoColors.systemGrey, fontSize: 18),
                   ),
-                );
-              },
+                ),
+                Spacer(flex: 2,),
+              ],
             ),
           ),
+          // SliverToBoxAdapter(
+          //   child: CartItemComponent(
+          //     itemName: "Necklace",
+          //     quantity: 2,
+          //     price: 129.99,
+          //     onFinishOrder: () {
+          //       Navigator.of(context, rootNavigator: true).push(
+          //         CupertinoSheetRoute<void>(
+          //           builder:
+          //               (BuildContext context) => const EnterAddressScreen(),
+          //         ),
+          //       );
+          //     },
+          //   ),
+          // ),
         ],
       ),
     );
