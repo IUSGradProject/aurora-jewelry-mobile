@@ -1,6 +1,8 @@
 import 'package:animated_digit/animated_digit.dart';
+import 'package:aurora_jewelry/providers/Authentication/auth_provider.dart';
 import 'package:aurora_jewelry/providers/Cart/cart_provider.dart';
 import 'package:aurora_jewelry/providers/Search/search_provider.dart';
+import 'package:aurora_jewelry/screens/Authentication/login_screen.dart';
 import 'package:aurora_jewelry/screens/Home/Product/image_preview_screen.dart';
 import 'package:aurora_jewelry/screens/Home/Product/invoice_screen.dart';
 import 'package:flutter/cupertino.dart';
@@ -348,29 +350,41 @@ class _ProductScreenState extends State<ProductScreen>
                             ],
                           ),
                           onPressed: () {
-                            // final renderBox =
-                            //     context.findRenderObject() as RenderBox?;
-                            // final position =
-                            //     renderBox?.localToGlobal(Offset.zero) ??
-                            //     Offset.zero;
+                            final isUserRegistered =
+                                Provider.of<AuthProvider>(
+                                  context,
+                                  listen: false,
+                                ).isUserAuthenticated;
 
-                            final positon = Offset(
-                              MediaQuery.of(context).size.width / 2,
-                              MediaQuery.of(context).size.width / 0.6,
-                            );
+                            if (isUserRegistered) {
+                              final positon = Offset(
+                                MediaQuery.of(context).size.width / 2,
+                                MediaQuery.of(context).size.width / 0.6,
+                              );
 
-                            if (cartProvider.cartIconButtonKey.currentContext ==
-                                null) {
-                              return;
+                              if (cartProvider
+                                      .cartIconButtonKey
+                                      .currentContext ==
+                                  null) {
+                                return;
+                              }
+                              animateProductToCart(
+                                context,
+                                cartProvider
+                                    .cartIconButtonKey, // ✅ Ensure this is assigned in navbar
+                                "lib/assets/necklace.jpg",
+                                positon,
+                              );
+                              HapticFeedback.mediumImpact();
+                            } else {
+                              Navigator.of(context, rootNavigator: true).push(
+                                CupertinoSheetRoute<void>(
+                                  builder:
+                                      (BuildContext context) =>
+                                          const LoginScreen(),
+                                ),
+                              );
                             }
-                            animateProductToCart(
-                              context,
-                              cartProvider
-                                  .cartIconButtonKey, // ✅ Ensure this is assigned in navbar
-                              "lib/assets/necklace.jpg",
-                              positon,
-                            );
-                            HapticFeedback.mediumImpact();
                           },
                         ),
                         SizedBox(height: 8),
@@ -398,12 +412,28 @@ class _ProductScreenState extends State<ProductScreen>
                             ],
                           ),
                           onPressed: () {
-                            Navigator.of(context, rootNavigator: true).push(
-                              CupertinoPageRoute<void>(
-                                builder:
-                                    (BuildContext context) => InvoiceScreen(),
-                              ),
-                            );
+                            final isUserRegistered =
+                                Provider.of<AuthProvider>(
+                                  context,
+                                  listen: false,
+                                ).isUserAuthenticated;
+
+                            if (isUserRegistered) {
+                              Navigator.of(context, rootNavigator: true).push(
+                                CupertinoPageRoute<void>(
+                                  builder:
+                                      (BuildContext context) => InvoiceScreen(),
+                                ),
+                              );
+                            } else {
+                              Navigator.of(context, rootNavigator: true).push(
+                                CupertinoSheetRoute<void>(
+                                  builder:
+                                      (BuildContext context) =>
+                                          const LoginScreen(),
+                                ),
+                              );
+                            }
                           },
                         ),
                       ],

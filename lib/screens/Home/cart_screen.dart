@@ -1,5 +1,3 @@
-import 'package:aurora_jewelry/components/Cart/cart_item_component.dart';
-import 'package:aurora_jewelry/screens/Home/Product/enter_address_screen.dart';
 import 'package:aurora_jewelry/widgets/profile_avatar_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:lottie/lottie.dart';

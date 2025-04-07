@@ -1,5 +1,7 @@
 import 'package:animated_digit/animated_digit.dart';
+import 'package:aurora_jewelry/providers/Authentication/auth_provider.dart';
 import 'package:aurora_jewelry/providers/Cart/cart_provider.dart';
+import 'package:aurora_jewelry/screens/Authentication/login_screen.dart';
 import 'package:aurora_jewelry/screens/Home/cart_screen.dart';
 import 'package:aurora_jewelry/screens/Home/discover_screen.dart';
 import 'package:aurora_jewelry/screens/Home/search_screen.dart';
@@ -15,11 +17,14 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final GlobalKey cartKey = GlobalKey();
+
   final pages = [
     () => DiscoverScreen(),
     () => SearchScreen(),
     () => CartScreen(),
   ];
+
+  int currentTabIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -27,9 +32,45 @@ class _HomeScreenState extends State<HomeScreen> {
       builder:
           (context, cartProvider, child) => CupertinoTabScaffold(
             tabBar: CupertinoTabBar(
+              currentIndex: currentTabIndex,
+              onTap: (index) {
+                final isUserRegistered =
+                    Provider.of<AuthProvider>(
+                      context,
+                      listen: false,
+                    ).isUserAuthenticated;
+                if (index == 2 && !isUserRegistered) {
+                  Navigator.of(context, rootNavigator: true).push(
+                    CupertinoSheetRoute<void>(
+                      builder: (BuildContext context) => const LoginScreen(),
+                    ),
+                  );
+                  return;
+                } else {
+                  setState(() {
+                    currentTabIndex = index;
+                  });
+                }
+              },
               items: <BottomNavigationBarItem>[
-                BottomNavigationBarItem(icon: Icon(CupertinoIcons.home)),
-                BottomNavigationBarItem(icon: Icon(CupertinoIcons.search)),
+                BottomNavigationBarItem(
+                  icon: Icon(
+                    CupertinoIcons.home,
+                    color:
+                        currentTabIndex == 0
+                            ? CupertinoColors.activeBlue
+                            : CupertinoColors.systemGrey,
+                  ),
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(
+                    CupertinoIcons.search,
+                    color:
+                        currentTabIndex == 1
+                            ? CupertinoColors.activeBlue
+                            : CupertinoColors.systemGrey,
+                  ),
+                ),
                 BottomNavigationBarItem(
                   icon: Builder(
                     builder: (context) {
@@ -40,7 +81,13 @@ class _HomeScreenState extends State<HomeScreen> {
                             key:
                                 cartProvider
                                     .cartIconButtonKey, // Assign key here
-                            child: Icon(CupertinoIcons.cart),
+                            child: Icon(
+                              CupertinoIcons.cart,
+                              color:
+                                  currentTabIndex == 2
+                                      ? CupertinoColors.activeBlue
+                                      : CupertinoColors.systemGrey,
+                            ),
                           ),
                           Positioned(
                             top: -5,
@@ -87,7 +134,7 @@ class _HomeScreenState extends State<HomeScreen> {
             tabBuilder: (BuildContext context, index) {
               return CupertinoTabView(
                 builder: (BuildContext context) {
-                  return pages[index]();
+                  return pages[currentTabIndex]();
                 },
               );
             },
