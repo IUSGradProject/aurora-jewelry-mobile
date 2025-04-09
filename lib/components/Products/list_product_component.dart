@@ -1,4 +1,6 @@
+import 'package:aurora_jewelry/providers/Authentication/auth_provider.dart';
 import 'package:aurora_jewelry/providers/Cart/cart_provider.dart';
+import 'package:aurora_jewelry/screens/Authentication/login_screen.dart';
 import 'package:aurora_jewelry/screens/Home/Product/product_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
@@ -199,24 +201,39 @@ class _ListProductComponentState extends State<ListProductComponent>
                       ],
                     ),
                     onPressed: () {
-                      final renderBox =
-                          context.findRenderObject() as RenderBox?;
-                      final position =
-                          renderBox?.localToGlobal(Offset.zero) ?? Offset.zero;
+                      final isUserRegistered =
+                          Provider.of<AuthProvider>(
+                            context,
+                            listen: false,
+                          ).isUserAuthenticated;
+                      if (isUserRegistered) {
+                        final renderBox =
+                            context.findRenderObject() as RenderBox?;
+                        final position =
+                            renderBox?.localToGlobal(Offset.zero) ??
+                            Offset.zero;
 
-                      if (cartProvider.cartIconButtonKey.currentContext ==
-                          null) {
-                        return;
+                        if (cartProvider.cartIconButtonKey.currentContext ==
+                            null) {
+                          return;
+                        }
+
+                        animateProductToCart(
+                          context,
+                          cartProvider
+                              .cartIconButtonKey, // ✅ Ensure this is assigned in navbar
+                          "lib/assets/necklace.jpg",
+                          position,
+                        );
+                        HapticFeedback.mediumImpact();
+                      } else {
+                        Navigator.of(context, rootNavigator: true).push(
+                          CupertinoSheetRoute<void>(
+                            builder:
+                                (BuildContext context) => const LoginScreen(),
+                          ),
+                        );
                       }
-
-                      animateProductToCart(
-                        context,
-                        cartProvider
-                            .cartIconButtonKey, // ✅ Ensure this is assigned in navbar
-                        "lib/assets/necklace.jpg",
-                        position,
-                      );
-                      HapticFeedback.mediumImpact();
                     },
                   ),
             ),
