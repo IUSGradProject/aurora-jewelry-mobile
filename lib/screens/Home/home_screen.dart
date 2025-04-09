@@ -1,5 +1,5 @@
 import 'package:animated_digit/animated_digit.dart';
-import 'package:aurora_jewelry/providers/Authentication/auth_provider.dart';
+import 'package:aurora_jewelry/providers/Auth/auth_provider.dart';
 import 'package:aurora_jewelry/providers/Cart/cart_provider.dart';
 import 'package:aurora_jewelry/screens/Authentication/login_screen.dart';
 import 'package:aurora_jewelry/screens/Home/cart_screen.dart';

@@ -1,5 +1,7 @@
 import 'package:animations/animations.dart';
+import 'package:aurora_jewelry/providers/Auth/auth_provider.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -9,6 +11,9 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final TextEditingController _loginEmailController = TextEditingController();
+  final TextEditingController _loginPasswordController =
+      TextEditingController();
   bool isRegistration = false;
 
   @override
@@ -197,6 +202,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 SizedBox(
                                   height: 50,
                                   child: CupertinoTextField(
+                                    controller: _loginEmailController,
                                     placeholder: "Email",
                                     decoration: BoxDecoration(
                                       color: CupertinoColors.tertiarySystemFill,
@@ -208,6 +214,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 SizedBox(
                                   height: 50,
                                   child: CupertinoTextField(
+                                    controller: _loginPasswordController,
                                     placeholder: "Password",
                                     obscureText: true,
                                     decoration: BoxDecoration(
@@ -226,27 +233,34 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
         Positioned(
           bottom: 60,
-          child: AnimatedOpacity(
-            opacity: isRegistration? 0.2:1,
-            duration: Duration(milliseconds: 300),
-            child: SizedBox(
-              key: ValueKey("register-button"),
-              width: MediaQuery.of(context).size.width - 32,
-              child: CupertinoButton.filled(
-                borderRadius: BorderRadius.circular(8),
-                child:
-                    isRegistration
-                        ? Text(
-                          "Register now",
-                          style: TextStyle(fontWeight: FontWeight.w600),
-                        )
-                        : Text(
-                          "Login now",
-                          style: TextStyle(fontWeight: FontWeight.w600),
-                        ),
-                onPressed: () {},
-              ),
-            ),
+          child: Consumer<AuthProvider>(
+            builder:
+                (context, authProvider, child) => AnimatedOpacity(
+                  opacity: isRegistration ? 0.2 : 1,
+                  duration: Duration(milliseconds: 300),
+                  child: SizedBox(
+                    key: ValueKey("register-button"),
+                    width: MediaQuery.of(context).size.width - 32,
+                    child: CupertinoButton.filled(
+                      borderRadius: BorderRadius.circular(8),
+                      child:
+                          authProvider.isLoading
+                              ? CupertinoActivityIndicator() // Show loader if loading
+                              : Text(
+                                isRegistration ? "Register now" : "Login now",
+                                style: TextStyle(fontWeight: FontWeight.w600),
+                              ),
+                      onPressed: () {
+                        if (!isRegistration) {
+                          authProvider.login(
+                            _loginEmailController.text,
+                            _loginPasswordController.text,
+                          );
+                        }
+                      },
+                    ),
+                  ),
+                ),
           ),
         ),
       ],

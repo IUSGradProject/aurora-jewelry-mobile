@@ -1,4 +1,4 @@
-import 'package:aurora_jewelry/providers/Authentication/auth_provider.dart';
+import 'package:aurora_jewelry/providers/Auth/auth_provider.dart';
 import 'package:aurora_jewelry/screens/Authentication/login_screen.dart';
 import 'package:aurora_jewelry/screens/Home/profile_screen.dart';
 import 'package:flutter/cupertino.dart';
