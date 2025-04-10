@@ -6,12 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 
 void main() {
-  runApp(
-    ChangeNotifierProvider<AuthProvider>(
-      create: (context) => AuthProvider(),
-      child: MyApp(),
-    ),
-  );
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -20,14 +15,11 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    // Trigger the authentication check after the provider is available
-    Future.microtask(() {
-      Provider.of<AuthProvider>(context, listen: false).checkIfAuthenticated();
-    });
-
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider<AuthProvider>(create: (_) => AuthProvider()),
+        ChangeNotifierProvider<AuthProvider>(
+          create: (_) => AuthProvider()..checkIfAuthenticated(),
+        ),
         ChangeNotifierProvider<SearchProvider>(create: (_) => SearchProvider()),
         ChangeNotifierProvider<CartProvider>(create: (_) => CartProvider()),
       ],

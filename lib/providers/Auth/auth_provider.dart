@@ -20,7 +20,6 @@ class AuthProvider extends ChangeNotifier {
     final token = prefs.getString('jwt'); // Fetch token from preferences
     if (token != null) {
       _isUserAuthenticated = true;
-
       notifyListeners();
     }
   }
