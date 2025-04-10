@@ -1,7 +1,9 @@
 import 'package:aurora_jewelry/components/Profile/previous_order_component.dart';
 import 'package:aurora_jewelry/models/Products/product_order_model.dart';
+import 'package:aurora_jewelry/providers/Auth/auth_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -25,7 +27,16 @@ class ProfileScreen extends StatelessWidget {
               "Mirza",
               style: TextStyle(fontSize: 32, fontWeight: FontWeight.w600),
             ),
-            CupertinoButton(child: Text("Sign Out"), onPressed: () {}),
+            Consumer<AuthProvider>(
+              builder:
+                  (context, authProvider, child) => CupertinoButton(
+                    child: Text("Sign Out"),
+                    onPressed: () {
+                      authProvider.logout();
+                      Navigator.pop(context);
+                    },
+                  ),
+            ),
             SizedBox(height: 32),
             Align(
               alignment: Alignment.centerLeft,

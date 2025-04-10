@@ -36,11 +36,9 @@ class AuthProvider extends ChangeNotifier {
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('jwt', response.token);
         _isUserAuthenticated = true;
-
         notifyListeners();
       }
     } catch (e) {
-      print('Error during login: $e');
       throw Exception('Login failed');
     } finally {
       _isLoading = false;
