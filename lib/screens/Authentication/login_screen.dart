@@ -512,6 +512,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                       ),
                                     ),
                             onPressed: () async {
+                              //Prevent mulitple requests being made 
+                              //(If something is awaiting to not send another request)
+                              if(authProvider.isLoading) return;
+
                               if (isRegistration == false &&
                                   _loginEmailController.text.isNotEmpty &&
                                   _loginPasswordController.text.isNotEmpty) {

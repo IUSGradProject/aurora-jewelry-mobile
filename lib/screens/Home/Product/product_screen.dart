@@ -98,65 +98,92 @@ class _ProductScreenState extends State<ProductScreen>
               child: ListView(
                 padding: EdgeInsets.only(bottom: 116, top: 100),
                 children: [
-                  SizedBox(
-                    height: 400,
-                    child: PageView(
-                      padEnds: false,
-                      controller: PageController(viewportFraction: 0.7),
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8.0),
-                          child: GestureDetector(
-                            onTap: () {
-                              Navigator.of(context, rootNavigator: true).push(
-                                CupertinoDialogRoute(
-                                  builder: (context) => ImagePreviewScreen(),
-                                  context: context,
-                                ),
-                              );
-                            },
-                            child: Container(
-                              height: 200,
-                              width: 200,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(12),
-                                image: DecorationImage(
-                                  image: AssetImage("lib/assets/necklace2.jpg"),
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                            ),
+                  ///Multiple Images Product
+
+                  // SizedBox(
+                  //   height: 400,
+                  //   child: PageView(
+                  //     padEnds: false,
+                  //     controller: PageController(viewportFraction: 0.7),
+                  //     children: [
+                  //       Padding(
+                  //         padding: const EdgeInsets.only(left: 8.0),
+                  //         child: GestureDetector(
+                  //           onTap: () {
+                  //             Navigator.of(context, rootNavigator: true).push(
+                  //               CupertinoDialogRoute(
+                  //                 builder: (context) => ImagePreviewScreen(),
+                  //                 context: context,
+                  //               ),
+                  //             );
+                  //           },
+                  //           child: Container(
+                  //             height: 200,
+                  //             width: 200,
+                  //             decoration: BoxDecoration(
+                  //               borderRadius: BorderRadius.circular(12),
+                  //               image: DecorationImage(
+                  //                 image: AssetImage("lib/assets/necklace2.jpg"),
+                  //                 fit: BoxFit.cover,
+                  //               ),
+                  //             ),
+                  //           ),
+                  //         ),
+                  //       ),
+                  //       Padding(
+                  //         padding: const EdgeInsets.only(left: 16.0),
+                  //         child: Container(
+                  //           height: 200,
+                  //           width: 200,
+                  //           decoration: BoxDecoration(
+                  //             borderRadius: BorderRadius.circular(12),
+                  //             image: DecorationImage(
+                  //               image: AssetImage("lib/assets/necklace.jpg"),
+                  //               fit: BoxFit.cover,
+                  //             ),
+                  //           ),
+                  //         ),
+                  //       ),
+                  //       Padding(
+                  //         padding: const EdgeInsets.only(left: 16.0, right: 16),
+                  //         child: Container(
+                  //           height: 200,
+                  //           width: 200,
+                  //           decoration: BoxDecoration(
+                  //             borderRadius: BorderRadius.circular(12),
+                  //             image: DecorationImage(
+                  //               image: AssetImage("lib/assets/necklace.jpg"),
+                  //               fit: BoxFit.cover,
+                  //             ),
+                  //           ),
+                  //         ),
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
+
+                  ///Single Image Product
+                  Padding(
+                    padding: const EdgeInsets.only(left: 0.0, right: 0),
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.of(context, rootNavigator: true).push(
+                          CupertinoDialogRoute(
+                            builder: (context) => ImagePreviewScreen(),
+                            context: context,
+                          ),
+                        );
+                      },
+                      child: Container(
+                        height: 250,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(0),
+                          image: DecorationImage(
+                            image: AssetImage("lib/assets/necklace2.jpg"),
+                            fit: BoxFit.cover,
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 16.0),
-                          child: Container(
-                            height: 200,
-                            width: 200,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12),
-                              image: DecorationImage(
-                                image: AssetImage("lib/assets/necklace.jpg"),
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 16.0, right: 16),
-                          child: Container(
-                            height: 200,
-                            width: 200,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12),
-                              image: DecorationImage(
-                                image: AssetImage("lib/assets/necklace.jpg"),
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
                   ),
                   SizedBox(height: 16),
