@@ -49,8 +49,8 @@ class CartItemComponent extends StatelessWidget {
 
           // Action Button to Finish the Order
           CupertinoButton.filled(
-            child: Text("Finish Order"),
             onPressed: onFinishOrder,
+            child: Text("Finish Order"),
           ),
         ],
       ),

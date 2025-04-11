@@ -69,10 +69,8 @@ class AuthProvider extends ChangeNotifier {
       // If registration succeeds, login user
       login(email, password);
     } catch (e) {
-      print('Register & Login error: $e');
       rethrow;
-    }
-    finally{
+    } finally {
       _isLoading = false;
       notifyListeners();
     }

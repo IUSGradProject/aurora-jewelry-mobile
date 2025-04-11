@@ -20,6 +20,7 @@ class _EnterAddressScreenState extends State<EnterAddressScreen> {
     await Future.delayed(Duration(seconds: 3));
 
     // Push HomeScreen and remove all previous routes
+    // ignore: use_build_context_synchronously
     Navigator.of(context).pushAndRemoveUntil(
       CupertinoPageRoute(builder: (_) => HomeScreen()),
       (route) => false, // Remove all previous routes
@@ -28,6 +29,7 @@ class _EnterAddressScreenState extends State<EnterAddressScreen> {
     await Future.delayed(Duration(milliseconds: 300));
 
     showCupertinoModalPopup(
+      // ignore: use_build_context_synchronously
       context: context,
       builder:
           (context) => Container(

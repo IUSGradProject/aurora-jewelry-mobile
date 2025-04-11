@@ -1,8 +1,6 @@
 import 'package:aurora_jewelry/components/Products/grid_product_component.dart';
-import 'package:aurora_jewelry/providers/Auth/auth_provider.dart';
 import 'package:aurora_jewelry/widgets/profile_avatar_widget.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:provider/provider.dart';
 
 class DiscoverScreen extends StatelessWidget {
   const DiscoverScreen({super.key});

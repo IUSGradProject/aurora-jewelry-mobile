@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:aurora_jewelry/models/Auth/login_response.dart';
+// ignore: depend_on_referenced_packages
 import 'package:http/http.dart' as http;
 
 class ApiService {
@@ -23,7 +24,6 @@ class ApiService {
         throw Exception(error['message'] ?? 'Login Failed');
       }
     } catch (e) {
-      print('Login error: $e');
       rethrow;
     }
   }
@@ -57,7 +57,6 @@ class ApiService {
 
       // success = do nothing, let caller proceed to login
     } catch (e) {
-      print('Registration error: $e');
       rethrow;
     }
   }

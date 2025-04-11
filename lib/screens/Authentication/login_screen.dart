@@ -4,7 +4,6 @@ import 'package:animations/animations.dart';
 import 'package:aurora_jewelry/components/cupertino_snack_bar.dart';
 import 'package:aurora_jewelry/providers/Auth/auth_provider.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -434,10 +433,12 @@ class _LoginScreenState extends State<LoginScreen> {
                                     _loginEmailController.text,
                                     _loginPasswordController.text,
                                   );
+                                  // ignore: use_build_context_synchronously
                                   Navigator.pop(context);
                                 } catch (e) {
                                   // Use Builder to get the correct context that includes ScaffoldMessenger
                                   showCupertinoSnackBar(
+                                    // ignore: use_build_context_synchronously
                                     context: context,
                                     message: "Please check your credentials.",
                                   );
