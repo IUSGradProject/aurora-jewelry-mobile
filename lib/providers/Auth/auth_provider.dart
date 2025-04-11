@@ -46,6 +46,38 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
+  ///Register function that registers user
+  ///If registration is success it also logins user
+
+  Future<void> registerAndLogin(
+    String firstName,
+    String lastName,
+    String email,
+    String password,
+    String username,
+  ) async {
+    try {
+      _isLoading = true;
+      notifyListeners();
+      await ApiService().registerUser(
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+        password: password,
+        username: username,
+      );
+      // If registration succeeds, login user
+      login(email, password);
+    } catch (e) {
+      print('Register & Login error: $e');
+      rethrow;
+    }
+    finally{
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
   ///Logout function to remove the token from SharedPreferences
   Future<void> logout() async {
     final prefs = await SharedPreferences.getInstance();

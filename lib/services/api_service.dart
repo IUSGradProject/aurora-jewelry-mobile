@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 class ApiService {
   static const auroraBackendUrl = 'https://heyappo.me/aurora/api';
 
+  ///Function that calls register api
   Future<LoginResponse?> login(String email, String password) async {
     final url = Uri.parse('$auroraBackendUrl/Users/Login');
     try {
@@ -23,6 +24,40 @@ class ApiService {
       }
     } catch (e) {
       print('Login error: $e');
+      rethrow;
+    }
+  }
+
+  Future<void> registerUser({
+    required String firstName,
+    required String lastName,
+    required String email,
+    required String password,
+    required String username,
+  }) async {
+    final url = Uri.parse('$auroraBackendUrl/Users');
+
+    final headers = {'Accept': '*/*', 'Content-Type': 'application/json'};
+
+    final body = jsonEncode({
+      'firstName': firstName,
+      'lastName': lastName,
+      'email': email,
+      'password': password,
+      'username': username,
+    });
+
+    try {
+      final response = await http.post(url, headers: headers, body: body);
+
+      if (response.statusCode != 200 && response.statusCode != 201) {
+        final error = jsonDecode(response.body);
+        throw Exception(error['message'] ?? 'Registration failed');
+      }
+
+      // success = do nothing, let caller proceed to login
+    } catch (e) {
+      print('Registration error: $e');
       rethrow;
     }
   }

@@ -25,14 +25,6 @@ class DiscoverScreen extends StatelessWidget {
             ),
           ),
           SliverToBoxAdapter(
-            child: Consumer<AuthProvider>(
-              builder:
-                  (context, authProvider, child) => Text(
-                    "Authenticated: ${authProvider.isUserAuthenticated}",
-                  ),
-            ),
-          ),
-          SliverToBoxAdapter(
             child: GridView.builder(
               padding: EdgeInsets.only(left: 16, right: 16, bottom: 96, top: 8),
               shrinkWrap: true,
