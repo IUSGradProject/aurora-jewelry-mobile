@@ -4,6 +4,7 @@ import 'package:animations/animations.dart';
 import 'package:aurora_jewelry/components/cupertino_snack_bar.dart';
 import 'package:aurora_jewelry/providers/Auth/auth_provider.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -32,6 +33,8 @@ class _LoginScreenState extends State<LoginScreen> {
       TextEditingController();
 
   bool isRegistration = false;
+  String? _emailErrorText;
+  String? _confirmPasswordErrorMessage;
 
   ///When returned false the button opacity is set to 0.5
   ///When returnde true the button opacity is set to 1
@@ -180,13 +183,16 @@ class _LoginScreenState extends State<LoginScreen> {
                                       onPressed: () {
                                         setState(() {
                                           isRegistration = false;
-                                          _registrationUsernameController.clear();
+                                          _registrationUsernameController
+                                              .clear();
                                           _registrationNameController.clear();
-                                          _registrationLastNameController.clear();
+                                          _registrationLastNameController
+                                              .clear();
                                           _registrationEmailController.clear();
-                                          _registrationPasswordController.clear();
-                                          _registrationConfirmPasswordController.clear();
-
+                                          _registrationPasswordController
+                                              .clear();
+                                          _registrationConfirmPasswordController
+                                              .clear();
                                         });
                                       },
                                     ),
@@ -210,6 +216,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                     onChanged: (value) {
                                       setState(() {});
                                     },
+                                    inputFormatters: [
+                                      FilteringTextInputFormatter.deny(
+                                        RegExp(r'\s'),
+                                      ), // Disallow spaces
+                                    ],
                                     decoration: BoxDecoration(
                                       color: CupertinoColors.tertiarySystemFill,
                                       borderRadius: BorderRadius.circular(8),
@@ -259,7 +270,17 @@ class _LoginScreenState extends State<LoginScreen> {
                                     clearButtonMode:
                                         OverlayVisibilityMode.editing,
                                     onChanged: (value) {
-                                      setState(() {});
+                                      setState(() {
+                                        if (value.isEmpty ||
+                                            !RegExp(
+                                              r"^[^@]+@[^@]+\.[^@]+",
+                                            ).hasMatch(value)) {
+                                          _emailErrorText =
+                                              "Invalid email address!";
+                                        } else {
+                                          _emailErrorText = null;
+                                        }
+                                      });
                                     },
                                     decoration: BoxDecoration(
                                       color: CupertinoColors.tertiarySystemFill,
@@ -267,6 +288,23 @@ class _LoginScreenState extends State<LoginScreen> {
                                     ),
                                   ),
                                 ),
+                                if (_emailErrorText != null &&
+                                    _registrationEmailController
+                                        .text
+                                        .isNotEmpty)
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                      top: 4,
+                                      left: 8,
+                                    ),
+                                    child: Text(
+                                      _emailErrorText!,
+                                      style: TextStyle(
+                                        color: CupertinoColors.systemRed,
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                  ),
                                 SizedBox(height: 16),
                                 SizedBox(
                                   height: 50,
@@ -276,7 +314,20 @@ class _LoginScreenState extends State<LoginScreen> {
                                     clearButtonMode:
                                         OverlayVisibilityMode.editing,
                                     onChanged: (value) {
-                                      setState(() {});
+                                      setState(() {
+                                        if (_registrationConfirmPasswordController
+                                            .text
+                                            .isNotEmpty) {
+                                          if (_registrationConfirmPasswordController
+                                                  .text !=
+                                              value) {
+                                            _confirmPasswordErrorMessage =
+                                                "Confirm Password does not match with password!";
+                                          } else {
+                                            _confirmPasswordErrorMessage = null;
+                                          }
+                                        }
+                                      });
                                     },
                                     obscureText: true,
                                     decoration: BoxDecoration(
@@ -295,8 +346,22 @@ class _LoginScreenState extends State<LoginScreen> {
                                     placeholder: "Confirm Password",
                                     clearButtonMode:
                                         OverlayVisibilityMode.editing,
+                                    enabled: _registrationPasswordController.text.isNotEmpty,
                                     onChanged: (value) {
-                                      setState(() {});
+                                      setState(() {
+                                        if (_registrationPasswordController
+                                            .text
+                                            .isNotEmpty) {
+                                          if (value !=
+                                              _registrationPasswordController
+                                                  .text) {
+                                            _confirmPasswordErrorMessage =
+                                                "Confirm Password does not match with password!";
+                                          } else {
+                                            _confirmPasswordErrorMessage = null;
+                                          }
+                                        }
+                                      });
                                     },
                                     decoration: BoxDecoration(
                                       color: CupertinoColors.tertiarySystemFill,
@@ -304,6 +369,23 @@ class _LoginScreenState extends State<LoginScreen> {
                                     ),
                                   ),
                                 ),
+                                if (_confirmPasswordErrorMessage != null &&
+                                    _registrationConfirmPasswordController
+                                        .text
+                                        .isNotEmpty)
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                      top: 4,
+                                      left: 8,
+                                    ),
+                                    child: Text(
+                                      _confirmPasswordErrorMessage!,
+                                      style: TextStyle(
+                                        color: CupertinoColors.systemRed,
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                  ),
                                 SizedBox(height: 150),
                               ],
                             )
@@ -411,7 +493,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                 : 0.5,
                         duration: Duration(milliseconds: 300),
                         child: SizedBox(
-                          key: ValueKey("register-button"),
                           width: MediaQuery.of(context).size.width - 32,
                           child: CupertinoButton.filled(
                             borderRadius: BorderRadius.circular(8),
@@ -427,7 +508,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       ),
                                     ),
                             onPressed: () async {
-                              if (isRegistration == false) {
+                              if (isRegistration == false && _loginEmailController.text.isNotEmpty && _loginPasswordController.text.isNotEmpty) {
                                 try {
                                   await authProvider.login(
                                     _loginEmailController.text,
@@ -453,11 +534,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                       _registrationPasswordController.text,
                                       _registrationUsernameController.text,
                                     );
+                                    // ignore: use_build_context_synchronously
                                     Navigator.pop(context);
                                   }
                                 } catch (e) {
                                   // Use Builder to get the correct context that includes ScaffoldMessenger
                                   showCupertinoSnackBar(
+                                    // ignore: use_build_context_synchronously
                                     context: context,
                                     message:
                                         "There was error while registrating user.",
