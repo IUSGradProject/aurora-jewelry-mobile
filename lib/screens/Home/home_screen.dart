@@ -27,6 +27,17 @@ class _HomeScreenState extends State<HomeScreen> {
   int currentTabIndex = 0;
 
   @override
+  void initState() {
+    super.initState();
+
+    // Delay the call until after build is done
+    Future.microtask(() {
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      authProvider.checkIfAuthenticated(context);
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Consumer<CartProvider>(
       builder:

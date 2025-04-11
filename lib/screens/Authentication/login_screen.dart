@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:animations/animations.dart';
 import 'package:aurora_jewelry/components/cupertino_snack_bar.dart';
 import 'package:aurora_jewelry/providers/Auth/auth_provider.dart';
+import 'package:aurora_jewelry/providers/Auth/user_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -346,7 +347,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                     placeholder: "Confirm Password",
                                     clearButtonMode:
                                         OverlayVisibilityMode.editing,
-                                    enabled: _registrationPasswordController.text.isNotEmpty,
+                                    enabled:
+                                        _registrationPasswordController
+                                            .text
+                                            .isNotEmpty,
                                     onChanged: (value) {
                                       setState(() {
                                         if (_registrationPasswordController
@@ -473,9 +477,9 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
         Positioned(
           bottom: 0,
-          child: Consumer<AuthProvider>(
+          child: Consumer2<AuthProvider, UserProvider>(
             builder:
-                (context, authProvider, child) => ClipRRect(
+                (context, authProvider, userProvider, child) => ClipRRect(
                   child: BackdropFilter(
                     filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
                     child: Container(
@@ -508,12 +512,18 @@ class _LoginScreenState extends State<LoginScreen> {
                                       ),
                                     ),
                             onPressed: () async {
-                              if (isRegistration == false && _loginEmailController.text.isNotEmpty && _loginPasswordController.text.isNotEmpty) {
+                              if (isRegistration == false &&
+                                  _loginEmailController.text.isNotEmpty &&
+                                  _loginPasswordController.text.isNotEmpty) {
                                 try {
                                   await authProvider.login(
                                     _loginEmailController.text,
                                     _loginPasswordController.text,
                                   );
+
+                                  //When user logins user data should be returned from
+                                  //Shared preferences, because of that getCurrentUserIsCalled
+                                  await userProvider.getCurrentUser();
                                   // ignore: use_build_context_synchronously
                                   Navigator.pop(context);
                                 } catch (e) {
@@ -534,6 +544,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                       _registrationPasswordController.text,
                                       _registrationUsernameController.text,
                                     );
+                                    //When user registers user data should be returned from
+                                    //Shared preferences, because of that getCurrentUserIsCalled
+                                    await userProvider.getCurrentUser();
+                                    
+
                                     // ignore: use_build_context_synchronously
                                     Navigator.pop(context);
                                   }

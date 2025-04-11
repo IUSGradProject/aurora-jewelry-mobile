@@ -1,6 +1,8 @@
 import 'package:aurora_jewelry/models/Auth/login_response.dart';
+import 'package:aurora_jewelry/providers/Auth/user_provider.dart';
 import 'package:aurora_jewelry/services/api_service.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthProvider extends ChangeNotifier {
@@ -14,13 +16,31 @@ class AuthProvider extends ChangeNotifier {
   bool get isUserAuthenticated => _isUserAuthenticated;
   LoginResponse? get loginResponse => _loginResponse;
 
+  Future<void> saveUserDetailsToPrefs(
+    String token,
+    String firstName,
+    String lastName,
+    String email,
+  ) async {
+    final prefs = await SharedPreferences.getInstance();
+    await Future.wait([
+      prefs.setString('jwt', token),
+      prefs.setString('firstName', firstName),
+      prefs.setString('lastName', lastName),
+      prefs.setString('email', email),
+    ]);
+  }
+
   ///Check if the token exists in SharedPreferences
-  Future<void> checkIfAuthenticated() async {
+  Future<void> checkIfAuthenticated(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('jwt'); // Fetch token from preferences
     if (token != null) {
       _isUserAuthenticated = true;
       notifyListeners();
+      // Call getCurrentUser from UserProvider
+      // ignore: use_build_context_synchronously
+      await Provider.of<UserProvider>(context, listen: false).getCurrentUser();
     }
   }
 
@@ -30,11 +50,17 @@ class AuthProvider extends ChangeNotifier {
       _isLoading = true;
       notifyListeners();
       final response = await ApiService().login(email, password);
+
       if (response != null) {
         _loginResponse = response;
-        // Save token to SharedPreferences
-        final prefs = await SharedPreferences.getInstance();
-        await prefs.setString('jwt', response.token);
+        // Save User Details to SharedPreferences
+        saveUserDetailsToPrefs(
+          response.token,
+          response.firstName,
+          response.lastName,
+          response.email,
+        );
+
         _isUserAuthenticated = true;
         notifyListeners();
       }
@@ -68,6 +94,8 @@ class AuthProvider extends ChangeNotifier {
       );
       // If registration succeeds, login user
       login(email, password);
+
+      
     } catch (e) {
       rethrow;
     } finally {
