@@ -32,7 +32,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
     // Delay the call until after build is done
     Future.microtask(() {
+      // ignore: use_build_context_synchronously
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      // ignore: use_build_context_synchronously
       authProvider.checkIfAuthenticated(context);
     });
   }

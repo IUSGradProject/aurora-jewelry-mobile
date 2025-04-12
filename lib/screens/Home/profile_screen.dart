@@ -1,5 +1,3 @@
-import 'package:aurora_jewelry/components/Profile/previous_order_component.dart';
-import 'package:aurora_jewelry/models/Products/product_order_model.dart';
 import 'package:aurora_jewelry/providers/Auth/auth_provider.dart';
 import 'package:aurora_jewelry/providers/Auth/user_provider.dart';
 import 'package:flutter/cupertino.dart';
@@ -35,7 +33,44 @@ class ProfileScreen extends StatelessWidget {
                         ),
                         PullDownMenuItem(
                           isDestructive: true,
-                          onTap: () {},
+                          onTap: () {
+                            showCupertinoModalPopup<void>(
+                              context: context,
+                              builder:
+                                  (
+                                    BuildContext context,
+                                  ) => CupertinoActionSheet(
+                                    title: const Text(
+                                      'Are you sure you want to delete your Account?',
+                                    ),
+                                    message: const Text(
+                                      "After deleting it there is no comming back! Your history of orders will vanish.",),
+                                    actions: <CupertinoActionSheetAction>[
+                                      CupertinoActionSheetAction(
+                                        isDestructiveAction: true,
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        child: const Text(
+                                          'Delete Account',
+                                        ),
+                                      ),
+                                    ],
+                                    cancelButton: CupertinoActionSheetAction(
+                                      isDestructiveAction: true,
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: const Text(
+                                        'Cancel',
+                                        style: TextStyle(
+                                          color: CupertinoColors.activeBlue,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                            );
+                          },
                           title: "Delete Account",
                         ),
                       ];
@@ -80,7 +115,7 @@ class ProfileScreen extends StatelessWidget {
                                             ),
                                           ),
                                           Text(
-                                         " ${userProvider.currentUser!.lastName}",
+                                            " ${userProvider.currentUser!.lastName}",
                                             style: CupertinoTheme.of(
                                               context,
                                             ).textTheme.textStyle.copyWith(

@@ -35,7 +35,7 @@ class CartScreen extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 32.0),
                   child: Text(
-                    "Added items to your Cart will be here.",
+                    "Your cart is waiting to be filled with wonderful things!",
                     textAlign: TextAlign.center,
                     style: TextStyle(color: CupertinoColors.systemGrey, fontSize: 18),
                   ),
