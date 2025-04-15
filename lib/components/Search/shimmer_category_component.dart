@@ -46,7 +46,7 @@ class ShimmerCategoryComponent extends StatelessWidget {
                       height: 24,
                       width: 24,
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(50),
                         color: CupertinoColors.systemGrey.withOpacity(0.6),
                       ),
                     ),
