@@ -1,6 +1,9 @@
 import 'package:animations/animations.dart';
+import 'package:aurora_jewelry/components/Products/List/shimmer_list_product_component.dart';
 import 'package:aurora_jewelry/components/Products/list_product_component.dart';
 import 'package:aurora_jewelry/components/Search/category_component.dart';
+import 'package:aurora_jewelry/components/Search/shimmer_category_component.dart';
+import 'package:aurora_jewelry/providers/Database/database_provider.dart';
 import 'package:aurora_jewelry/providers/Search/search_provider.dart';
 import 'package:aurora_jewelry/widgets/Search/filter_bottom_sheet_widget.dart';
 import 'package:aurora_jewelry/widgets/profile_avatar_widget.dart';
@@ -15,9 +18,14 @@ class SearchScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      child: Consumer<SearchProvider>(
+      child: Consumer2<SearchProvider, DatabaseProvider>(
         builder:
-            (context, searchProvider, child) => CustomScrollView(
+            (
+              context,
+              searchProvider,
+              databaseProvider,
+              child,
+            ) => CustomScrollView(
               slivers: [
                 CupertinoSliverNavigationBar.search(
                   alwaysShowMiddle: false,
@@ -31,6 +39,7 @@ class SearchScreen extends StatelessWidget {
                   ),
                   bottomMode: NavigationBarBottomMode.always,
                   searchField: CupertinoSearchTextField(
+                    enabled: databaseProvider.areProductsFetched,
                     placeholder: searchProvider.returnNameOfSearcTextField(),
                   ),
                 ),
@@ -43,10 +52,13 @@ class SearchScreen extends StatelessWidget {
                           // Use Flexible instead of Expanded
                           child: CupertinoButton(
                             onPressed: () {
-                              showCupertinoModalPopup(
-                                context: context,
-                                builder: (context) => FilterBottomSheetWidget(),
-                              );
+                              if (databaseProvider.areProductsFetched) {
+                                showCupertinoModalPopup(
+                                  context: context,
+                                  builder:
+                                      (context) => FilterBottomSheetWidget(),
+                                );
+                              }
                             },
                             padding: EdgeInsets.zero,
                             child: Container(
@@ -57,7 +69,8 @@ class SearchScreen extends StatelessWidget {
                                 color: CupertinoColors.tertiarySystemFill,
                                 border: Border.all(
                                   color:
-                                      searchProvider.checkIfThereWasChangesInFilters()
+                                      searchProvider
+                                              .checkIfThereWasChangesInFilters()
                                           ? CupertinoColors.activeBlue
                                           : CupertinoColors.transparent,
                                 ),
@@ -139,7 +152,12 @@ class SearchScreen extends StatelessWidget {
                             },
                             buttonBuilder: (context, showMenu) {
                               return CupertinoButton(
-                                onPressed: showMenu,
+                                onPressed: (){
+                                  if(databaseProvider.areProductsFetched) {
+                                    showMenu();
+                                  }
+
+                                },
                                 padding: EdgeInsets.zero,
                                 child: Container(
                                   padding: EdgeInsets.symmetric(horizontal: 12),
@@ -267,21 +285,32 @@ class SearchScreen extends StatelessWidget {
                               child: child,
                             );
                           },
+
                           child:
                               searchProvider.selectedCategories.isNotEmpty
-                                  ? ListView(
-                                    padding: EdgeInsets.zero,
-                                    physics:
-                                        const NeverScrollableScrollPhysics(),
-                                    clipBehavior: Clip.none,
-                                    children: [
-                                      ListProductComponent(),
-                                      ListProductComponent(),
-                                      ListProductComponent(),
-                                      ListProductComponent(),
-                                    ],
-                                  ) // Show empty container when a category is selected
-                                  : GridView.builder(
+                                  ? databaseProvider.areProductsFetched
+                                      ? ListView(
+                                        key: ValueKey('ProductsFetched'),
+                                        padding: EdgeInsets.zero,
+                                        physics:
+                                            const NeverScrollableScrollPhysics(),
+                                        clipBehavior: Clip.none,
+                                        children: [
+                                          ListProductComponent(),
+                                          ListProductComponent(),
+                                          ListProductComponent(),
+                                          ListProductComponent(),
+                                        ],
+                                      )
+                                      : ListView.builder(
+                                        padding: EdgeInsets.zero,
+                                        itemCount: 6,
+                                        itemBuilder: (context, index) {
+                                          return ShimmerListProductComponent();
+                                        },
+                                      )
+                                  : databaseProvider.areProductsFetched
+                                  ? GridView.builder(
                                     padding: EdgeInsets.zero,
                                     physics:
                                         const NeverScrollableScrollPhysics(),
@@ -303,6 +332,26 @@ class SearchScreen extends StatelessWidget {
                                       return CategoryComponent(
                                         category: category,
                                       );
+                                    },
+                                  )
+                                  : GridView.builder(
+                                    padding: EdgeInsets.zero,
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    gridDelegate:
+                                        SliverGridDelegateWithMaxCrossAxisExtent(
+                                          maxCrossAxisExtent:
+                                              MediaQuery.of(
+                                                context,
+                                              ).size.width /
+                                              2,
+                                          mainAxisSpacing: 8,
+                                          crossAxisSpacing: 8,
+                                          childAspectRatio: 1.7,
+                                        ),
+                                    itemCount: 6,
+                                    itemBuilder: (context, index) {
+                                      return ShimmerCategoryComponent();
                                     },
                                   ),
                         );

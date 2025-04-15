@@ -1,6 +1,7 @@
 import 'package:aurora_jewelry/providers/Auth/auth_provider.dart';
 import 'package:aurora_jewelry/providers/Auth/user_provider.dart';
 import 'package:aurora_jewelry/providers/Cart/cart_provider.dart';
+import 'package:aurora_jewelry/providers/Database/database_provider.dart';
 import 'package:aurora_jewelry/providers/Search/search_provider.dart';
 import 'package:aurora_jewelry/screens/Home/home_screen.dart';
 import 'package:flutter/cupertino.dart';
@@ -19,11 +20,10 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<UserProvider>(create: (_) => UserProvider()),
-
         ChangeNotifierProvider<AuthProvider>(create: (_) => AuthProvider()),
-
         ChangeNotifierProvider<SearchProvider>(create: (_) => SearchProvider()),
         ChangeNotifierProvider<CartProvider>(create: (_) => CartProvider()),
+        ChangeNotifierProvider<DatabaseProvider>(create: (_) => DatabaseProvider()),
       ],
       child: CupertinoApp(
         debugShowCheckedModeBanner: false,
