@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:aurora_jewelry/models/Auth/login_response.dart';
+import 'package:aurora_jewelry/models/Products/paginated_products_response.dart';
+import 'package:aurora_jewelry/models/Products/product_model.dart';
 // ignore: depend_on_referenced_packages
 import 'package:http/http.dart' as http;
 
@@ -61,6 +63,36 @@ class ApiService {
     }
   }
 
+  Future<PaginatedProductsResponse> getProducts({
+    int page = 1,
+    int pageSize = 20,
+  }) async {
+    final response = await http.get(
+      Uri.parse(
+        '$auroraBackendUrl/products/all?pageNumber=$page&pageSize=$pageSize',
+      ),
+    );
 
+    if (response.statusCode == 200) {
+      final jsonBody = json.decode(response.body);
+      return PaginatedProductsResponse.fromJson(jsonBody);
+    } else {
+      throw Exception('Failed to load products');
+    }
+  }
 
+  Future<Product> getProductById(String productId) async {
+    final response = await http.get(
+      Uri.parse(
+        '$auroraBackendUrl/products/$productId',
+      ), // Assuming this is the correct endpoint
+    );
+
+    if (response.statusCode == 200) {
+      final jsonBody = json.decode(response.body);
+      return Product.fromJson(jsonBody); // Return the detailed product
+    } else {
+      throw Exception('Failed to load product details');
+    }
+  }
 }

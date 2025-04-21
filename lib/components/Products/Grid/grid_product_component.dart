@@ -1,3 +1,4 @@
+import 'package:aurora_jewelry/models/Products/product_model.dart';
 import 'package:aurora_jewelry/providers/Auth/auth_provider.dart';
 import 'package:aurora_jewelry/providers/Cart/cart_provider.dart';
 import 'package:aurora_jewelry/screens/Authentication/login_screen.dart';
@@ -7,7 +8,8 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 class GridProductComponent extends StatefulWidget {
-  const GridProductComponent({super.key});
+  final Product product;
+  const GridProductComponent({super.key, required this.product});
 
   @override
   State<GridProductComponent> createState() => _GridProductComponentState();
@@ -127,7 +129,7 @@ class _GridProductComponentState extends State<GridProductComponent>
                     ),
                     SizedBox(height: 8),
                     Text(
-                      "Lancic sa ovonekom",
+                      widget.product.name,
                       style: CupertinoTheme.of(
                         context,
                       ).textTheme.textStyle.copyWith(
@@ -165,7 +167,7 @@ class _GridProductComponentState extends State<GridProductComponent>
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "1050 BAM",
+                      "${widget.product.price.round()} BAM",
                       style: CupertinoTheme.of(context).textTheme.textStyle
                           .copyWith(fontSize: 16, fontWeight: FontWeight.w600),
                     ),

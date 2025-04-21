@@ -21,7 +21,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
       Provider.of<DatabaseProvider>(
         context,
         listen: false,
-      ).setProductsFetchValue(true);
+      ).fetchProducts();
     });
 
     super.initState();
@@ -67,9 +67,11 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                           mainAxisSpacing: 8,
                           childAspectRatio: 0.65,
                         ),
-                        itemCount: 10,
+                        itemCount: databaseProvider.products.length,
                         itemBuilder: (context, index) {
-                          return GridProductComponent();
+                          return GridProductComponent(
+                            product: databaseProvider.products[index],
+                          );
                         },
                       )
                     : GridView.builder(
