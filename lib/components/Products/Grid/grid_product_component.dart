@@ -3,6 +3,7 @@ import 'package:aurora_jewelry/providers/Auth/auth_provider.dart';
 import 'package:aurora_jewelry/providers/Cart/cart_provider.dart';
 import 'package:aurora_jewelry/screens/Authentication/login_screen.dart';
 import 'package:aurora_jewelry/screens/Home/Product/product_screen.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -116,17 +117,27 @@ class _GridProductComponentState extends State<GridProductComponent>
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      height: 120,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        image: DecorationImage(
-                          image: AssetImage("lib/assets/necklace.jpg"),
+                    // Inside your widget
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: SizedBox(
+                        height: 120,
+                        width: double.infinity,
+                        child: CachedNetworkImage(
+                          imageUrl: widget.product.image,
                           fit: BoxFit.cover,
+                          placeholder:
+                              (context, url) => const Center(
+                                child: CupertinoActivityIndicator(),
+                              ),
+                          errorWidget:
+                              (context, url, error) =>
+                                  const Icon(CupertinoIcons.photo),
+                          fadeInDuration: const Duration(milliseconds: 300),
                         ),
                       ),
                     ),
+
                     SizedBox(height: 8),
                     Text(
                       widget.product.name,
@@ -138,21 +149,15 @@ class _GridProductComponentState extends State<GridProductComponent>
                       ),
                       maxLines: 1,
                     ),
-                    Text(
-                      "Dior",
-                      style: TextStyle(
-                        color: CupertinoColors.systemGrey,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
+
                     SizedBox(height: 4),
                     Text(
-                      "Swarovski crystal necklace",
+                      widget.product.description,
                       style: TextStyle(
                         color: CupertinoColors.systemGrey,
                         fontSize: 14,
                       ),
-                      maxLines: 2,
+                      maxLines: 3,
                       overflow: TextOverflow.ellipsis,
                     ),
                     SizedBox(height: 8),

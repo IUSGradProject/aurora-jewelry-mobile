@@ -6,12 +6,7 @@ class Product {
   final double price;
   final int soldItems;
   final int available;
-  final bool isEditing;
-  final Category category;
-  final Brand brand;
-  final Power power;
-  final Style style;
-  final List<String> materials;
+  final bool isDeleted;
 
   Product({
     required this.productId,
@@ -21,12 +16,7 @@ class Product {
     required this.price,
     required this.soldItems,
     required this.available,
-    required this.isEditing,
-    required this.category,
-    required this.brand,
-    required this.power,
-    required this.style,
-    required this.materials,
+    required this.isDeleted
   });
 
   factory Product.fromJson(Map<String, dynamic> json) {
@@ -40,26 +30,7 @@ class Product {
               .toDouble(), // Handle null values and default to 0.0
       soldItems: json['soldItems'] ?? 0, // Handle null values
       available: json['available'] ?? 0, // Handle null values
-      isEditing:
-          json['isEditing'] ?? false, // Handle null values and default to false
-      category: Category.fromJson(
-        json['category'] ?? {},
-      ), // Handle null values for nested objects
-      brand: Brand.fromJson(
-        json['brand'] ?? {},
-      ), // Handle null values for nested objects
-      power: Power.fromJson(
-        json['power'] ?? {},
-      ), // Handle null values for nested objects
-      style: Style.fromJson(
-        json['style'] ?? {},
-      ), // Handle null values for nested objects
-      materials:
-          json['materials'] != null
-              ? List<String>.from(
-                json['materials'].map((x) => x ?? ''),
-              ) // Handle null values in lists
-              : [], // Default to empty list if null)
+      isDeleted: json['isDeleted'] ?? false, // Handle null values
     );
   }
   Map<String, dynamic> toJson() {
@@ -71,12 +42,7 @@ class Product {
       'price': price,
       'soldItems': soldItems,
       'available': available,
-      'isEditing': isEditing,
-      'category': category.toJson(),
-      'brand': brand.toJson(),
-      'power': power.toJson(),
-      'style': style.toJson(),
-      'materials': List<dynamic>.from(materials.map((x) => x)),
+      'isDeleted': isDeleted,
     };
   }
 }
@@ -121,34 +87,6 @@ class Power {
     return Power(id: json['id'], name: json['name']);
   }
 
-  Map<String, dynamic> toJson() {
-    return {'id': id, 'name': name};
-  }
-}
-
-class Style {
-  final int id;
-  final String name;
-
-  Style({required this.id, required this.name});
-
-  factory Style.fromJson(Map<String, dynamic> json) {
-    return Style(id: json['id'], name: json['name']);
-  }
-  Map<String, dynamic> toJson() {
-    return {'id': id, 'name': name};
-  }
-}
-
-class Material {
-  final int id;
-  final String name;
-
-  Material({required this.id, required this.name});
-
-  factory Material.fromJson(Map<String, dynamic> json) {
-    return Material(id: json['id'], name: json['name']);
-  }
   Map<String, dynamic> toJson() {
     return {'id': id, 'name': name};
   }

@@ -13,7 +13,6 @@ class DatabaseProvider extends ChangeNotifier {
   bool get areProductsFetched => _areProductsFetched;
   List<Product> get products => _products;
 
-
   // Method to fetch products
   Future<void> fetchProducts({int page = 1, int pageSize = 20}) async {
     try {
@@ -23,18 +22,7 @@ class DatabaseProvider extends ChangeNotifier {
         pageSize: pageSize,
       );
 
-      // Step 2: Fetch additional details for each product
-      List<Product> detailedProducts = [];
-
-      for (var product in response.data) {
-        final detailedProduct = await _apiService.getProductById(
-          product.productId,
-        );
-        detailedProducts.add(detailedProduct);
-      }
-
-      // Step 3: Update the products list with the detailed products
-      _products = detailedProducts;
+      _products = response.data;
       _areProductsFetched = true;
 
       notifyListeners();
