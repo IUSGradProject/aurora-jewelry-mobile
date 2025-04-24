@@ -31,7 +31,8 @@ class SearchProvider extends ChangeNotifier {
   ///Current product quantity minimul value should be 1.
   int _currentProductQuantity = 1;
 
-  double _currentProductPrice = 1050;
+  double _currentProductPrice = 0;
+  double _quantityProductPrice = 0;
 
   //Getters
 
@@ -40,10 +41,13 @@ class SearchProvider extends ChangeNotifier {
   List<String> get selectedSorting => _selectedSorting;
   int get currentProductQuantity => _currentProductQuantity;
   double get currentProductPrice => _currentProductPrice;
+  double get quantityProductPrice => _quantityProductPrice;
 
   List<String> get selectedFilterBrands => _selectedFilterBrands;
   RangeValues get priceRange => _priceRange;
   List<String> get availableBrands => _availableBrands;
+
+
 
   ///Select Category
 
@@ -102,9 +106,19 @@ class SearchProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  //Product price
+
+  void setProductPrice(double price) {
+    _currentProductPrice = price;
+    _quantityProductPrice = price;
+    //This is for the first time when user select the product.
+    _currentProductQuantity = 1;
+    notifyListeners();
+  }
+
   void incrementCurrentProductQuantity() {
     _currentProductQuantity = _currentProductQuantity + 1;
-    _currentProductPrice = 1050.0 * currentProductQuantity;
+    _quantityProductPrice = _currentProductPrice * currentProductQuantity;
     HapticFeedback.mediumImpact();
     notifyListeners();
   }
@@ -112,7 +126,7 @@ class SearchProvider extends ChangeNotifier {
   void decrementCurrentProductQuantity() {
     if (_currentProductQuantity > 1) {
       _currentProductQuantity = _currentProductQuantity - 1;
-      _currentProductPrice = 1050.0 * currentProductQuantity;
+      _quantityProductPrice = _currentProductPrice * currentProductQuantity;
       HapticFeedback.mediumImpact();
     }
     notifyListeners();

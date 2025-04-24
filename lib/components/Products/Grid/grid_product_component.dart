@@ -1,6 +1,7 @@
 import 'package:aurora_jewelry/models/Products/product_model.dart';
 import 'package:aurora_jewelry/providers/Auth/auth_provider.dart';
 import 'package:aurora_jewelry/providers/Cart/cart_provider.dart';
+import 'package:aurora_jewelry/providers/Database/database_provider.dart';
 import 'package:aurora_jewelry/screens/Authentication/login_screen.dart';
 import 'package:aurora_jewelry/screens/Home/Product/product_screen.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -88,9 +89,17 @@ class _GridProductComponentState extends State<GridProductComponent>
         CupertinoButton(
           pressedOpacity: 0.6,
           onPressed: () {
+            Provider.of<DatabaseProvider>(
+              context,
+              listen: false,
+            ).resetDetailedProduct(context);
+            Provider.of<DatabaseProvider>(
+              context,
+              listen: false,
+            ).fetchDetailedProduct(widget.product.productId, context);
             Navigator.of(context).push(
               CupertinoPageRoute<void>(
-                builder: (BuildContext context) => const ProductScreen(),
+                builder: (BuildContext context) => ProductScreen(),
               ),
             );
           },
@@ -172,7 +181,7 @@ class _GridProductComponentState extends State<GridProductComponent>
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "${widget.product.price.round()} BAM",
+                      "\$ ${widget.product.price.round()}",
                       style: CupertinoTheme.of(context).textTheme.textStyle
                           .copyWith(fontSize: 16, fontWeight: FontWeight.w600),
                     ),
