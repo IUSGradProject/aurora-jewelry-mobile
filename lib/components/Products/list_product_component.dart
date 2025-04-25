@@ -1,13 +1,17 @@
+import 'package:aurora_jewelry/models/Products/product_model.dart';
 import 'package:aurora_jewelry/providers/Auth/auth_provider.dart';
 import 'package:aurora_jewelry/providers/Cart/cart_provider.dart';
+import 'package:aurora_jewelry/providers/Database/database_provider.dart';
 import 'package:aurora_jewelry/screens/Authentication/login_screen.dart';
 import 'package:aurora_jewelry/screens/Home/Product/product_screen.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 class ListProductComponent extends StatefulWidget {
-  const ListProductComponent({super.key});
+  final Product product;
+  const ListProductComponent({super.key, required this.product});
 
   @override
   State<ListProductComponent> createState() => _ListProductComponentState();
@@ -87,9 +91,17 @@ class _ListProductComponentState extends State<ListProductComponent>
           CupertinoButton(
             pressedOpacity: 0.6,
             onPressed: () {
+              Provider.of<DatabaseProvider>(
+                context,
+                listen: false,
+              ).resetDetailedProduct(context);
+              Provider.of<DatabaseProvider>(
+                context,
+                listen: false,
+              ).fetchDetailedProduct(widget.product.productId, context);
               Navigator.of(context).push(
                 CupertinoPageRoute<void>(
-                  builder: (BuildContext context) => const ProductScreen(),
+                  builder: (BuildContext context) => ProductScreen(),
                 ),
               );
             },
@@ -117,48 +129,52 @@ class _ListProductComponentState extends State<ListProductComponent>
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Container(
-                        height: 100,
-                        width: 100,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          image: DecorationImage(
-                            image: AssetImage("lib/assets/necklace.jpg"),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: SizedBox(
+                          height: 100,
+                          width: 100,
+
+                          child: CachedNetworkImage(
+                            imageUrl: widget.product.image,
                             fit: BoxFit.cover,
+                            placeholder:
+                                (context, url) => const Center(
+                                  child: CupertinoActivityIndicator(),
+                                ),
+                            errorWidget:
+                                (context, url, error) =>
+                                    const Icon(CupertinoIcons.photo),
+                            fadeInDuration: const Duration(milliseconds: 300),
                           ),
-                          color: CupertinoColors.activeBlue,
                         ),
                       ),
                       SizedBox(width: 8),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            "Lancic",
-                            style: CupertinoTheme.of(context)
-                                .textTheme
-                                .textStyle
-                                .copyWith(fontWeight: FontWeight.w600),
-                          ),
-                          Text(
-                            "Dior",
-                            style: TextStyle(
-                              color: CupertinoColors.systemGrey,
-                              fontWeight: FontWeight.w700,
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width - 200,
+                            child: Text(
+                              widget.product.name,
+                              style: CupertinoTheme.of(context)
+                                  .textTheme
+                                  .textStyle
+                                  .copyWith(fontWeight: FontWeight.w600),
                             ),
                           ),
-                          SizedBox(height: 4), // Spacing
+                          const SizedBox(height: 4),
                           SizedBox(
                             width:
                                 MediaQuery.of(context).size.width -
                                 200, // Adjust width dynamically
                             child: Text(
-                              "This is very good lancic it is used to cover your beautiful neck with Swarowski Crs",
+                              widget.product.description,
                               style: TextStyle(
                                 color: CupertinoColors.systemGrey,
                                 fontSize: 15,
                               ),
-                              maxLines: 3,
+                              maxLines: 4,
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
