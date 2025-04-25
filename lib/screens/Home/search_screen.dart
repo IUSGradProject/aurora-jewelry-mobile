@@ -246,8 +246,12 @@ class _SearchScreenState extends State<SearchScreen> {
                                     child: Text(
                                       searchProvider.selectedCategories.isEmpty
                                           ? ""
-                                          : searchProvider.selectedCategories.length > 1
-                              ? "All": searchProvider
+                                          : searchProvider
+                                                  .selectedCategories
+                                                  .length >
+                                              1
+                                          ? "All"
+                                          : searchProvider
                                               .selectedCategories[0]
                                               .name,
                                       style:
@@ -267,7 +271,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 ),
 
                 SizedBox(height: 16),
-
+      
                 // MAIN BODY: CATEGORIES OR PRODUCTS
                 AnimatedBuilder(
                   animation: databaseProvider,
@@ -293,8 +297,8 @@ class _SearchScreenState extends State<SearchScreen> {
                           searchProvider.selectedCategories.isNotEmpty
                               ? databaseProvider.areProductsFetched
                                   ? ListView.builder(
+                                    key: const ValueKey('ProductList'),
                                     padding: EdgeInsets.zero,
-                                    // key: ValueKey('ProductsFetched'),
                                     shrinkWrap: true,
                                     physics: NeverScrollableScrollPhysics(),
                                     itemCount: databaseProvider.products.length,
@@ -306,6 +310,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                     },
                                   )
                                   : ListView.builder(
+                                    key: const ValueKey('ProductShimmer'),
                                     shrinkWrap: true,
                                     physics: NeverScrollableScrollPhysics(),
                                     padding: EdgeInsets.zero,
@@ -316,9 +321,9 @@ class _SearchScreenState extends State<SearchScreen> {
                                   )
                               : databaseProvider.areCategoriesFetched
                               ? GridView.builder(
+                                key: const ValueKey('CategoryList'),
                                 shrinkWrap: true,
                                 padding: EdgeInsets.zero,
-
                                 physics: NeverScrollableScrollPhysics(),
                                 gridDelegate:
                                     SliverGridDelegateWithMaxCrossAxisExtent(
@@ -342,8 +347,8 @@ class _SearchScreenState extends State<SearchScreen> {
                                 },
                               )
                               : GridView.builder(
+                                key: const ValueKey('CategoryShimmer'),
                                 padding: EdgeInsets.zero,
-
                                 shrinkWrap: true,
                                 physics: NeverScrollableScrollPhysics(),
                                 gridDelegate:
