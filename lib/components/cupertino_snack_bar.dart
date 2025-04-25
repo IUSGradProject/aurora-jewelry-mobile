@@ -33,7 +33,7 @@ class _CupertinoSnackBarState extends State<CupertinoSnackBar> {
   @override
   Widget build(BuildContext context) {
     return AnimatedPositioned(
-      bottom: _show ? 60.0 : -50.0,
+      bottom: _show ? 120.0 : -50.0,
       left: 8.0,
       right: 8.0,
       curve: _show ? Curves.linearToEaseOut : Curves.easeInToLinear,

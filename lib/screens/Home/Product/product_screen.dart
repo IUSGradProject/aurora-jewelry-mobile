@@ -1,5 +1,6 @@
 import 'package:animated_digit/animated_digit.dart';
 import 'package:aurora_jewelry/components/Products/shimmer_product_screen.dart';
+import 'package:aurora_jewelry/components/cupertino_snack_bar.dart';
 import 'package:aurora_jewelry/providers/Auth/auth_provider.dart';
 import 'package:aurora_jewelry/providers/Cart/cart_provider.dart';
 import 'package:aurora_jewelry/providers/Database/database_provider.dart';
@@ -84,6 +85,26 @@ class _ProductScreenState extends State<ProductScreen>
     });
   }
 
+ void showCupertinoSnackBar({
+    required BuildContext context,
+    required String message,
+    int durationMillis = 3000,
+  }) {
+    const animationDurationMillis = 200;
+    final overlayEntry = OverlayEntry(
+      builder:
+          (context) => CupertinoSnackBar(
+            message: message,
+            animationDurationMillis: animationDurationMillis,
+            waitDurationMillis: durationMillis,
+          ),
+    );
+    Future.delayed(
+      Duration(milliseconds: durationMillis + 2 * animationDurationMillis),
+      overlayEntry.remove,
+    );
+    Overlay.of(context).insert(overlayEntry);
+  }
   @override
   Widget build(BuildContext context) {
     return !Provider.of<DatabaseProvider>(
@@ -277,13 +298,12 @@ class _ProductScreenState extends State<ProductScreen>
                               padding: const EdgeInsets.only(
                                 left: 16,
                                 right: 16,
-                                top: 4
+                                top: 4,
                               ),
                               child: Text(
-                             "This item was sold ${databaseProvider.detailedProduct!.soldItems} times.",
+                                "This item was sold ${databaseProvider.detailedProduct!.soldItems} times.",
                                 style: TextStyle(
                                   color: CupertinoColors.systemGrey,
-
                                 ),
                               ),
                             ),
@@ -433,6 +453,14 @@ class _ProductScreenState extends State<ProductScreen>
                                                     .available) {
                                               searchProvider
                                                   .incrementCurrentProductQuantity();
+                                            } else {
+                                              // Use Builder to get the correct context that includes ScaffoldMessenger
+                                              showCupertinoSnackBar(
+                                                // ignore: use_build_context_synchronously
+                                                context: context,
+                                                message:
+                                                    "No more items available.",
+                                              );
                                             }
                                           },
                                         ),
