@@ -1,7 +1,10 @@
 import 'package:aurora_jewelry/models/Products/category_model.dart';
+import 'package:aurora_jewelry/models/Products/filter_request_model.dart';
+import 'package:aurora_jewelry/providers/Database/database_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
 class SearchProvider extends ChangeNotifier {
   final List<CategoryModel> _categories = [];
@@ -32,6 +35,7 @@ class SearchProvider extends ChangeNotifier {
 
   List<CategoryModel> get categories => _categories;
   List<CategoryModel> get selectedCategories => _selectedCategories;
+
   List<String> get selectedSorting => _selectedSorting;
   int get currentProductQuantity => _currentProductQuantity;
   double get currentProductPrice => _currentProductPrice;
@@ -43,13 +47,41 @@ class SearchProvider extends ChangeNotifier {
 
   ///Select Category
 
-  void selectCategory(CategoryModel category) {
+  Future<void> selectCategory(
+    CategoryModel category,
+    BuildContext context,
+  ) async {
     _selectedCategories.add(category);
+    Provider.of<DatabaseProvider>(context, listen: false).setFilterRequestModel(
+      FilterRequestModel(categories: [category.id], brands: [], styles: []),
+    );
+    await Provider.of<DatabaseProvider>(
+      context,
+      listen: false,
+    ).fetchFilteredProducts();
     notifyListeners();
   }
 
-  void deselectCategory(CategoryModel category) {
+  void deselectCategory(CategoryModel category, BuildContext context) {
     _selectedCategories.remove(category);
+    Provider.of<DatabaseProvider>(context, listen: false).setFilterRequestModel(
+      FilterRequestModel(categories: [], brands: [], styles: []),
+    );
+    notifyListeners();
+  }
+
+  Future<void> selectAllCategories(BuildContext context) async {
+    _selectedCategories.clear();
+    _selectedCategories.addAll(
+      Provider.of<DatabaseProvider>(context, listen: false).categories,
+    );
+    await Provider.of<DatabaseProvider>(context, listen: false).fetchProducts();
+    _selectedCategories.addAll(_categories);
+    notifyListeners();
+  }
+
+  void deselectAllCategories() {
+    _selectedCategories.clear();
     notifyListeners();
   }
 

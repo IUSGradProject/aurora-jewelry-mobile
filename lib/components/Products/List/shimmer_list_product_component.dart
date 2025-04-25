@@ -78,25 +78,7 @@ class _ShimmerListProductComponentState
                         ),
                       ),
                     ),
-                    SizedBox(height: 4),
-                    Shimmer(
-                      period: Duration(seconds: 2),
-                      gradient: LinearGradient(
-                        colors: [
-                          CupertinoColors.systemGrey.withOpacity(0.2),
-                          CupertinoColors.systemGrey.withOpacity(0.4),
-                          CupertinoColors.systemGrey.withOpacity(0.2),
-                        ],
-                      ),
-                      child: Container(
-                        height: 16,
-                        width: 50,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          color: CupertinoColors.systemGrey.withOpacity(0.6),
-                        ),
-                      ),
-                    ),
+
                     SizedBox(height: 8), // Spacing
                     Shimmer(
                       period: Duration(seconds: 2),
@@ -109,7 +91,7 @@ class _ShimmerListProductComponentState
                       ),
 
                       child: Container(
-                        height: 40,
+                        height: 70,
 
                         width:
                             MediaQuery.of(context).size.width -

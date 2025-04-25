@@ -181,7 +181,7 @@ class _GridProductComponentState extends State<GridProductComponent>
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "\$ ${widget.product.price.round()}",
+                      "\$${widget.product.price.round()}",
                       style: CupertinoTheme.of(context).textTheme.textStyle
                           .copyWith(fontSize: 16, fontWeight: FontWeight.w600),
                     ),

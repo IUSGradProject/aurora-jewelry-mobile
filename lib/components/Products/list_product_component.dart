@@ -187,7 +187,7 @@ class _ListProductComponentState extends State<ListProductComponent>
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        "1050 BAM",
+                        "\$${widget.product.price}",
                         style: CupertinoTheme.of(
                           context,
                         ).textTheme.textStyle.copyWith(

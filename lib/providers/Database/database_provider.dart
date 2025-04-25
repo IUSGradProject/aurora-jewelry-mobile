@@ -1,5 +1,6 @@
 import 'package:aurora_jewelry/models/Products/category_model.dart';
 import 'package:aurora_jewelry/models/Products/detailed_product_model.dart';
+import 'package:aurora_jewelry/models/Products/filter_request_model.dart';
 import 'package:aurora_jewelry/models/Products/product_model.dart';
 import 'package:aurora_jewelry/providers/Search/search_provider.dart';
 import 'package:aurora_jewelry/services/api_service.dart';
@@ -18,16 +19,26 @@ class DatabaseProvider extends ChangeNotifier {
   List<CategoryModel> _categories = [];
   bool _areCategoriesFetched = false;
 
-  //Getters
+  FilterRequestModel _filterRequestModel = FilterRequestModel(
+    categories: [],
+    brands: [],
+    minPrice: 0,
+    maxPrice: 0,
+    sortBy: '',
+    sortDesc: false,
+    styles: [],
+  );
 
+  //Getters
   bool get areProductsFetched => _areProductsFetched;
   List<Product> get products => _products;
   DetailedProduct? get detailedProduct => _detailedProduct;
   bool get isDetailedProductFetched => _isDetailedProductFetched;
   List<CategoryModel> get categories => _categories;
   bool get areCategoriesFetched => _areCategoriesFetched;
+  FilterRequestModel get filterRequestModel => _filterRequestModel;
 
-  // Method to fetch products
+  /// Method to fetch products
   Future<void> fetchProducts({int page = 1, int pageSize = 20}) async {
     try {
       // Step 1: Fetch the initial paginated products
@@ -47,7 +58,49 @@ class DatabaseProvider extends ChangeNotifier {
     }
   }
 
-  // Method to fetch detailed product
+  /// Method to set filter request model
+  void setFilterRequestModel(FilterRequestModel filterRequestModel) {
+    _filterRequestModel = filterRequestModel;
+    notifyListeners();
+  }
+
+  /// Method to reset filter request model
+  void resetFilterRequestModel() {
+    _filterRequestModel = FilterRequestModel(
+      categories: [],
+      brands: [],
+      minPrice: 0,
+      maxPrice: 0,
+      sortBy: '',
+      sortDesc: false,
+      styles: [],
+    );
+    notifyListeners();
+  }
+
+  /// Method to fetch filtered products
+
+  Future<void> fetchFilteredProducts({int page = 1, int pageSize = 20}) async {
+    try {
+      _areProductsFetched = false;
+      notifyListeners();
+
+      // Step 1: Fetch the filtered products
+      final response = await _apiService.getProductsWithFilters(
+        filterRequestModel,
+        pageNumber: page,
+        pageSize: pageSize,
+      );
+      _products = response.data;
+      _areProductsFetched = true;
+
+      notifyListeners();
+    } catch (e) {
+      debugPrint('Error fetching filtered products: $e');
+    }
+  }
+
+  /// Method to fetch detailed product
   Future<void> fetchDetailedProduct(
     String productId,
     BuildContext context,
@@ -77,7 +130,7 @@ class DatabaseProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Method to fetch categories
+  /// Method to fetch categories
   Future<void> fetchCategories() async {
     try {
       _categories = await _apiService.getCategories();

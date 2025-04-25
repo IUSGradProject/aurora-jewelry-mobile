@@ -1,6 +1,7 @@
 import 'package:animations/animations.dart';
 import 'package:aurora_jewelry/components/Products/List/shimmer_list_product_component.dart';
 import 'package:aurora_jewelry/components/Products/list_product_component.dart';
+import 'package:aurora_jewelry/components/Search/Category/all_category_component.dart';
 import 'package:aurora_jewelry/components/Search/Category/category_component.dart';
 import 'package:aurora_jewelry/components/Search/Category/shimmer_category_component.dart';
 import 'package:aurora_jewelry/providers/Database/database_provider.dart';
@@ -209,6 +210,8 @@ class _SearchScreenState extends State<SearchScreen> {
                       width:
                           searchProvider.selectedCategories.isEmpty
                               ? 0
+                              : searchProvider.selectedCategories.length > 1
+                              ? searchProvider.getTextWidth(context, "All")
                               : searchProvider.getTextWidth(
                                 context,
                                 searchProvider.selectedCategories[0].name,
@@ -243,7 +246,8 @@ class _SearchScreenState extends State<SearchScreen> {
                                     child: Text(
                                       searchProvider.selectedCategories.isEmpty
                                           ? ""
-                                          : searchProvider
+                                          : searchProvider.selectedCategories.length > 1
+                              ? "All": searchProvider
                                               .selectedCategories[0]
                                               .name,
                                       style:
@@ -290,7 +294,7 @@ class _SearchScreenState extends State<SearchScreen> {
                               ? databaseProvider.areProductsFetched
                                   ? ListView.builder(
                                     padding: EdgeInsets.zero,
-                                    key: ValueKey('ProductsFetched'),
+                                    // key: ValueKey('ProductsFetched'),
                                     shrinkWrap: true,
                                     physics: NeverScrollableScrollPhysics(),
                                     itemCount: databaseProvider.products.length,
@@ -304,6 +308,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                   : ListView.builder(
                                     shrinkWrap: true,
                                     physics: NeverScrollableScrollPhysics(),
+                                    padding: EdgeInsets.zero,
                                     itemCount: 6,
                                     itemBuilder: (context, index) {
                                       return ShimmerListProductComponent();
@@ -323,8 +328,13 @@ class _SearchScreenState extends State<SearchScreen> {
                                       crossAxisSpacing: 8,
                                       childAspectRatio: 1.7,
                                     ),
-                                itemCount: databaseProvider.categories.length,
+                                itemCount:
+                                    databaseProvider.categories.length + 1,
                                 itemBuilder: (context, index) {
+                                  if (index ==
+                                      databaseProvider.categories.length) {
+                                    return AllCategoryComponent();
+                                  }
                                   return CategoryComponent(
                                     category:
                                         databaseProvider.categories[index],

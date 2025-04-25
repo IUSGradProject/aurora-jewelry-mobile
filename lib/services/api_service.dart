@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:aurora_jewelry/models/Auth/login_response.dart';
 import 'package:aurora_jewelry/models/Products/category_model.dart';
 import 'package:aurora_jewelry/models/Products/detailed_product_model.dart';
+import 'package:aurora_jewelry/models/Products/filter_request_model.dart';
 import 'package:aurora_jewelry/models/Products/paginated_products_response.dart';
 // ignore: depend_on_referenced_packages
 import 'package:http/http.dart' as http;
@@ -82,6 +83,34 @@ class ApiService {
     }
   }
 
+  Future<PaginatedProductsResponse> getProductsWithFilters(
+    FilterRequestModel filters, {
+    int pageNumber = 1,
+    int pageSize = 20,
+  }) async {
+    final url = Uri.parse(
+      '$auroraBackendUrl/products/all?pageNumber=$pageNumber&pageSize=$pageSize',
+    );
+
+    final headers = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+    };
+
+    final response = await http.put(
+      url,
+      headers: headers,
+      body: jsonEncode(filters.toJson()),
+    );
+
+    if (response.statusCode == 200) {
+      final jsonData = jsonDecode(response.body);
+      return PaginatedProductsResponse.fromJson(jsonData);
+    } else {
+      throw Exception('Failed to load products: ${response.statusCode}');
+    }
+  }
+
   Future<DetailedProduct> getProductById(String productId) async {
     final response = await http.get(
       Uri.parse(
@@ -99,9 +128,7 @@ class ApiService {
 
   Future<List<CategoryModel>> getCategories() async {
     final response = await http.get(
-      Uri.parse(
-        '$auroraBackendUrl/attributes/categories',
-      ),
+      Uri.parse('$auroraBackendUrl/attributes/categories'),
     );
 
     if (response.statusCode == 200) {
@@ -115,6 +142,4 @@ class ApiService {
       throw Exception('Failed to load categories');
     }
   }
-
-
 }
