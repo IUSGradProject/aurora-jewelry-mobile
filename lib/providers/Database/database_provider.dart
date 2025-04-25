@@ -1,3 +1,4 @@
+import 'package:aurora_jewelry/models/Products/category_model.dart';
 import 'package:aurora_jewelry/models/Products/detailed_product_model.dart';
 import 'package:aurora_jewelry/models/Products/product_model.dart';
 import 'package:aurora_jewelry/providers/Search/search_provider.dart';
@@ -13,12 +14,18 @@ class DatabaseProvider extends ChangeNotifier {
   List<Product> _products = [];
   DetailedProduct? _detailedProduct;
 
+  //Search Variables
+  List<CategoryModel> _categories = [];
+  bool _areCategoriesFetched = false;
+
   //Getters
 
   bool get areProductsFetched => _areProductsFetched;
   List<Product> get products => _products;
   DetailedProduct? get detailedProduct => _detailedProduct;
   bool get isDetailedProductFetched => _isDetailedProductFetched;
+  List<CategoryModel> get categories => _categories;
+  bool get areCategoriesFetched => _areCategoriesFetched;
 
   // Method to fetch products
   Future<void> fetchProducts({int page = 1, int pageSize = 20}) async {
@@ -41,15 +48,21 @@ class DatabaseProvider extends ChangeNotifier {
   }
 
   // Method to fetch detailed product
-  Future<void> fetchDetailedProduct(String productId, BuildContext context) async {
+  Future<void> fetchDetailedProduct(
+    String productId,
+    BuildContext context,
+  ) async {
     try {
       // Step 2: Fetch the detailed product
       final response = await _apiService.getProductById(productId);
 
       _detailedProduct = response;
       // ignore: use_build_context_synchronously
-      Provider.of<SearchProvider>(context, listen: false)
-          .setProductPrice(_detailedProduct!.price);
+      Provider.of<SearchProvider>(
+        // ignore: use_build_context_synchronously
+        context,
+        listen: false,
+      ).setProductPrice(_detailedProduct!.price);
       _isDetailedProductFetched = true;
       notifyListeners();
     } catch (e) {
@@ -60,9 +73,18 @@ class DatabaseProvider extends ChangeNotifier {
   void resetDetailedProduct(BuildContext context) {
     _detailedProduct = null;
     _isDetailedProductFetched = false;
-    Provider.of<SearchProvider>(context, listen: false)
-        .setProductPrice(0);
+    Provider.of<SearchProvider>(context, listen: false).setProductPrice(0);
     notifyListeners();
   }
 
+  // Method to fetch categories
+  Future<void> fetchCategories() async {
+    try {
+      _categories = await _apiService.getCategories();
+      _areCategoriesFetched = true;
+      notifyListeners();
+    } catch (e) {
+      debugPrint('Error fetching categories: $e');
+    }
+  }
 }

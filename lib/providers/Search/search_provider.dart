@@ -1,16 +1,10 @@
-import 'package:aurora_jewelry/models/Search/category_model.dart';
+import 'package:aurora_jewelry/models/Products/category_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class SearchProvider extends ChangeNotifier {
-  final List<CategoryModel> _categories = [
-    CategoryModel(name: "Necklace", icon: CupertinoIcons.link),
-    CategoryModel(name: "Earrings", icon: CupertinoIcons.circle_fill),
-    CategoryModel(name: "Bracelets", icon: CupertinoIcons.link_circle),
-    CategoryModel(name: "Rings", icon: CupertinoIcons.capsule),
-    CategoryModel(name: "Watches", icon: CupertinoIcons.time),
-  ];
+  final List<CategoryModel> _categories = [];
   final List<String> _availableBrands = [
     "Dior",
     "Gucci",
@@ -46,8 +40,6 @@ class SearchProvider extends ChangeNotifier {
   List<String> get selectedFilterBrands => _selectedFilterBrands;
   RangeValues get priceRange => _priceRange;
   List<String> get availableBrands => _availableBrands;
-
-
 
   ///Select Category
 

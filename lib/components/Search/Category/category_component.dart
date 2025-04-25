@@ -1,6 +1,8 @@
-import 'package:aurora_jewelry/models/Search/category_model.dart';
+import 'package:aurora_jewelry/models/Products/category_model.dart';
+
 import 'package:aurora_jewelry/providers/Search/search_provider.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
@@ -45,7 +47,8 @@ class CategoryComponent extends StatelessWidget {
                 children: [
                   Align(
                     alignment: Alignment.topLeft,
-                    child: Icon(category.icon),
+                    child: Icon(Icons.category,
+                        color: CupertinoTheme.of(context).primaryColor),
                   ),
                   Align(
                     alignment: Alignment.bottomRight,

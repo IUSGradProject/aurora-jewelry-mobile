@@ -16,11 +16,9 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration(seconds: 2), () {
-      if (mounted) {
-        Provider.of<DatabaseProvider>(context, listen: false).fetchProducts();
-      }
-    });
+    if (mounted) {
+      Provider.of<DatabaseProvider>(context, listen: false).fetchProducts();
+    }
   }
 
   @override

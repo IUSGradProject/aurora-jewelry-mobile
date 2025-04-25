@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:aurora_jewelry/models/Auth/login_response.dart';
+import 'package:aurora_jewelry/models/Products/category_model.dart';
 import 'package:aurora_jewelry/models/Products/detailed_product_model.dart';
 import 'package:aurora_jewelry/models/Products/paginated_products_response.dart';
 // ignore: depend_on_referenced_packages
@@ -95,4 +96,25 @@ class ApiService {
       throw Exception('Failed to load product details');
     }
   }
+
+  Future<List<CategoryModel>> getCategories() async {
+    final response = await http.get(
+      Uri.parse(
+        '$auroraBackendUrl/attributes/categories',
+      ),
+    );
+
+    if (response.statusCode == 200) {
+      final jsonBody = json.decode(response.body);
+      final List<CategoryModel> categories = [];
+      for (var categoryJson in jsonBody) {
+        categories.add(CategoryModel.fromJson(categoryJson));
+      }
+      return categories; // Ensure a list is always returned
+    } else {
+      throw Exception('Failed to load categories');
+    }
+  }
+
+
 }

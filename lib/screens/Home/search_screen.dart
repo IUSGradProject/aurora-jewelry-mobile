@@ -1,8 +1,8 @@
 import 'package:animations/animations.dart';
 import 'package:aurora_jewelry/components/Products/List/shimmer_list_product_component.dart';
 import 'package:aurora_jewelry/components/Products/list_product_component.dart';
-import 'package:aurora_jewelry/components/Search/category_component.dart';
-import 'package:aurora_jewelry/components/Search/shimmer_category_component.dart';
+import 'package:aurora_jewelry/components/Search/Category/category_component.dart';
+import 'package:aurora_jewelry/components/Search/Category/shimmer_category_component.dart';
 import 'package:aurora_jewelry/providers/Database/database_provider.dart';
 import 'package:aurora_jewelry/providers/Search/search_provider.dart';
 import 'package:aurora_jewelry/widgets/Search/filter_bottom_sheet_widget.dart';
@@ -12,8 +12,21 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_down_button/pull_down_button.dart';
 
-class SearchScreen extends StatelessWidget {
+class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
+
+  @override
+  State<SearchScreen> createState() => _SearchScreenState();
+}
+
+class _SearchScreenState extends State<SearchScreen> {
+  @override
+  void initState() {
+    super.initState();
+    if (mounted) {
+      Provider.of<DatabaseProvider>(context, listen: false).fetchCategories();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -152,11 +165,10 @@ class SearchScreen extends StatelessWidget {
                             },
                             buttonBuilder: (context, showMenu) {
                               return CupertinoButton(
-                                onPressed: (){
-                                  if(databaseProvider.areProductsFetched) {
+                                onPressed: () {
+                                  if (databaseProvider.areProductsFetched) {
                                     showMenu();
                                   }
-
                                 },
                                 padding: EdgeInsets.zero,
                                 child: Container(
@@ -309,7 +321,7 @@ class SearchScreen extends StatelessWidget {
                                           return ShimmerListProductComponent();
                                         },
                                       )
-                                  : databaseProvider.areProductsFetched
+                                  : databaseProvider.areCategoriesFetched
                                   ? GridView.builder(
                                     padding: EdgeInsets.zero,
                                     physics:
@@ -325,10 +337,10 @@ class SearchScreen extends StatelessWidget {
                                           crossAxisSpacing: 8,
                                           childAspectRatio: 1.7,
                                         ),
-                                    itemCount: searchProvider.categories.length,
+                                    itemCount: databaseProvider.categories.length,
                                     itemBuilder: (context, index) {
-                                      final category =
-                                          searchProvider.categories[index];
+                                      final category = databaseProvider
+                                          .categories[index];
                                       return CategoryComponent(
                                         category: category,
                                       );
