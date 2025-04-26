@@ -1,13 +1,17 @@
+import 'package:aurora_jewelry/models/Products/product_model.dart';
 import 'package:aurora_jewelry/providers/Auth/auth_provider.dart';
 import 'package:aurora_jewelry/providers/Cart/cart_provider.dart';
+import 'package:aurora_jewelry/providers/Database/database_provider.dart';
 import 'package:aurora_jewelry/screens/Authentication/login_screen.dart';
 import 'package:aurora_jewelry/screens/Home/Product/product_screen.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 class GridProductComponent extends StatefulWidget {
-  const GridProductComponent({super.key});
+  final Product product;
+  const GridProductComponent({super.key, required this.product});
 
   @override
   State<GridProductComponent> createState() => _GridProductComponentState();
@@ -85,9 +89,17 @@ class _GridProductComponentState extends State<GridProductComponent>
         CupertinoButton(
           pressedOpacity: 0.6,
           onPressed: () {
+            Provider.of<DatabaseProvider>(
+              context,
+              listen: false,
+            ).resetDetailedProduct(context);
+            Provider.of<DatabaseProvider>(
+              context,
+              listen: false,
+            ).fetchDetailedProduct(widget.product.productId, context);
             Navigator.of(context).push(
               CupertinoPageRoute<void>(
-                builder: (BuildContext context) => const ProductScreen(),
+                builder: (BuildContext context) => ProductScreen(),
               ),
             );
           },
@@ -114,20 +126,30 @@ class _GridProductComponentState extends State<GridProductComponent>
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      height: 120,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        image: DecorationImage(
-                          image: AssetImage("lib/assets/necklace.jpg"),
+                    // Inside your widget
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: SizedBox(
+                        height: 120,
+                        width: double.infinity,
+                        child: CachedNetworkImage(
+                          imageUrl: widget.product.image,
                           fit: BoxFit.cover,
+                          placeholder:
+                              (context, url) => const Center(
+                                child: CupertinoActivityIndicator(),
+                              ),
+                          errorWidget:
+                              (context, url, error) =>
+                                  const Icon(CupertinoIcons.photo),
+                          fadeInDuration: const Duration(milliseconds: 300),
                         ),
                       ),
                     ),
+
                     SizedBox(height: 8),
                     Text(
-                      "Lancic sa ovonekom",
+                      widget.product.name,
                       style: CupertinoTheme.of(
                         context,
                       ).textTheme.textStyle.copyWith(
@@ -136,21 +158,15 @@ class _GridProductComponentState extends State<GridProductComponent>
                       ),
                       maxLines: 1,
                     ),
-                    Text(
-                      "Dior",
-                      style: TextStyle(
-                        color: CupertinoColors.systemGrey,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
+
                     SizedBox(height: 4),
                     Text(
-                      "Swarovski crystal necklace",
+                      widget.product.description,
                       style: TextStyle(
                         color: CupertinoColors.systemGrey,
                         fontSize: 14,
                       ),
-                      maxLines: 2,
+                      maxLines: 3,
                       overflow: TextOverflow.ellipsis,
                     ),
                     SizedBox(height: 8),
@@ -165,7 +181,7 @@ class _GridProductComponentState extends State<GridProductComponent>
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "1050 BAM",
+                      "\$${widget.product.price.round()}",
                       style: CupertinoTheme.of(context).textTheme.textStyle
                           .copyWith(fontSize: 16, fontWeight: FontWeight.w600),
                     ),

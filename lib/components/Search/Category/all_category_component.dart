@@ -1,12 +1,11 @@
-import 'package:aurora_jewelry/models/Search/category_model.dart';
 import 'package:aurora_jewelry/providers/Search/search_provider.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
-class CategoryComponent extends StatelessWidget {
-  final CategoryModel category;
-  const CategoryComponent({super.key, required this.category});
+class AllCategoryComponent extends StatelessWidget {
+  const AllCategoryComponent({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -14,11 +13,11 @@ class CategoryComponent extends StatelessWidget {
       builder:
           (context, searchProvider, child) => CupertinoButton(
             padding: EdgeInsets.zero,
-            onPressed: () {
-              if (searchProvider.checkIfCategoryIsSelected(category)) {
-                searchProvider.deselectCategory(category);
+            onPressed: () async {
+              if (searchProvider.selectedCategories.isNotEmpty) {
+                searchProvider.deselectAllCategories();
               } else {
-                searchProvider.selectCategory(category);
+                await searchProvider.selectAllCategories(context);
               }
               HapticFeedback.selectionClick();
             },
@@ -45,13 +44,17 @@ class CategoryComponent extends StatelessWidget {
                 children: [
                   Align(
                     alignment: Alignment.topLeft,
-                    child: Icon(category.icon),
+                    child: Icon(
+                      Icons.all_inbox,
+                      color: CupertinoTheme.of(context).primaryColor,
+                    ),
                   ),
                   Align(
                     alignment: Alignment.bottomRight,
                     child: Text(
-                      category.name,
-                      style: CupertinoTheme.of(context).textTheme.textStyle,
+                      "All",
+                      style: CupertinoTheme.of(context).textTheme.textStyle
+                          .copyWith(fontWeight: FontWeight.w500),
                     ),
                   ),
                 ],

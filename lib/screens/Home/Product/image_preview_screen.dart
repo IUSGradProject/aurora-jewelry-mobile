@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class ImagePreviewScreen extends StatelessWidget {
-  const ImagePreviewScreen({super.key});
+  final String imageURL;
+  const ImagePreviewScreen({super.key, required this.imageURL});
 
   @override
   Widget build(BuildContext context) {
@@ -17,11 +19,13 @@ class ImagePreviewScreen extends StatelessWidget {
                 minScale: 1,
                 maxScale: 4,
                 child: Center(
-                  child: Image.asset(
-                    "lib/assets/necklace2.jpg",
+                  child: CachedNetworkImage(
+                    imageUrl: imageURL,
                     fit: BoxFit.contain,
                     width: MediaQuery.of(context).size.width,
                     height: MediaQuery.of(context).size.height,
+                    placeholder: (context, url) => const CupertinoActivityIndicator(),
+                    errorWidget: (context, url, error) => const Icon(CupertinoIcons.exclamationmark_triangle),
                   ),
                 ),
               ),
@@ -31,7 +35,7 @@ class ImagePreviewScreen extends StatelessWidget {
         Positioned(
           top: 60,
           child: CupertinoButton(
-            child: Icon(CupertinoIcons.xmark_circle_fill, size: 32),
+            child: const Icon(CupertinoIcons.xmark_circle_fill, size: 32),
             onPressed: () {
               Navigator.pop(context);
             },
