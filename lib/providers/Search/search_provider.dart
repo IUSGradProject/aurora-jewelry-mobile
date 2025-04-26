@@ -1,5 +1,7 @@
+import 'package:aurora_jewelry/models/Products/brand_model.dart';
 import 'package:aurora_jewelry/models/Products/category_model.dart';
 import 'package:aurora_jewelry/models/Products/filter_request_model.dart';
+import 'package:aurora_jewelry/models/Products/style_model.dart';
 import 'package:aurora_jewelry/providers/Database/database_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,19 +10,12 @@ import 'package:provider/provider.dart';
 
 class SearchProvider extends ChangeNotifier {
   final List<CategoryModel> _categories = [];
-  final List<String> _availableBrands = [
-    "Dior",
-    "Gucci",
-    "Versace",
-    "Balenciaga",
-    "Nike",
-    "Adidas",
-  ];
 
   final List<CategoryModel> _selectedCategories = [];
 
   final List<String> _selectedSorting = [];
-  final List<String> _selectedFilterBrands = [];
+  final List<BrandModel> _selectedFilterBrands = [];
+  final List<StyleModel> _selectedFilterStyles = [];
   RangeValues _priceRange = RangeValues(10, 10000);
 
   //Product Ordering Variables
@@ -41,9 +36,9 @@ class SearchProvider extends ChangeNotifier {
   double get currentProductPrice => _currentProductPrice;
   double get quantityProductPrice => _quantityProductPrice;
 
-  List<String> get selectedFilterBrands => _selectedFilterBrands;
+  List<BrandModel> get selectedFilterBrands => _selectedFilterBrands;
+  List<StyleModel> get selectedFilterStyles => _selectedFilterStyles;
   RangeValues get priceRange => _priceRange;
-  List<String> get availableBrands => _availableBrands;
 
   ///Select Category
 
@@ -168,19 +163,19 @@ class SearchProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  bool checkIfBrandIsAdded(String brandName) {
-    if (_selectedFilterBrands.contains(brandName)) {
+  bool checkIfBrandIsAdded(BrandModel brand) {
+    if (_selectedFilterBrands.contains(brand)) {
       return true;
     } else {
       return false;
     }
   }
 
-  void selectBrand(String brandName) {
-    if (checkIfBrandIsAdded(brandName)) {
-      _selectedFilterBrands.remove(brandName);
+  void selectBrand(BrandModel brand) {
+    if (checkIfBrandIsAdded(brand)) {
+      _selectedFilterBrands.remove(brand);
     } else {
-      _selectedFilterBrands.add(brandName);
+      _selectedFilterBrands.add(brand);
     }
     notifyListeners();
   }
@@ -190,8 +185,35 @@ class SearchProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  bool checkIfStyleIsAdded(StyleModel style) {
+    if (_selectedFilterStyles.contains(style)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+
+  void selectStyle(StyleModel style) {
+    if (_selectedFilterStyles.contains(style)) {
+      _selectedFilterStyles.remove(style);
+    } else {
+      _selectedFilterStyles.add(style);
+    }
+    notifyListeners();
+  }
+
+  void clearSelectedStyles() {
+    _selectedFilterStyles.clear();
+    notifyListeners();
+  }
+
   String formatBrandList() {
-    return selectedFilterBrands.join(', ');
+    return selectedFilterBrands.map((brand) => brand.name).join(', ');
+  }
+
+  String formatStyleList() {
+    return selectedFilterStyles.map((style) => style.name).join(', ');
   }
 
   bool checkIsRangeChanged() {

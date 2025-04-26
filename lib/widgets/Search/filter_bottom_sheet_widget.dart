@@ -31,9 +31,9 @@ class _FilterBottomSheetWidgetState extends State<FilterBottomSheetWidget> {
     return Padding(
       padding: const EdgeInsets.only(left: 0, right: 0),
       child: CupertinoPopupSurface(
-        child: Consumer<SearchProvider>(
+        child: Consumer2<SearchProvider, DatabaseProvider>(
           builder:
-              (context, searchProvider, child) => SafeArea(
+              (context, searchProvider,databaseProvider, child) => SafeArea(
                 child: Container(
                   padding: EdgeInsets.all(16),
                   child: Stack(
@@ -262,14 +262,14 @@ class _FilterBottomSheetWidgetState extends State<FilterBottomSheetWidget> {
                             buttonAnchor: PullDownMenuAnchor.end,
                             itemBuilder:
                                 (context) =>
-                                    searchProvider.availableBrands.map((brand) {
+                                    databaseProvider.brands.map((brand) {
                                       return PullDownMenuItem.selectable(
                                         selected: searchProvider
                                             .checkIfBrandIsAdded(brand),
                                         onTap: () {
                                           searchProvider.selectBrand(brand);
                                         },
-                                        title: brand,
+                                        title: brand.name,
                                       );
                                     }).toList(),
                             buttonBuilder: (context, showMenu) {
@@ -370,14 +370,14 @@ class _FilterBottomSheetWidgetState extends State<FilterBottomSheetWidget> {
                             buttonAnchor: PullDownMenuAnchor.end,
                             itemBuilder:
                                 (context) =>
-                                    searchProvider.availableBrands.map((brand) {
+                                    databaseProvider.styles.map((style) {
                                       return PullDownMenuItem.selectable(
                                         selected: searchProvider
-                                            .checkIfBrandIsAdded(brand),
+                                            .checkIfStyleIsAdded(style),
                                         onTap: () {
-                                          searchProvider.selectBrand(brand);
+                                          searchProvider.selectStyle(style);
                                         },
-                                        title: brand,
+                                        title: style.name,
                                       );
                                     }).toList(),
                             buttonBuilder: (context, showMenu) {
@@ -397,10 +397,10 @@ class _FilterBottomSheetWidgetState extends State<FilterBottomSheetWidget> {
                                         Expanded(
                                           child: Text(
                                             searchProvider
-                                                    .selectedFilterBrands
+                                                    .selectedFilterStyles
                                                     .isNotEmpty
                                                 ? searchProvider
-                                                    .formatBrandList()
+                                                    .formatStyleList()
                                                 : 'All',
                                             style:
                                                 CupertinoTheme.of(
@@ -422,7 +422,7 @@ class _FilterBottomSheetWidgetState extends State<FilterBottomSheetWidget> {
                           AnimatedContainer(
                             padding: EdgeInsets.all(8),
                             height:
-                                searchProvider.selectedFilterBrands.isNotEmpty
+                                searchProvider.selectedFilterStyles.isNotEmpty
                                     ? 36
                                     : 0,
                             duration: const Duration(milliseconds: 300),
@@ -439,7 +439,7 @@ class _FilterBottomSheetWidgetState extends State<FilterBottomSheetWidget> {
                                       minimumSize: const Size(0, 20),
                                       child: Text("Clear"),
                                       onPressed: () {
-                                        searchProvider.clearSelectedBrands();
+                                        searchProvider.clearSelectedStyles();
                                       },
                                     ),
                                   ],
