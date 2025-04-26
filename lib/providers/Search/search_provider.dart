@@ -10,6 +10,9 @@ import 'package:provider/provider.dart';
 class SearchProvider extends ChangeNotifier {
   final List<CategoryModel> _categories = [];
 
+  bool _isSearchingActive = false;
+  String _searchQuery = "";
+
   final List<CategoryModel> _selectedCategories = [];
 
   final List<String> _selectedSorting = [];
@@ -27,6 +30,8 @@ class SearchProvider extends ChangeNotifier {
 
   //Getters
 
+  bool get isSearchingActive => _isSearchingActive;
+  String get searchQuery => _searchQuery;
   List<CategoryModel> get categories => _categories;
   List<CategoryModel> get selectedCategories => _selectedCategories;
 
@@ -40,6 +45,22 @@ class SearchProvider extends ChangeNotifier {
   RangeValues get priceRange => _priceRange;
 
   ///Select Category
+
+
+
+  void setSearchingStatus(bool status) {
+    _isSearchingActive = status;
+    notifyListeners();
+  }
+
+  void setSearchQuery(String query) {
+    _searchQuery = query;
+    notifyListeners();
+  }
+  void clearSearchQuery() {
+    _searchQuery = "";
+    notifyListeners();
+  }
 
   Future<void> selectCategory(
     CategoryModel category,

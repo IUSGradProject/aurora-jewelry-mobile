@@ -85,7 +85,7 @@ class _ProductScreenState extends State<ProductScreen>
     });
   }
 
- void showCupertinoSnackBar({
+  void showCupertinoSnackBar({
     required BuildContext context,
     required String message,
     int durationMillis = 3000,
@@ -105,6 +105,7 @@ class _ProductScreenState extends State<ProductScreen>
     );
     Overlay.of(context).insert(overlayEntry);
   }
+
   @override
   Widget build(BuildContext context) {
     return !Provider.of<DatabaseProvider>(
@@ -116,7 +117,7 @@ class _ProductScreenState extends State<ProductScreen>
           builder:
               (context, databaseProvider, child) => CupertinoPageScaffold(
                 navigationBar: CupertinoNavigationBar(
-                  previousPageTitle: "Back",
+                  automaticallyImplyLeading: true,
                   trailing: Text(
                     "${databaseProvider.detailedProduct!.category.name}, ${databaseProvider.detailedProduct!.style.name}",
                     style: TextStyle(

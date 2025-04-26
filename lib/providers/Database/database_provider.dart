@@ -15,6 +15,7 @@ class DatabaseProvider extends ChangeNotifier {
   bool _isDetailedProductFetched = false;
 
   List<Product> _products = [];
+  List<Product> _searchedProducts = [];
   DetailedProduct? _detailedProduct;
 
   //Search Variables
@@ -32,6 +33,7 @@ class DatabaseProvider extends ChangeNotifier {
   //Getters
   bool get areProductsFetched => _areProductsFetched;
   List<Product> get products => _products;
+  List<Product> get searchedProducts => _searchedProducts;
   DetailedProduct? get detailedProduct => _detailedProduct;
   bool get isDetailedProductFetched => _isDetailedProductFetched;
   List<CategoryModel> get categories => _categories;
@@ -39,6 +41,25 @@ class DatabaseProvider extends ChangeNotifier {
   FilterRequestModel get filterRequestModel => _filterRequestModel;
   List<BrandModel> get brands => _brands;
   List<StyleModel> get styles => _styles;
+
+  ///Method to set searched products
+  void setSearchedProducts(String searchQuery) {
+    _searchedProducts =
+        _products
+            .where(
+              (product) => product.name.toLowerCase().contains(
+                searchQuery.toLowerCase(),
+              ),
+            )
+            .toList();
+    notifyListeners();
+  }
+
+  ///Method to clear searched products
+  void clearSearchedProducts() {
+    _searchedProducts.clear();
+    notifyListeners();
+  }
 
   /// Method to fetch products
   Future<void> fetchProducts({int page = 1, int pageSize = 20}) async {
