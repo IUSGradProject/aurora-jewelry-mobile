@@ -1,4 +1,5 @@
 import 'package:animated_digit/animated_digit.dart';
+import 'package:aurora_jewelry/providers/Database/database_provider.dart';
 import 'package:aurora_jewelry/providers/Search/search_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +15,17 @@ class FilterBottomSheetWidget extends StatefulWidget {
 }
 
 class _FilterBottomSheetWidgetState extends State<FilterBottomSheetWidget> {
+  @override
+  void initState() {
+    // Fetch brands, and styles when the widget is initialized
+    if (mounted) {
+      Provider.of<DatabaseProvider>(context, listen: false).fetchBrands();
+      Provider.of<DatabaseProvider>(context, listen: false).fetchStyles();
+    }
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(

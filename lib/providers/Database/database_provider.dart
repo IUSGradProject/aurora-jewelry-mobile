@@ -1,7 +1,9 @@
+import 'package:aurora_jewelry/models/Products/brand_model.dart';
 import 'package:aurora_jewelry/models/Products/category_model.dart';
 import 'package:aurora_jewelry/models/Products/detailed_product_model.dart';
 import 'package:aurora_jewelry/models/Products/filter_request_model.dart';
 import 'package:aurora_jewelry/models/Products/product_model.dart';
+import 'package:aurora_jewelry/models/Products/style_model.dart';
 import 'package:aurora_jewelry/providers/Search/search_provider.dart';
 import 'package:aurora_jewelry/services/api_service.dart';
 import 'package:flutter/cupertino.dart';
@@ -17,6 +19,8 @@ class DatabaseProvider extends ChangeNotifier {
 
   //Search Variables
   List<CategoryModel> _categories = [];
+  List<BrandModel> _brands = [];
+  List<StyleModel> _styles = [];
   bool _areCategoriesFetched = false;
 
   FilterRequestModel _filterRequestModel = FilterRequestModel(
@@ -37,6 +41,8 @@ class DatabaseProvider extends ChangeNotifier {
   List<CategoryModel> get categories => _categories;
   bool get areCategoriesFetched => _areCategoriesFetched;
   FilterRequestModel get filterRequestModel => _filterRequestModel;
+  List<BrandModel> get brands => _brands;
+  List<StyleModel> get styles => _styles;
 
   /// Method to fetch products
   Future<void> fetchProducts({int page = 1, int pageSize = 20}) async {
@@ -138,6 +144,27 @@ class DatabaseProvider extends ChangeNotifier {
       notifyListeners();
     } catch (e) {
       debugPrint('Error fetching categories: $e');
+    }
+  }
+
+  /// Method to fetch brands
+
+  Future<void> fetchBrands() async {
+    try {
+      _brands = await _apiService.getBrands();
+      notifyListeners();
+    } catch (e) {
+      debugPrint('Error fetching brands: $e');
+    }
+  }
+
+  /// Method to fetch styles
+  Future<void> fetchStyles() async {
+    try {
+      _styles = await _apiService.getStyles();
+      notifyListeners();
+    } catch (e) {
+      debugPrint('Error fetching styles: $e');
     }
   }
 }

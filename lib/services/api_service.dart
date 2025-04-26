@@ -1,10 +1,12 @@
 import 'dart:convert';
 
 import 'package:aurora_jewelry/models/Auth/login_response.dart';
+import 'package:aurora_jewelry/models/Products/brand_model.dart';
 import 'package:aurora_jewelry/models/Products/category_model.dart';
 import 'package:aurora_jewelry/models/Products/detailed_product_model.dart';
 import 'package:aurora_jewelry/models/Products/filter_request_model.dart';
 import 'package:aurora_jewelry/models/Products/paginated_products_response.dart';
+import 'package:aurora_jewelry/models/Products/style_model.dart';
 // ignore: depend_on_referenced_packages
 import 'package:http/http.dart' as http;
 
@@ -142,4 +144,35 @@ class ApiService {
       throw Exception('Failed to load categories');
     }
   }
+
+  Future<List<BrandModel>> getBrands() async {
+    final response = await http.get(
+      Uri.parse('$auroraBackendUrl/attributes/brands'),
+    );
+
+    if (response.statusCode == 200) {
+      final jsonBody = json.decode(response.body);
+      return (jsonBody as List)
+        .map((item) => BrandModel.fromJson(item))
+        .toList();
+    } else {
+      throw Exception('Failed to load brands');
+    }
+  }
+
+  Future<List<StyleModel>> getStyles() async {
+    final response = await http.get(
+      Uri.parse('$auroraBackendUrl/attributes/styles'),
+    );
+
+    if (response.statusCode == 200) {
+      final jsonBody = json.decode(response.body);
+       return (jsonBody as List)
+        .map((item) => StyleModel.fromJson(item))
+        .toList();
+    } else {
+      throw Exception('Failed to load styles');
+    }
+  }
+
 }
