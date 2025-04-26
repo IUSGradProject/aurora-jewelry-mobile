@@ -10,6 +10,7 @@ import 'package:aurora_jewelry/widgets/Search/filter_bottom_sheet_widget.dart';
 import 'package:aurora_jewelry/widgets/profile_avatar_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_down_button/pull_down_button.dart';
 
@@ -271,7 +272,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 ),
 
                 SizedBox(height: 16),
-      
+
                 // MAIN BODY: CATEGORIES OR PRODUCTS
                 AnimatedBuilder(
                   animation: databaseProvider,
@@ -296,19 +297,42 @@ class _SearchScreenState extends State<SearchScreen> {
                       child:
                           searchProvider.selectedCategories.isNotEmpty
                               ? databaseProvider.areProductsFetched
-                                  ? ListView.builder(
-                                    key: const ValueKey('ProductList'),
-                                    padding: EdgeInsets.zero,
-                                    shrinkWrap: true,
-                                    physics: NeverScrollableScrollPhysics(),
-                                    itemCount: databaseProvider.products.length,
-                                    itemBuilder: (context, index) {
-                                      return ListProductComponent(
-                                        product:
-                                            databaseProvider.products[index],
-                                      );
-                                    },
-                                  )
+                                  ? databaseProvider.products.isNotEmpty
+                                      ? ListView.builder(
+                                        key: const ValueKey('ProductList'),
+                                        padding: EdgeInsets.zero,
+                                        shrinkWrap: true,
+                                        physics: NeverScrollableScrollPhysics(),
+                                        itemCount:
+                                            databaseProvider.products.length,
+                                        itemBuilder: (context, index) {
+                                          return ListProductComponent(
+                                            product:
+                                                databaseProvider
+                                                    .products[index],
+                                          );
+                                        },
+                                      )
+                                      : Column(
+                                        children: [
+                                          SizedBox(height: 60),
+                                          Text(
+                                            "Sorry, No products found!",
+                                            style: CupertinoTheme.of(
+                                              context,
+                                            ).textTheme.textStyle.copyWith(
+                                              fontSize: 17,
+                                              fontWeight: FontWeight.w500,
+                                              color: CupertinoColors.systemGrey,
+                                            ),
+                                          ),
+                                          Lottie.asset(
+                                            "lib/assets/nothing-found.json",
+                                            height: 200,
+                                          ),
+                                          SizedBox(height: 8),
+                                        ],
+                                      )
                                   : ListView.builder(
                                     key: const ValueKey('ProductShimmer'),
                                     shrinkWrap: true,

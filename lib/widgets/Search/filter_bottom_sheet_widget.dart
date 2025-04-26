@@ -1,4 +1,5 @@
 import 'package:animated_digit/animated_digit.dart';
+import 'package:aurora_jewelry/models/Products/filter_request_model.dart';
 import 'package:aurora_jewelry/providers/Database/database_provider.dart';
 import 'package:aurora_jewelry/providers/Search/search_provider.dart';
 import 'package:flutter/cupertino.dart';
@@ -33,7 +34,7 @@ class _FilterBottomSheetWidgetState extends State<FilterBottomSheetWidget> {
       child: CupertinoPopupSurface(
         child: Consumer2<SearchProvider, DatabaseProvider>(
           builder:
-              (context, searchProvider,databaseProvider, child) => SafeArea(
+              (context, searchProvider, databaseProvider, child) => SafeArea(
                 child: Container(
                   padding: EdgeInsets.all(16),
                   child: Stack(
@@ -63,7 +64,7 @@ class _FilterBottomSheetWidgetState extends State<FilterBottomSheetWidget> {
                                 children: [
                                   RangeSlider(
                                     min: 1,
-                                    max: 10000,
+                                    max: 100000,
                                     divisions: 15,
                                     labels: RangeLabels(
                                       searchProvider.priceRange.start
@@ -471,7 +472,39 @@ class _FilterBottomSheetWidgetState extends State<FilterBottomSheetWidget> {
                         right: 0,
                         child: CupertinoButton(
                           padding: EdgeInsets.zero,
-                          onPressed: () => Navigator.pop(context),
+                          onPressed: () {
+                            if (searchProvider
+                                .checkIfThereWasChangesInFilters()) {
+                              showCupertinoDialog(
+                                context: context,
+                                builder:
+                                    (context) => CupertinoAlertDialog(
+                                      title: const Text("Are you sure?"),
+                                      content: const Text(
+                                        "If you close this window, all filters will be cleared.",
+                                      ),
+                                      actions: [
+                                        CupertinoDialogAction(
+                                          child: const Text("Cancel"),
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                        CupertinoDialogAction(
+                                          child: const Text("Discard"),
+                                          onPressed: () {
+                                            searchProvider.clearAllFilters();
+                                            Navigator.pop(context);
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                              );
+                            } else {
+                              Navigator.pop(context);
+                            }
+                          },
                           child: Container(
                             height: 32,
                             width: 32,
@@ -489,22 +522,60 @@ class _FilterBottomSheetWidgetState extends State<FilterBottomSheetWidget> {
                       Positioned(
                         bottom: 0,
                         child: AnimatedOpacity(
-                          opacity: 1,
+                          opacity:
+                              searchProvider.checkIfThereWasChangesInFilters()
+                                  ? 1
+                                  : 0.5,
                           duration: const Duration(milliseconds: 300),
                           child: SizedBox(
                             width: MediaQuery.of(context).size.width - 32,
                             child: CupertinoButton(
                               borderRadius: BorderRadius.circular(12),
                               color: CupertinoColors.systemBlue,
-                              child: const Text(
-                                "Apply Filters",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  color: CupertinoColors.white,
-                                ),
-                              ),
-                              onPressed: () {
-                                Navigator.pop(context);
+                              child:
+                                  databaseProvider.areProductsFetched
+                                      ? const Text(
+                                        "Apply Filters",
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                          color: CupertinoColors.white,
+                                        ),
+                                      )
+                                      : CupertinoActivityIndicator(color: CupertinoColors.white,),
+                              onPressed: () async {
+                                if (databaseProvider.areProductsFetched) {
+                                  if (searchProvider
+                                      .checkIfThereWasChangesInFilters()) {
+                                    Provider.of<DatabaseProvider>(
+                                      context,
+                                      listen: false,
+                                    ).setFilterRequestModel(
+                                      FilterRequestModel(
+                                        categories:
+                                            databaseProvider.categories
+                                                .map((category) => category.id)
+                                                .toList(),
+                                        brands:
+                                            searchProvider.selectedFilterBrands
+                                                .map((brand) => brand.id)
+                                                .toList(),
+                                        styles:
+                                            searchProvider.selectedFilterStyles
+                                                .map((style) => style.id)
+                                                .toList(),
+                                        minPrice:
+                                            searchProvider.priceRange.start,
+                                        maxPrice: searchProvider.priceRange.end,
+                                      ),
+                                    );
+                                    await Provider.of<DatabaseProvider>(
+                                      context,
+                                      listen: false,
+                                    ).fetchFilteredProducts();
+                                    // ignore: use_build_context_synchronously
+                                    Navigator.pop(context);
+                                  }
+                                }
                               },
                             ),
                           ),

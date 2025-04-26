@@ -16,7 +16,7 @@ class SearchProvider extends ChangeNotifier {
   final List<String> _selectedSorting = [];
   final List<BrandModel> _selectedFilterBrands = [];
   final List<StyleModel> _selectedFilterStyles = [];
-  RangeValues _priceRange = RangeValues(10, 10000);
+  RangeValues _priceRange = RangeValues(1, 100000);
 
   //Product Ordering Variables
 
@@ -159,7 +159,7 @@ class SearchProvider extends ChangeNotifier {
   }
 
   void restartPriceRange() {
-    _priceRange = RangeValues(10, 10000);
+    _priceRange = RangeValues(1, 100000);
     notifyListeners();
   }
 
@@ -217,7 +217,7 @@ class SearchProvider extends ChangeNotifier {
   }
 
   bool checkIsRangeChanged() {
-    if (_priceRange != RangeValues(10, 10000)) {
+    if (_priceRange != RangeValues(1, 100000)) {
       return true;
     } else {
       return false;
@@ -225,11 +225,19 @@ class SearchProvider extends ChangeNotifier {
   }
 
   bool checkIfThereWasChangesInFilters() {
-    if (_priceRange != RangeValues(10, 10000) ||
-        _selectedFilterBrands.isNotEmpty) {
+    if (_priceRange != RangeValues(1, 100000) ||
+        _selectedFilterBrands.isNotEmpty || _selectedFilterStyles.isNotEmpty) {
       return true;
     } else {
       return false;
     }
   }
+
+  void clearAllFilters() {
+    _selectedFilterBrands.clear();
+    _selectedFilterStyles.clear();
+    _priceRange = RangeValues(1, 100000);
+    notifyListeners();
+  }
+
 }
