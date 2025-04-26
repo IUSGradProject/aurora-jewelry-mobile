@@ -2,8 +2,8 @@ class FilterRequestModel {
   final List<int> categories;
   final List<int> styles;
   final List<int> brands;
-  final double? minPrice;
-  final double? maxPrice;
+  double? minPrice;
+  double? maxPrice;
   final String? query;
   final int? queryCategoryId;
   final String? sortBy;

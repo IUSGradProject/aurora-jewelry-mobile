@@ -118,7 +118,7 @@ class _ProductScreenState extends State<ProductScreen>
                 navigationBar: CupertinoNavigationBar(
                   previousPageTitle: "Back",
                   trailing: Text(
-                    databaseProvider.detailedProduct!.category.name,
+                    "${databaseProvider.detailedProduct!.category.name}, ${databaseProvider.detailedProduct!.style.name}",
                     style: TextStyle(
                       color: CupertinoColors.systemGrey,
                       fontWeight: FontWeight.w400,

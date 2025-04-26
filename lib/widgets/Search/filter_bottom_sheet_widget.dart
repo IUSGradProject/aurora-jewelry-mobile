@@ -223,8 +223,10 @@ class _FilterBottomSheetWidgetState extends State<FilterBottomSheetWidget> {
                                       padding: EdgeInsets.zero,
                                       minimumSize: const Size(0, 20),
                                       child: Text("Restart"),
-                                      onPressed: () {
-                                        searchProvider.restartPriceRange();
+                                      onPressed: () async{
+                                        searchProvider.restartPriceRange(context);
+                                        await databaseProvider.fetchFilteredProducts();
+
                                       },
                                     ),
                                   ],
@@ -331,8 +333,12 @@ class _FilterBottomSheetWidgetState extends State<FilterBottomSheetWidget> {
                                       padding: EdgeInsets.zero,
                                       minimumSize: const Size(0, 20),
                                       child: Text("Clear"),
-                                      onPressed: () {
-                                        searchProvider.clearSelectedBrands();
+                                      onPressed: () async  {
+                                        searchProvider.clearSelectedBrands(
+                                          context,
+                                        );
+                                        await databaseProvider.fetchFilteredProducts();
+
                                       },
                                     ),
                                   ],
@@ -439,8 +445,11 @@ class _FilterBottomSheetWidgetState extends State<FilterBottomSheetWidget> {
                                       padding: EdgeInsets.zero,
                                       minimumSize: const Size(0, 20),
                                       child: Text("Clear"),
-                                      onPressed: () {
-                                        searchProvider.clearSelectedStyles();
+                                      onPressed: () async{
+                                        searchProvider.clearSelectedStyles(
+                                          context,
+                                        );
+                                        await databaseProvider.fetchFilteredProducts();
                                       },
                                     ),
                                   ],
@@ -473,37 +482,40 @@ class _FilterBottomSheetWidgetState extends State<FilterBottomSheetWidget> {
                         child: CupertinoButton(
                           padding: EdgeInsets.zero,
                           onPressed: () {
-                            if (searchProvider
-                                .checkIfThereWasChangesInFilters()) {
-                              showCupertinoDialog(
-                                context: context,
-                                builder:
-                                    (context) => CupertinoAlertDialog(
-                                      title: const Text("Are you sure?"),
-                                      content: const Text(
-                                        "If you close this window, all filters will be cleared.",
-                                      ),
-                                      actions: [
-                                        CupertinoDialogAction(
-                                          child: const Text("Cancel"),
-                                          onPressed: () {
-                                            Navigator.pop(context);
-                                          },
-                                        ),
-                                        CupertinoDialogAction(
-                                          child: const Text("Discard"),
-                                          onPressed: () {
-                                            searchProvider.clearAllFilters();
-                                            Navigator.pop(context);
-                                            Navigator.pop(context);
-                                          },
-                                        ),
-                                      ],
-                                    ),
-                              );
-                            } else {
-                              Navigator.pop(context);
-                            }
+                            Navigator.pop(context);
+                            // if (searchProvider
+                            //     .checkIfThereWasChangesInFilters()) {
+                            //   showCupertinoDialog(
+                            //     context: context,
+                            //     builder:
+                            //         (context) => CupertinoAlertDialog(
+                            //           title: const Text("Are you sure?"),
+                            //           content: const Text(
+                            //             "If you close this window, all filters will be cleared.",
+                            //           ),
+                            //           actions: [
+                            //             CupertinoDialogAction(
+                            //               child: const Text("Cancel"),
+                            //               onPressed: () {
+                            //                 Navigator.pop(context);
+                            //               },
+                            //             ),
+                            //             CupertinoDialogAction(
+                            //               child: const Text("Discard"),
+                            //               onPressed: () {
+                            //                 searchProvider.clearAllFilters(
+                            //                   context,
+                            //                 );
+                            //                 Navigator.pop(context);
+                            //                 Navigator.pop(context);
+                            //               },
+                            //             ),
+                            //           ],
+                            //         ),
+                            //   );
+                            // } else {
+                            //   Navigator.pop(context);
+                            // }
                           },
                           child: Container(
                             height: 32,
@@ -541,7 +553,9 @@ class _FilterBottomSheetWidgetState extends State<FilterBottomSheetWidget> {
                                           color: CupertinoColors.white,
                                         ),
                                       )
-                                      : CupertinoActivityIndicator(color: CupertinoColors.white,),
+                                      : CupertinoActivityIndicator(
+                                        color: CupertinoColors.white,
+                                      ),
                               onPressed: () async {
                                 if (databaseProvider.areProductsFetched) {
                                   if (searchProvider
@@ -552,9 +566,9 @@ class _FilterBottomSheetWidgetState extends State<FilterBottomSheetWidget> {
                                     ).setFilterRequestModel(
                                       FilterRequestModel(
                                         categories:
-                                            databaseProvider.categories
-                                                .map((category) => category.id)
-                                                .toList(),
+                                            databaseProvider
+                                                .filterRequestModel
+                                                .categories,
                                         brands:
                                             searchProvider.selectedFilterBrands
                                                 .map((brand) => brand.id)
@@ -573,6 +587,7 @@ class _FilterBottomSheetWidgetState extends State<FilterBottomSheetWidget> {
                                       listen: false,
                                     ).fetchFilteredProducts();
                                     // ignore: use_build_context_synchronously
+
                                     Navigator.pop(context);
                                   }
                                 }

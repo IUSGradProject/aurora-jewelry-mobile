@@ -1,6 +1,5 @@
 import 'package:aurora_jewelry/models/Products/brand_model.dart';
 import 'package:aurora_jewelry/models/Products/category_model.dart';
-import 'package:aurora_jewelry/models/Products/filter_request_model.dart';
 import 'package:aurora_jewelry/models/Products/style_model.dart';
 import 'package:aurora_jewelry/providers/Database/database_provider.dart';
 import 'package:flutter/cupertino.dart';
@@ -47,9 +46,10 @@ class SearchProvider extends ChangeNotifier {
     BuildContext context,
   ) async {
     _selectedCategories.add(category);
-    Provider.of<DatabaseProvider>(context, listen: false).setFilterRequestModel(
-      FilterRequestModel(categories: [category.id], brands: [], styles: []),
-    );
+    Provider.of<DatabaseProvider>(
+      context,
+      listen: false,
+    ).setCategoryForFilterRequestModel(category, context);
     await Provider.of<DatabaseProvider>(
       context,
       listen: false,
@@ -59,9 +59,10 @@ class SearchProvider extends ChangeNotifier {
 
   void deselectCategory(CategoryModel category, BuildContext context) {
     _selectedCategories.remove(category);
-    Provider.of<DatabaseProvider>(context, listen: false).setFilterRequestModel(
-      FilterRequestModel(categories: [], brands: [], styles: []),
-    );
+    Provider.of<DatabaseProvider>(
+      context,
+      listen: false,
+    ).removeCategoryFromFilterRequestModel(category);
     notifyListeners();
   }
 
@@ -88,8 +89,12 @@ class SearchProvider extends ChangeNotifier {
     }
   }
 
-  void clearSelectedCategories() {
+  void clearSelectedCategories(BuildContext context) {
     _selectedCategories.clear();
+    Provider.of<DatabaseProvider>(
+      context,
+      listen: false,
+    ).clearSelectedCategories();
     notifyListeners();
   }
 
@@ -158,8 +163,12 @@ class SearchProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void restartPriceRange() {
+  void restartPriceRange(context) {
     _priceRange = RangeValues(1, 100000);
+    Provider.of<DatabaseProvider>(
+      context,
+      listen: false,
+    ).resetPriceRangeForFilterRequestModel();
     notifyListeners();
   }
 
@@ -180,8 +189,9 @@ class SearchProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void clearSelectedBrands() {
+  void clearSelectedBrands(BuildContext context) {
     _selectedFilterBrands.clear();
+    Provider.of<DatabaseProvider>(context, listen: false).clearSelectedBrands();
     notifyListeners();
   }
 
@@ -193,7 +203,6 @@ class SearchProvider extends ChangeNotifier {
     }
   }
 
-
   void selectStyle(StyleModel style) {
     if (_selectedFilterStyles.contains(style)) {
       _selectedFilterStyles.remove(style);
@@ -203,8 +212,9 @@ class SearchProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void clearSelectedStyles() {
+  void clearSelectedStyles(BuildContext context) {
     _selectedFilterStyles.clear();
+    Provider.of<DatabaseProvider>(context, listen: false).clearSelectedStyles();
     notifyListeners();
   }
 
@@ -226,18 +236,22 @@ class SearchProvider extends ChangeNotifier {
 
   bool checkIfThereWasChangesInFilters() {
     if (_priceRange != RangeValues(1, 100000) ||
-        _selectedFilterBrands.isNotEmpty || _selectedFilterStyles.isNotEmpty) {
+        _selectedFilterBrands.isNotEmpty ||
+        _selectedFilterStyles.isNotEmpty) {
       return true;
     } else {
       return false;
     }
   }
 
-  void clearAllFilters() {
+  void clearAllFilters(BuildContext context) {
     _selectedFilterBrands.clear();
     _selectedFilterStyles.clear();
     _priceRange = RangeValues(1, 100000);
+    Provider.of<DatabaseProvider>(
+      context,
+      listen: false,
+    ).resetFilterRequestModel();
     notifyListeners();
   }
-
 }

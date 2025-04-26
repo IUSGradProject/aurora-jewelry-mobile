@@ -232,7 +232,9 @@ class _SearchScreenState extends State<SearchScreen> {
                             padding: EdgeInsets.zero,
                             minimumSize: const Size(0, 0),
                             onPressed:
-                                () => searchProvider.clearSelectedCategories(),
+                                () => searchProvider.clearSelectedCategories(
+                                  context,
+                                ),
                             child: ListView(
                               scrollDirection: Axis.horizontal,
                               children: [

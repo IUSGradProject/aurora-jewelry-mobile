@@ -26,10 +26,6 @@ class DatabaseProvider extends ChangeNotifier {
   FilterRequestModel _filterRequestModel = FilterRequestModel(
     categories: [],
     brands: [],
-    minPrice: 0,
-    maxPrice: 0,
-    sortBy: '',
-    sortDesc: false,
     styles: [],
   );
 
@@ -70,15 +66,45 @@ class DatabaseProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setCategoryForFilterRequestModel(
+    CategoryModel category,
+    BuildContext context,
+  ) {
+    _filterRequestModel.categories.add(category.id);
+    notifyListeners();
+  }
+
+  void removeCategoryFromFilterRequestModel(CategoryModel category) {
+    _filterRequestModel.categories.remove(category.id);
+    notifyListeners();
+  }
+
+  void clearSelectedCategories() {
+    _filterRequestModel.categories.clear();
+    notifyListeners();
+  }
+
+  void clearSelectedBrands() {
+    _filterRequestModel.brands.clear();
+    notifyListeners();
+  }
+
+  void clearSelectedStyles() {
+    _filterRequestModel.styles.clear();
+    notifyListeners();
+  }
+
+  void resetPriceRangeForFilterRequestModel() {
+    _filterRequestModel.minPrice = null;
+    _filterRequestModel.maxPrice = null;
+    notifyListeners();
+  }
+
   /// Method to reset filter request model
   void resetFilterRequestModel() {
     _filterRequestModel = FilterRequestModel(
       categories: [],
       brands: [],
-      minPrice: 0,
-      maxPrice: 0,
-      sortBy: '',
-      sortDesc: false,
       styles: [],
     );
     notifyListeners();
@@ -90,10 +116,12 @@ class DatabaseProvider extends ChangeNotifier {
     try {
       _areProductsFetched = false;
       notifyListeners();
-
+      print(
+        "I am in fetchFilteredProducts, and categories are: ${_filterRequestModel.maxPrice}",
+      );
       // Step 1: Fetch the filtered products
       final response = await _apiService.getProductsWithFilters(
-        filterRequestModel,
+        _filterRequestModel,
         pageNumber: page,
         pageSize: pageSize,
       );
