@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:aurora_jewelry/models/Auth/login_response.dart';
+import 'package:aurora_jewelry/models/Orders/previous_order_model.dart';
 import 'package:aurora_jewelry/models/Products/brand_model.dart';
 import 'package:aurora_jewelry/models/Products/category_model.dart';
 import 'package:aurora_jewelry/models/Products/detailed_product_model.dart';
@@ -22,6 +23,7 @@ class ApiService {
         headers: {'Content-Type': 'application/json', 'Accept': '*/*'},
         body: jsonEncode({'email': email, 'password': password}),
       );
+
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body);
         return LoginResponse.fromJson(json);
@@ -153,8 +155,8 @@ class ApiService {
     if (response.statusCode == 200) {
       final jsonBody = json.decode(response.body);
       return (jsonBody as List)
-        .map((item) => BrandModel.fromJson(item))
-        .toList();
+          .map((item) => BrandModel.fromJson(item))
+          .toList();
     } else {
       throw Exception('Failed to load brands');
     }
@@ -167,12 +169,44 @@ class ApiService {
 
     if (response.statusCode == 200) {
       final jsonBody = json.decode(response.body);
-       return (jsonBody as List)
-        .map((item) => StyleModel.fromJson(item))
-        .toList();
+      return (jsonBody as List)
+          .map((item) => StyleModel.fromJson(item))
+          .toList();
     } else {
       throw Exception('Failed to load styles');
     }
   }
 
+  Future<List<PreviousOrderModel>> getUserPurchaseHistory(
+    String userToken, {
+    int pageNumber = 1,
+    int pageSize = 10,
+  }) async {
+    final url = Uri.parse(
+      '$auroraBackendUrl/Carts/Order?pageNumber=$pageNumber&pageSize=$pageSize',
+    );
+
+    final response = await http.get(
+      url,
+      headers: {'Cookie': 'jwt=$userToken', 'Content-Type': 'application/json'},
+    );
+
+    if (response.statusCode == 200) {
+      final jsonBody = jsonDecode(response.body);
+
+      // Extract 'data' field from response
+
+      final List<dynamic> outerList = jsonBody['data'];
+
+      // Flattening it
+      final List<dynamic> flattened = outerList.expand((e) => e).toList();
+
+      // Now mapping to PreviousOrderModel
+      return flattened
+          .map((item) => PreviousOrderModel.fromJson(item))
+          .toList();
+    } else {
+      throw Exception('Failed to load user purchase history');
+    }
+  }
 }

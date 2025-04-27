@@ -1,3 +1,4 @@
+import 'package:aurora_jewelry/models/Orders/previous_order_model.dart';
 import 'package:aurora_jewelry/models/Products/brand_model.dart';
 import 'package:aurora_jewelry/models/Products/category_model.dart';
 import 'package:aurora_jewelry/models/Products/detailed_product_model.dart';
@@ -24,6 +25,10 @@ class DatabaseProvider extends ChangeNotifier {
   List<StyleModel> _styles = [];
   bool _areCategoriesFetched = false;
 
+  //User Details
+  List<PreviousOrderModel> _previousUserOrders = [];
+  bool _isUserOrdersFetched = false;
+
   FilterRequestModel _filterRequestModel = FilterRequestModel(
     categories: [],
     brands: [],
@@ -41,6 +46,10 @@ class DatabaseProvider extends ChangeNotifier {
   FilterRequestModel get filterRequestModel => _filterRequestModel;
   List<BrandModel> get brands => _brands;
   List<StyleModel> get styles => _styles;
+
+  ///User Related Getters
+  List<PreviousOrderModel> get previousUserOrders => _previousUserOrders;
+  bool get isUserOrdersFetched => _isUserOrdersFetched;
 
   ///Method to set searched products
   void setSearchedProducts(String searchQuery) {
@@ -212,6 +221,27 @@ class DatabaseProvider extends ChangeNotifier {
       notifyListeners();
     } catch (e) {
       debugPrint('Error fetching styles: $e');
+    }
+  }
+
+  Future<void> fetchPreviousUserOrders(
+    String userToken, {
+    int pageNumber = 1,
+    int pageSize = 10,
+  }) async {
+    try {
+      _isUserOrdersFetched = false;
+      notifyListeners();
+      // Fetch the previous user orders from the API
+      _previousUserOrders = await _apiService.getUserPurchaseHistory(
+        userToken,
+        pageNumber: pageNumber,
+        pageSize: pageSize,
+      );
+      _isUserOrdersFetched = true;
+      notifyListeners();
+    } catch (e) {
+      debugPrint('Error fetching previous user orders: $e');
     }
   }
 }

@@ -21,6 +21,7 @@ class AuthProvider extends ChangeNotifier {
     String firstName,
     String lastName,
     String email,
+    String username,
   ) async {
     final prefs = await SharedPreferences.getInstance();
     await Future.wait([
@@ -28,6 +29,7 @@ class AuthProvider extends ChangeNotifier {
       prefs.setString('firstName', firstName),
       prefs.setString('lastName', lastName),
       prefs.setString('email', email),
+      prefs.setString('username', username),
     ]);
   }
 
@@ -59,6 +61,7 @@ class AuthProvider extends ChangeNotifier {
           response.firstName,
           response.lastName,
           response.email,
+          response.username,
         );
 
         _isUserAuthenticated = true;

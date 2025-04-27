@@ -1,13 +1,13 @@
 class LoginResponse {
   final String token;
-  final String? username;
+  final String username;
   final String email;
   final String firstName;
   final String lastName;
 
   LoginResponse({
     required this.token,
-    this.username,
+    required this.username,
     required this.email,
     required this.firstName,
     required this.lastName,

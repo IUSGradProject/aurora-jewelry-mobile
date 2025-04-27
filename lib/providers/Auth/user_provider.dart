@@ -14,13 +14,21 @@ class UserProvider extends ChangeNotifier {
     final firstName = prefs.getString('firstName');
     final lastName = prefs.getString('lastName');
     final email = prefs.getString('email');
-    if (firstName != null && lastName != null && email != null) {
+    final username = prefs.getString('username');
+    final authToken = prefs.getString('jwt');
+    if (firstName != null && lastName != null && email != null && username != null) {
       _currentUser = User(
         email: email,
+        username: username,
         firstName: firstName,
         lastName: lastName,
+        authToken: authToken,
       );
     }
     notifyListeners();
   }
 }
+
+
+///Users Accounts Testing
+///stop@gmail.com -> Mirza123!
