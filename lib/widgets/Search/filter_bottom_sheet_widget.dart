@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:animated_digit/animated_digit.dart';
 import 'package:aurora_jewelry/models/Products/filter_request_model.dart';
 import 'package:aurora_jewelry/providers/Database/database_provider.dart';
@@ -223,10 +225,12 @@ class _FilterBottomSheetWidgetState extends State<FilterBottomSheetWidget> {
                                       padding: EdgeInsets.zero,
                                       minimumSize: const Size(0, 20),
                                       child: Text("Restart"),
-                                      onPressed: () async{
-                                        searchProvider.restartPriceRange(context);
-                                        await databaseProvider.fetchFilteredProducts();
-
+                                      onPressed: () async {
+                                        searchProvider.restartPriceRange(
+                                          context,
+                                        );
+                                        await databaseProvider
+                                            .fetchFilteredProducts();
                                       },
                                     ),
                                   ],
@@ -333,12 +337,12 @@ class _FilterBottomSheetWidgetState extends State<FilterBottomSheetWidget> {
                                       padding: EdgeInsets.zero,
                                       minimumSize: const Size(0, 20),
                                       child: Text("Clear"),
-                                      onPressed: () async  {
+                                      onPressed: () async {
                                         searchProvider.clearSelectedBrands(
                                           context,
                                         );
-                                        await databaseProvider.fetchFilteredProducts();
-
+                                        await databaseProvider
+                                            .fetchFilteredProducts();
                                       },
                                     ),
                                   ],
@@ -445,11 +449,12 @@ class _FilterBottomSheetWidgetState extends State<FilterBottomSheetWidget> {
                                       padding: EdgeInsets.zero,
                                       minimumSize: const Size(0, 20),
                                       child: Text("Clear"),
-                                      onPressed: () async{
+                                      onPressed: () async {
                                         searchProvider.clearSelectedStyles(
                                           context,
                                         );
-                                        await databaseProvider.fetchFilteredProducts();
+                                        await databaseProvider
+                                            .fetchFilteredProducts();
                                       },
                                     ),
                                   ],
@@ -476,6 +481,46 @@ class _FilterBottomSheetWidgetState extends State<FilterBottomSheetWidget> {
                             ),
                           ),
                         ],
+                      ),
+                      Positioned(
+                        top: 0,
+                        right: 40,
+                        child: AnimatedOpacity(
+                          opacity:
+                              searchProvider.checkIfThereWasChangesInFilters()
+                                  ? 1
+                                  : 0,
+                          duration: const Duration(milliseconds: 300),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: BackdropFilter(
+                              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                              child: CupertinoButton(
+                                padding: EdgeInsets.only(
+                                  top: 4,
+                                  bottom: 4,
+                                  left: 12,
+                                  right: 12,
+                                ),
+
+                                child: Text(
+                                  "Clear All",
+                                  style: TextStyle(
+                                    color: CupertinoColors.destructiveRed,
+                                  ),
+                                ),
+                                onPressed: () async {
+                                  if (searchProvider
+                                      .checkIfThereWasChangesInFilters()) {
+                                    searchProvider.clearAllFilters(context);
+                                    await databaseProvider
+                                        .fetchFilteredProducts();
+                                  }
+                                },
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
                       Positioned(
                         right: 0,
@@ -587,7 +632,6 @@ class _FilterBottomSheetWidgetState extends State<FilterBottomSheetWidget> {
                                       listen: false,
                                     ).fetchFilteredProducts();
                                     // ignore: use_build_context_synchronously
-
                                     Navigator.pop(context);
                                   }
                                 }

@@ -137,9 +137,7 @@ class DatabaseProvider extends ChangeNotifier {
     try {
       _areProductsFetched = false;
       notifyListeners();
-      print(
-        "I am in fetchFilteredProducts, and categories are: ${_filterRequestModel.maxPrice}",
-      );
+
       // Step 1: Fetch the filtered products
       final response = await _apiService.getProductsWithFilters(
         _filterRequestModel,

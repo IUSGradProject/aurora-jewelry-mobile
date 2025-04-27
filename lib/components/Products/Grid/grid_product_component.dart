@@ -113,15 +113,16 @@ class _GridProductComponentState extends State<GridProductComponent>
                   color:
                       MediaQuery.of(context).platformBrightness ==
                               Brightness.dark
-                          ? CupertinoColors.tertiarySystemFill
+                          ? CupertinoColors.secondarySystemFill
                           : CupertinoColors.white,
-                  boxShadow: [
-                    BoxShadow(
-                      color: CupertinoColors.black.withValues(alpha: 0.16),
-                      offset: Offset(0, 4),
-                      blurRadius: 12,
-                    ),
-                  ],
+
+                  border: Border.all(
+                    color:
+                        MediaQuery.of(context).platformBrightness ==
+                                Brightness.dark
+                            ? CupertinoColors.transparent
+                            : CupertinoColors.systemGrey5,
+                  ),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

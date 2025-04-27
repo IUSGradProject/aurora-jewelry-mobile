@@ -112,17 +112,17 @@ class _ListProductComponentState extends State<ListProductComponent>
                 borderRadius: BorderRadius.circular(8),
                 color:
                     MediaQuery.of(context).platformBrightness == Brightness.dark
-                        ? CupertinoColors.tertiarySystemFill
+                        ? CupertinoColors.secondarySystemFill
                         : CupertinoColors.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: CupertinoColors.black.withValues(
-                      alpha: 0.16,
-                    ), // Shadow color
-                    offset: const Offset(0, 4), // Shadow offset
-                    blurRadius: 12, // Shadow blur radius
-                  ),
-                ],
+
+                border: Border.all(
+                  color:
+                      MediaQuery.of(context).platformBrightness ==
+                              Brightness.dark
+                          ? CupertinoColors.transparent
+                          : CupertinoColors.systemGrey5,
+                  width: 1,
+                ),
               ),
               child: Column(
                 children: [

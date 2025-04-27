@@ -273,6 +273,7 @@ class SearchProvider extends ChangeNotifier {
       context,
       listen: false,
     ).resetFilterRequestModel();
+    
     notifyListeners();
   }
 }
