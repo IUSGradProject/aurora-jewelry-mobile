@@ -502,7 +502,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             borderRadius: BorderRadius.circular(8),
                             child:
                                 authProvider.isLoading
-                                    ? CupertinoActivityIndicator() // Show loader if loading
+                                    ? CupertinoActivityIndicator(color: CupertinoColors.white,) // Show loader if loading
                                     : Text(
                                       isRegistration
                                           ? "Register now"
