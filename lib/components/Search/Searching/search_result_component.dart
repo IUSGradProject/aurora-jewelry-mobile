@@ -26,7 +26,7 @@ class _SearchResultComponentState extends State<SearchResultComponent> {
                       return ListProductComponent(product: products[index]);
                     },
                   )
-                  : Column(
+                  : ListView(
                     children: [
                       Lottie.asset(
                         "lib/assets/nothing-found.json",
