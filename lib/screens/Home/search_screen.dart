@@ -52,11 +52,8 @@ class _SearchScreenState extends State<SearchScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Column(
               children: [
-         
-
                 UpperComponent(),
-                SizedBox(height: 0),
-
+                SizedBox(height: 16),
                 !searchProvider.isSearchingActive
                     ? Expanded(
                       child: ListView(

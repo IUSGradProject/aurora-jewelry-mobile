@@ -26,14 +26,7 @@ class _UpperComponentState extends State<UpperComponent> {
           (context, searchProvider, databaseProvider, child) => Stack(
             clipBehavior: Clip.none,
             children: [
-              AnimatedContainer(
-               // color: CupertinoColors.systemRed,
-                duration: const Duration(milliseconds: 300),
-                height: isComponentOpened ? 0 : 93,
-                child: Container(
-                 color: CupertinoTheme.of(context).scaffoldBackgroundColor,
-                ),
-              ),
+              Container(height: 93),
               AnimatedContainer(
                 curve: Curves.easeInOut,
                 duration: const Duration(milliseconds: 400),
@@ -161,25 +154,29 @@ class _UpperComponentState extends State<UpperComponent> {
                               return [
                                 PullDownMenuItem.selectable(
                                   selected: searchProvider.selectedSorting
-                                      .contains("Lowest Price"),
+                                      .contains("Highest to lowest price"),
                                   onTap: () {
                                     HapticFeedback.selectionClick();
-                                    searchProvider.selectSort("Lowest Price");
+                                    searchProvider.selectSort(
+                                      "Highest to lowest price",
+                                    );
                                   },
-                                  title: "Lowest Price",
+                                  title: "Highest to lowest price",
+                                  icon: CupertinoIcons.arrow_up,
+                                ),
+                                PullDownMenuItem.selectable(
+                                  selected: searchProvider.selectedSorting
+                                      .contains("Lowest to highest price"),
+                                  onTap: () {
+                                    HapticFeedback.selectionClick();
+                                    searchProvider.selectSort(
+                                      "Lowest to highest price",
+                                    );
+                                  },
+                                  title: "Lowest to highest price",
                                   icon: CupertinoIcons.arrow_down,
                                 ),
 
-                                PullDownMenuItem.selectable(
-                                  selected: searchProvider.selectedSorting
-                                      .contains("Highest Price"),
-                                  onTap: () {
-                                    HapticFeedback.selectionClick();
-                                    searchProvider.selectSort("Highest Price");
-                                  },
-                                  title: "Highest Price",
-                                  icon: CupertinoIcons.arrow_up,
-                                ),
                                 PullDownMenuItem.selectable(
                                   selected: searchProvider.selectedSorting
                                       .contains("A to Z"),
@@ -374,13 +371,15 @@ class _UpperComponentState extends State<UpperComponent> {
 
               AnimatedPositioned(
                 curve: Curves.easeInOut,
-                duration: const Duration(milliseconds:300),
+                duration: const Duration(milliseconds: 300),
                 bottom: 0,
-                right:
-                    isComponentOpened
-                        ? 0
-                        : MediaQuery.of(context).size.width / 3,
+                // right:
+                //     isComponentOpened
+                //         ? 0
+                //         : MediaQuery.of(context).size.width / 3,
+                right: 0,
                 child: AnimatedScale(
+                  alignment: Alignment.topCenter,
                   scale:
                       databaseProvider.filterRequestModel.categories.isEmpty
                           ? 0
@@ -397,7 +396,7 @@ class _UpperComponentState extends State<UpperComponent> {
                     },
                     child: AnimatedContainer(
                       duration: Duration(milliseconds: 300),
-                      width: isComponentOpened ? 35 : 90,
+                      width: isComponentOpened ? 35 : 94,
                       height: 35,
                       padding: EdgeInsets.only(right: 8, left: 7),
                       decoration: BoxDecoration(
@@ -409,11 +408,9 @@ class _UpperComponentState extends State<UpperComponent> {
 
                         borderRadius: BorderRadius.circular(50),
                         border: Border.all(
-                          color:
-                           CupertinoColors.activeBlue,
-                                  width: 1
+                          color: CupertinoColors.activeBlue,
+                          width: 1,
                         ),
-                       
                       ),
                       child: AnimatedRotation(
                         turns: isComponentOpened ? 0 : 0,
@@ -436,9 +433,13 @@ class _UpperComponentState extends State<UpperComponent> {
                                           duration: Duration(milliseconds: 300),
                                           child: Row(
                                             children: [
-                                              Icon(CupertinoIcons.search),
+                                              Icon(
+                                                CupertinoIcons
+                                                    .slider_horizontal_3,
+                                              ),
+                                              SizedBox(width: 8),
                                               Text(
-                                                "Search",
+                                                "Refine",
                                                 style: TextStyle(
                                                   color:
                                                       MediaQuery.of(
