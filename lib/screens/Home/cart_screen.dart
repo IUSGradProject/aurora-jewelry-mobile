@@ -119,40 +119,73 @@ class _CartScreenState extends State<CartScreen> {
 
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                          child: AnimatedOpacity(
-                            duration: Duration(milliseconds: 300),
-                            opacity: cartProvider.checkoutItems.isNotEmpty ? 1 : 0.5,
-                            child: Container(
-                              padding: EdgeInsets.symmetric(horizontal: 16),
-                              height: 50,
-                              decoration: BoxDecoration(
-                                color: CupertinoColors.activeGreen,
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    CupertinoIcons.cart,
-                                    color: CupertinoColors.white,
-                                  ),
-                                  SizedBox(width: 8),
-                                  Text(
-                                    "Proceed to Checkout",
-                                    style: TextStyle(
-                                      color: CupertinoColors.white,
+                          child: AnimatedSwitcher(
+                            duration: const Duration(milliseconds: 300),
+
+                            child:
+                                cartProvider.isLoading
+                                    ? Container(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 16,
+                                      ),
+                                      height: 50,
+                                      decoration: BoxDecoration(
+                                        //color: CupertinoColors.activeGreen,
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          CupertinoActivityIndicator(
+                                            color: CupertinoColors.activeBlue,
+                                          ),
+                                        ],
+                                      ),
+                                    )
+                                    : AnimatedOpacity(
+                                      duration: Duration(milliseconds: 300),
+                                      opacity:
+                                          cartProvider.checkoutItems.isNotEmpty
+                                              ? 1
+                                              : 0.5,
+                                      child: Container(
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 16,
+                                        ),
+                                        height: 50,
+                                        decoration: BoxDecoration(
+                                          color: CupertinoColors.activeGreen,
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
+                                        ),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Icon(
+                                              CupertinoIcons.cart,
+                                              color: CupertinoColors.white,
+                                            ),
+                                            SizedBox(width: 8),
+                                            Text(
+                                              "Proceed to Checkout",
+                                              style: TextStyle(
+                                                color: CupertinoColors.white,
+                                              ),
+                                            ),
+                                            Text(
+                                              " \$ ${cartProvider.calculateCheckoutItemsTotalPrice()}",
+                                              style: TextStyle(
+                                                color: CupertinoColors.white,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
                                     ),
-                                  ),
-                                  Text(
-                                    " \$ ${cartProvider.calculateCheckoutItemsTotalPrice()}",
-                                    style: TextStyle(
-                                      color: CupertinoColors.white,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
                           ),
                         ),
                       ],

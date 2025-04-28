@@ -41,6 +41,15 @@ class CartProvider extends ChangeNotifier {
     for (var item in _checkoutItems) {
       final cartItem = _cartItems.firstWhere(
         (cartItem) => cartItem.productId == item,
+        orElse:
+            () => CartItemContractModel(
+              productId: '',
+              name: '',
+              imageUrl: '',
+              price: 0,
+              available: 0,
+              quantity: 0,
+            ),
       );
       total +=
           cartItem.quantity * cartItem.price; // Assuming each item costs 100
@@ -72,6 +81,15 @@ class CartProvider extends ChangeNotifier {
           for (var item in _checkoutItems) {
             final cartItem = _cartItems.firstWhere(
               (cartItem) => cartItem.productId == item,
+              orElse:
+                  () => CartItemContractModel(
+                    productId: '',
+                    name: '',
+                    imageUrl: '',
+                    price: 0,
+                    available: 0,
+                    quantity: 0,
+                  ),
             );
             if (cartItem.quantity == 0) {
               itemsToRemove.add(item);
@@ -88,6 +106,27 @@ class CartProvider extends ChangeNotifier {
       _isLoading = false;
       notifyListeners();
       print('Failed to fetch cart: $e');
+      rethrow;
+    }
+  }
+
+  Future<void> removeFromCart(BuildContext context, String productId) async {
+    try {
+      _isLoading = true;
+      notifyListeners();
+      String? userToken =
+          Provider.of<UserProvider>(
+            context,
+            listen: false,
+          ).currentUser!.authToken;
+
+      await _apiService.deleteCartItem(productId, userToken!);
+
+      await fetchCart(context);
+      _isLoading = false;
+      notifyListeners();
+    } catch (e) {
+      print('Failed to remove item from cart: $e');
       rethrow;
     }
   }

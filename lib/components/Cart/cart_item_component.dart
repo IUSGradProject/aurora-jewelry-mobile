@@ -185,7 +185,12 @@ class CartItemComponent extends StatelessWidget {
                         CupertinoButton(
                           padding: EdgeInsets.zero,
                           minimumSize: Size.zero,
-                          onPressed: () {},
+                          onPressed: () {
+                            cartProvider.removeFromCart(
+                              context,
+                              cartItem.productId,
+                            );
+                          },
                           child: Container(
                             height: 30,
 
