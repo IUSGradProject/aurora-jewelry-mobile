@@ -1,6 +1,9 @@
 import 'dart:convert';
 
 import 'package:aurora_jewelry/models/Auth/login_response.dart';
+import 'package:aurora_jewelry/models/Cart/cart_item_contract_model.dart';
+import 'package:aurora_jewelry/models/Cart/cart_request_model.dart';
+
 import 'package:aurora_jewelry/models/Orders/previous_order_model.dart';
 import 'package:aurora_jewelry/models/Products/brand_model.dart';
 import 'package:aurora_jewelry/models/Products/category_model.dart';
@@ -177,6 +180,8 @@ class ApiService {
     }
   }
 
+  ///Cart Related APIs
+
   Future<List<PreviousOrderModel>> getUserPurchaseHistory(
     String userToken, {
     int pageNumber = 1,
@@ -207,6 +212,100 @@ class ApiService {
           .toList();
     } else {
       throw Exception('Failed to load user purchase history');
+    }
+  }
+
+  /// funtion to add item to cart
+  Future<void> addToCart(
+    CartItemContractModel cartItem,
+    String userToken,
+  ) async {
+    final url = Uri.parse('$auroraBackendUrl/Carts');
+
+    final headers = {
+      'Content-Type': 'application/json',
+      'Accept': '*/*',
+      'Cookie': 'jwt=$userToken',
+    };
+
+    final body = jsonEncode(cartItem.toJson());
+
+    final response = await http.post(url, headers: headers, body: body);
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      // Item added successfully
+    } else {
+      final error = jsonDecode(response.body);
+      throw Exception(error['message'] ?? 'Failed to add item to cart');
+    }
+  }
+
+  /// function to get cart items
+  Future<List<CartItemContractModel>> getCart(String userToken) async {
+    final url = Uri.parse('$auroraBackendUrl/Carts');
+
+    final headers = {
+      'Content-Type': 'application/json',
+      'Accept': '*/*',
+      'Cookie': 'jwt=$userToken',
+    };
+
+    final response = await http.get(url, headers: headers);
+
+    if (response.statusCode == 200) {
+      final List<dynamic> jsonBody = jsonDecode(response.body);
+
+      // Now mapping to PreviousOrderModel
+       return jsonBody
+        .map((item) => CartItemContractModel.fromJson(item))
+        .toList();
+    } else {
+      throw Exception('Failed to load cart items');
+    }
+  }
+
+  /// function to remove item from cart
+  Future<void> deleteCartItem(String productId, String userToken) async {
+    final url = Uri.parse('$auroraBackendUrl/Carts/$productId');
+
+    final headers = {
+      'Content-Type': 'application/json',
+      'Accept': '*/*',
+      'Cookie': 'jwt=$userToken',
+    };
+
+    final response = await http.delete(url, headers: headers);
+
+    if (response.statusCode == 200) {
+      // Item deleted successfully
+    } else {
+      final error = jsonDecode(response.body);
+      throw Exception(error['message'] ?? 'Failed to delete item from cart');
+    }
+  }
+
+  /// function to add mutiple items to cart
+  Future<void> addMultipleItemsToCart(
+    CartRequestModel cartRequest,
+    String userToken,
+  ) async {
+    final url = Uri.parse('$auroraBackendUrl/Carts/Items');
+
+    final headers = {
+      'Content-Type': 'application/json',
+      'Accept': '*/*',
+      'Cookie': 'jwt=$userToken',
+    };
+
+    final body = jsonEncode(cartRequest.toJson());
+
+    final response = await http.post(url, headers: headers, body: body);
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      // Items added successfully
+    } else {
+      final error = jsonDecode(response.body);
+      throw Exception(error['message'] ?? 'Failed to add items to cart');
     }
   }
 }

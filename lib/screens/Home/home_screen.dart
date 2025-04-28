@@ -31,11 +31,17 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
 
     // Delay the call until after build is done
-    Future.microtask(() {
+    Future.microtask(() async {
       // ignore: use_build_context_synchronously
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      final cartProvider = Provider.of<CartProvider>(context, listen: false);
       // ignore: use_build_context_synchronously
-      authProvider.checkIfAuthenticated(context);
+      await authProvider.checkIfAuthenticated(context);
+      if (authProvider.isUserAuthenticated) {
+
+        // ignore: use_build_context_synchronously
+        await cartProvider.fetchCart(context);
+      }
     });
   }
 
