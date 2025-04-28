@@ -19,14 +19,9 @@ class _CartScreenState extends State<CartScreen> {
   void initState() {
     super.initState();
     // Schedule fetchCart after build
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       final cartProvider = Provider.of<CartProvider>(context, listen: false);
-      cartProvider.fetchCart(context);
-      if (cartProvider.cartItems.isNotEmpty) {
-        setState(() {
-          isBottomSheetOpened = true;
-        });
-      }
+      await cartProvider.fetchCart(context);
     });
   }
 
@@ -102,7 +97,7 @@ class _CartScreenState extends State<CartScreen> {
                   bottom: 84,
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 300),
-                    height: isBottomSheetOpened ? 80 : 0,
+                    height: cartProvider.isBottomSheetOpened ? 80 : 0,
                     width: MediaQuery.of(context).size.width,
                     decoration: BoxDecoration(
                       color: CupertinoTheme.of(context).barBackgroundColor,

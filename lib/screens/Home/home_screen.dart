@@ -34,6 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
     Future.microtask(() async {
       // ignore: use_build_context_synchronously
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      // ignore: use_build_context_synchronously
       final cartProvider = Provider.of<CartProvider>(context, listen: false);
       // ignore: use_build_context_synchronously
       await authProvider.checkIfAuthenticated(context);

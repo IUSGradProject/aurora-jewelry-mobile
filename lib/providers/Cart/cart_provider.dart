@@ -13,14 +13,21 @@ class CartProvider extends ChangeNotifier {
   final GlobalKey cartIconButtonKey = GlobalKey();
 
   bool _isLoading = false;
+  bool _isBottomSheetOpened = false;
 
   // Getters
   List<CartItemContractModel> get cartItems => _cartItems;
   List<String> get checkoutItems => _checkoutItems;
   bool get isLoading => _isLoading;
+  bool get isBottomSheetOpened => _isBottomSheetOpened;
 
-  double _totalPrice = 0.0;
+  final double _totalPrice = 0.0;
   double get totalPrice => _totalPrice;
+
+  void setIsBottomSheetOpened(bool value) {
+    _isBottomSheetOpened = value;
+    notifyListeners();
+  }
 
   void addCheckoutItem(CartItemContractModel item) {
     _checkoutItems.add(item.productId);
@@ -72,6 +79,15 @@ class CartProvider extends ChangeNotifier {
       _cartItems.clear();
       _cartItems.addAll(cartResponse);
 
+
+      // Closing and opening bottom sheet
+      if (_cartItems.isNotEmpty) {
+        setIsBottomSheetOpened(true);
+      }
+      else{
+        setIsBottomSheetOpened(false);
+      }
+
       //Edge case: If some items are set to 0 quantity in the backend
       // but still exist in the checkout items, remove them from checkout items
       if (_checkoutItems.isNotEmpty) {
@@ -105,7 +121,6 @@ class CartProvider extends ChangeNotifier {
     } catch (e) {
       _isLoading = false;
       notifyListeners();
-      print('Failed to fetch cart: $e');
       rethrow;
     }
   }
@@ -122,6 +137,7 @@ class CartProvider extends ChangeNotifier {
 
       await _apiService.deleteCartItem(productId, userToken!);
 
+      // ignore: use_build_context_synchronously
       await fetchCart(context);
       _isLoading = false;
       notifyListeners();
