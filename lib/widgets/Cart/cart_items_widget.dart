@@ -12,11 +12,8 @@ class CartItemsWidget extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: Container(
-          padding: EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: CupertinoColors.secondarySystemFill,
-            borderRadius: BorderRadius.circular(8),
-          ),
+          padding: EdgeInsets.all(0),
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(8)),
           child: Column(
             children: [
               Column(
@@ -24,17 +21,7 @@ class CartItemsWidget extends StatelessWidget {
                   return CartItemComponent(cartItem: cartItems[index]);
                 }),
               ),
-
-              Container(
-                height: 20,
-                decoration: BoxDecoration(
-                  color: CupertinoColors.secondarySystemFill,
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(16),
-                    bottomRight: Radius.circular(16),
-                  ),
-                ),
-              ),
+              SizedBox(height: 160,)
             ],
           ),
         ),

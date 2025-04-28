@@ -8,6 +8,7 @@ import 'package:provider/provider.dart'; // Adjust the path if different
 class CartProvider extends ChangeNotifier {
   final ApiService _apiService = ApiService();
   final List<CartItemContractModel> _cartItems = [];
+  final List<String> _checkoutItems = [];
 
   final GlobalKey cartIconButtonKey = GlobalKey();
 
@@ -15,10 +16,37 @@ class CartProvider extends ChangeNotifier {
 
   // Getters
   List<CartItemContractModel> get cartItems => _cartItems;
+  List<String> get checkoutItems => _checkoutItems;
   bool get isLoading => _isLoading;
 
   double _totalPrice = 0.0;
   double get totalPrice => _totalPrice;
+
+  void addCheckoutItem(CartItemContractModel item) {
+    _checkoutItems.add(item.productId);
+    notifyListeners();
+  }
+
+  void removeCheckoutItem(CartItemContractModel item) {
+    _checkoutItems.remove(item.productId);
+    notifyListeners();
+  }
+
+  bool isItemInCheckout(CartItemContractModel item) {
+    return _checkoutItems.contains(item.productId);
+  }
+
+  int calculateCheckoutItemsTotalPrice() {
+    int total = 0;
+    for (var item in _checkoutItems) {
+      final cartItem = _cartItems.firstWhere(
+        (cartItem) => cartItem.productId == item,
+      );
+      total +=
+          cartItem.quantity * cartItem.price; // Assuming each item costs 100
+    }
+    return total;
+  }
 
   // Load cart from backend
   Future<void> fetchCart(BuildContext context) async {
@@ -34,6 +62,25 @@ class CartProvider extends ChangeNotifier {
       final cartResponse = await _apiService.getCart(userToken!);
       _cartItems.clear();
       _cartItems.addAll(cartResponse);
+
+      //Edge case: If some items are set to 0 quantity in the backend
+      // but still exist in the checkout items, remove them from checkout items
+      if (_checkoutItems.isNotEmpty) {
+        if (cartItems.length != _checkoutItems.length) {
+          final List<String> itemsToRemove = [];
+
+          for (var item in _checkoutItems) {
+            final cartItem = _cartItems.firstWhere(
+              (cartItem) => cartItem.productId == item,
+            );
+            if (cartItem.quantity == 0) {
+              itemsToRemove.add(item);
+            }
+          }
+
+          _checkoutItems.removeWhere((item) => itemsToRemove.contains(item));
+        }
+      }
 
       _isLoading = false;
       notifyListeners();
@@ -107,9 +154,7 @@ class CartProvider extends ChangeNotifier {
   //   }
   // }
 
-
   void addToCart() {
- 
     notifyListeners();
   }
 }
