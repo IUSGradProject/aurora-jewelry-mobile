@@ -17,12 +17,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final GlobalKey cartKey = GlobalKey();
-
-  final pages = [
-    () => DiscoverScreen(),
-    () => SearchScreen(),
-    () => CartScreen(),
-  ];
+  late final List<Widget> pages;
 
   int currentTabIndex = 0;
 
@@ -30,7 +25,8 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
 
-    // Delay the call until after build is done
+    pages = [const DiscoverScreen(), const SearchScreen(), const CartScreen()];
+
     Future.microtask(() async {
       // ignore: use_build_context_synchronously
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
@@ -39,7 +35,6 @@ class _HomeScreenState extends State<HomeScreen> {
       // ignore: use_build_context_synchronously
       await authProvider.checkIfAuthenticated(context);
       if (authProvider.isUserAuthenticated) {
-
         // ignore: use_build_context_synchronously
         await cartProvider.fetchCart(context);
       }
@@ -71,6 +66,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     currentTabIndex = index;
                   });
                 }
+
+               
               },
               items: <BottomNavigationBarItem>[
                 BottomNavigationBarItem(
@@ -154,7 +151,7 @@ class _HomeScreenState extends State<HomeScreen> {
             tabBuilder: (BuildContext context, index) {
               return CupertinoTabView(
                 builder: (BuildContext context) {
-                  return pages[currentTabIndex]();
+                  return pages[index];
                 },
               );
             },

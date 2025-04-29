@@ -147,7 +147,11 @@ class CartProvider extends ChangeNotifier {
   }
 
   /// function to add product to cart
-  Future<void> addProductToCart(Product product, BuildContext context, {int quantity = 1}) async {
+  Future<void> addProductToCart(
+    Product product,
+    BuildContext context, {
+    int quantity = 1,
+  }) async {
     //Convert Product to CartItemContractModel
     final cartItem = CartItemContractModel(
       productId: product.productId,
@@ -164,8 +168,6 @@ class CartProvider extends ChangeNotifier {
         ).currentUser!.authToken;
 
     try {
-      _isLoading = true;
-      notifyListeners();
       await _apiService.addToCart(cartItem, userToken!);
 
       // ignore: use_build_context_synchronously
@@ -174,7 +176,6 @@ class CartProvider extends ChangeNotifier {
       // But user cannot be inside of cart to perform this action because of that we are closing the bottom sheet
       // this could be more optimized by dividing/changing the logic for opening and closing the bottom sheet.
       // setIsBottomSheetOpened(false);
-      _isLoading = false;
 
       notifyListeners();
     } catch (e) {
@@ -182,9 +183,5 @@ class CartProvider extends ChangeNotifier {
       notifyListeners();
       rethrow;
     }
-  }
-
-  void addToCart() {
-    notifyListeners();
   }
 }

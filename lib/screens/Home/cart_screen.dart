@@ -79,21 +79,6 @@ class _CartScreenState extends State<CartScreen> {
                           ),
                         )
                         : CartItemsWidget(cartItems: cartProvider.cartItems),
-                    // SliverToBoxAdapter(
-                    //   child: CartItemComponent(
-                    //     itemName: "Necklace",
-                    //     quantity: 2,
-                    //     price: 129.99,
-                    //     onFinishOrder: () {
-                    //       Navigator.of(context, rootNavigator: true).push(
-                    //         CupertinoSheetRoute<void>(
-                    //           builder:
-                    //               (BuildContext context) => const EnterAddressScreen(),
-                    //         ),
-                    //       );
-                    //     },
-                    //   ),
-                    // ),
                   ],
                 ),
                 Positioned(
