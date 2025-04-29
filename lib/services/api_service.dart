@@ -256,9 +256,9 @@ class ApiService {
       final List<dynamic> jsonBody = jsonDecode(response.body);
 
       // Now mapping to PreviousOrderModel
-       return jsonBody
-        .map((item) => CartItemContractModel.fromJson(item))
-        .toList();
+      return jsonBody
+          .map((item) => CartItemContractModel.fromJson(item))
+          .toList();
     } else {
       throw Exception('Failed to load cart items');
     }
@@ -307,5 +307,32 @@ class ApiService {
       final error = jsonDecode(response.body);
       throw Exception(error['message'] ?? 'Failed to add items to cart');
     }
+  }
+
+  Future<void> updateCartItem(
+    CartItemContractModel cartItem,
+    String userToken,
+  ) async {
+
+    final url = Uri.parse('$auroraBackendUrl/Carts/');
+
+    final headers = {
+      'Content-Type': 'application/json',
+      'Accept': '*/*',
+      'Cookie': 'jwt=$userToken',
+    };
+
+    final body = jsonEncode(cartItem.toJson());
+
+    final response = await http.post(url, headers: headers, body: body);
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      // Item updated successfully
+    } else {
+      final error = jsonDecode(response.body);
+      print("Error: " + error.toString());
+      throw Exception(error['message'] ?? 'Failed to update item in cart');
+    }
+
   }
 }

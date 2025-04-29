@@ -231,7 +231,19 @@ class CartItemComponent extends StatelessWidget {
                                           ? CupertinoColors.white
                                           : CupertinoColors.black,
                                 ),
-                                onPressed: () {},
+                                onPressed: () async {
+                                  if (cartItem.quantity > 1) {
+                                    cartProvider.decrementCartItemQuantity(
+                                      cartItem,
+                                    );
+                                    await cartProvider.updateCartItem(
+                                      cartItem,
+                                      context,
+                                    );
+                                  } else {
+                                    ///Show modal saying it was unable because quanityt cannot be lower than 1
+                                  }
+                                },
                               ),
                               Container(
                                 height: 22,
@@ -244,41 +256,29 @@ class CartItemComponent extends StatelessWidget {
                                 padding: EdgeInsets.zero,
                                 child: Icon(
                                   CupertinoIcons.plus,
+
                                   color:
-                                      MediaQuery.of(
+                                      cartItem.quantity > 1
+                                          ? CupertinoColors.systemGrey
+                                          : MediaQuery.of(
                                                 context,
                                               ).platformBrightness ==
                                               Brightness.dark
                                           ? CupertinoColors.white
                                           : CupertinoColors.black,
-                                  // color:
-                                  //     searchProvider.currentProductQuantity ==
-                                  //             databaseProvider
-                                  //                 .detailedProduct!
-                                  //                 .available
-                                  //         ? CupertinoColors.systemGrey
-                                  //         : MediaQuery.of(
-                                  //               context,
-                                  //             ).platformBrightness ==
-                                  //             Brightness.dark
-                                  //         ? CupertinoColors.white
-                                  //         : CupertinoColors.black,
                                 ),
-                                onPressed: () {
-                                  // if (searchProvider.currentProductQuantity <
-                                  //     databaseProvider
-                                  //         .detailedProduct!
-                                  //         .available) {
-                                  //   searchProvider
-                                  //       .incrementCurrentProductQuantity();
-                                  // } else {
-                                  //   // Use Builder to get the correct context that includes ScaffoldMessenger
-                                  //   // showCupertinoSnackBar(
-                                  //   //   // ignore: use_build_context_synchronously
-                                  //   //   context: context,
-                                  //   //   message: "No more items available.",
-                                  //   // );
-                                  // }
+                                onPressed: () async {
+                                  if (cartItem.available > 1) {
+                                    cartProvider.incrementCartItemQuantity(
+                                      cartItem,
+                                    );
+                                    await cartProvider.updateCartItem(
+                                      cartItem,
+                                      context,
+                                    );
+                                  } else {
+                                    ///Show modal saying it was unable because quanityt cannot be lower than 1
+                                  }
                                 },
                               ),
                             ],

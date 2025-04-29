@@ -184,4 +184,48 @@ class CartProvider extends ChangeNotifier {
       rethrow;
     }
   }
+
+  void decrementCartItemQuantity(CartItemContractModel cartItem) {
+    if (cartItem.quantity > 1) {
+      for (int i = 0; i < cartItems.length; i++) {
+        if (cartItems[i].productId == cartItem.productId) {
+          cartItems[i].quantity = cartItems[i].quantity - 1;
+          cartItems[i].available = cartItems[i].available + 1;
+          break;
+        }
+      }
+      notifyListeners();
+    }
+  }
+
+  void incrementCartItemQuantity(CartItemContractModel cartItem) {
+    if (cartItem.available > 0) {
+      for (int i = 0; i < cartItems.length; i++) {
+        if (cartItems[i].productId == cartItem.productId) {
+          cartItems[i].available = cartItems[i].available - 1;
+          cartItems[i].quantity = cartItems[i].quantity + 1;
+          break;
+        }
+      }
+      notifyListeners();
+    }
+  }
+
+  Future<void> updateCartItem(
+    CartItemContractModel cartItem,
+    BuildContext context,
+  ) async {
+    String? userToken =
+        Provider.of<UserProvider>(
+          context,
+          listen: false,
+        ).currentUser!.authToken;
+    try {
+      await _apiService.updateCartItem(cartItem, userToken!);
+      await fetchCart(context);
+      notifyListeners();
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

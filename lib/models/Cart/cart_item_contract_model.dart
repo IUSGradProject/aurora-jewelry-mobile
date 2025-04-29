@@ -1,11 +1,10 @@
 class CartItemContractModel {
-
   final String productId;
   final String name;
   final String imageUrl;
   final int price;
-  final int available;
-  final int quantity;
+  int available;
+  int quantity;
 
   CartItemContractModel({
     required this.productId,
@@ -26,6 +25,7 @@ class CartItemContractModel {
       quantity: json['quantity'] as int,
     );
   }
+
   Map<String, dynamic> toJson() {
     return {
       'productId': productId,
@@ -36,5 +36,4 @@ class CartItemContractModel {
       'quantity': quantity,
     };
   }
-
 }
