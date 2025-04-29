@@ -116,6 +116,7 @@ class CartProvider extends ChangeNotifier {
       }
 
       _isLoading = false;
+
       notifyListeners();
     } catch (e) {
       _isLoading = false;
@@ -146,7 +147,7 @@ class CartProvider extends ChangeNotifier {
   }
 
   /// function to add product to cart
-  Future<void> addProductToCart(Product product, BuildContext context) async {
+  Future<void> addProductToCart(Product product, BuildContext context, {int quantity = 1}) async {
     //Convert Product to CartItemContractModel
     final cartItem = CartItemContractModel(
       productId: product.productId,
@@ -154,7 +155,7 @@ class CartProvider extends ChangeNotifier {
       imageUrl: product.image,
       price: product.price.toInt(),
       available: product.available,
-      quantity: 1, // Default quantity to 1
+      quantity: quantity, // Default quantity to 1
     );
     String? userToken =
         Provider.of<UserProvider>(
@@ -169,6 +170,10 @@ class CartProvider extends ChangeNotifier {
 
       // ignore: use_build_context_synchronously
       await fetchCart(context);
+      // When calling fetch cart after adding an item, it will automatically open the bottom sheet
+      // But user cannot be inside of cart to perform this action because of that we are closing the bottom sheet
+      // this could be more optimized by dividing/changing the logic for opening and closing the bottom sheet.
+      // setIsBottomSheetOpened(false);
       _isLoading = false;
 
       notifyListeners();

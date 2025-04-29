@@ -103,6 +103,10 @@ class _ProductScreenState extends State<ProductScreen>
           listen: false,
         ).detailedProduct!.convertToProduct(),
         context,
+        quantity: Provider.of<SearchProvider>(
+          context,
+          listen: false,
+        ).currentProductQuantity,
       );
     });
   }

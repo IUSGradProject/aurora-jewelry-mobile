@@ -13,8 +13,6 @@ class CartScreen extends StatefulWidget {
 }
 
 class _CartScreenState extends State<CartScreen> {
-  bool isBottomSheetOpened = false;
-
   @override
   void initState() {
     super.initState();
@@ -23,6 +21,11 @@ class _CartScreenState extends State<CartScreen> {
       final cartProvider = Provider.of<CartProvider>(context, listen: false);
       await cartProvider.fetchCart(context);
     });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
