@@ -62,8 +62,23 @@ class _GridProductComponentState extends State<GridProductComponent>
               child: Opacity(
                 opacity: 1 - animationController.value,
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(16),
-                  child: Image.asset(imagePath, width: 60, height: 60),
+                  borderRadius: BorderRadius.circular(8),
+                  child: SizedBox(
+                    height: 50,
+                    width: 50,
+
+                    child: CachedNetworkImage(
+                      imageUrl: widget.product.image,
+                      fit: BoxFit.cover,
+                      placeholder:
+                          (context, url) =>
+                              const Center(child: CupertinoActivityIndicator()),
+                      errorWidget:
+                          (context, url, error) =>
+                              const Icon(CupertinoIcons.photo),
+                      fadeInDuration: const Duration(milliseconds: 300),
+                    ),
+                  ),
                 ),
               ),
             );
@@ -73,12 +88,15 @@ class _GridProductComponentState extends State<GridProductComponent>
     );
 
     overlay.insert(overlayEntry);
-    animationController.forward().whenComplete(() {
+    animationController.forward().whenComplete(() async {
       overlayEntry?.remove();
       animationController.dispose();
 
       // Update the cart provider after animation completes
-      Provider.of<CartProvider>(context, listen: false).addToCart();
+      await Provider.of<CartProvider>(
+        context,
+        listen: false,
+      ).addProductToCart(widget.product, context);
     });
   }
 

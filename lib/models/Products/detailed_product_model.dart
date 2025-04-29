@@ -1,3 +1,5 @@
+import 'package:aurora_jewelry/models/Products/product_model.dart';
+
 class DetailedProduct {
   final String productId;
   final String name;
@@ -43,9 +45,20 @@ class DetailedProduct {
       brand: Brand.fromJson(json['brand']),
       power: Power.fromJson(json['power']),
       style: Style.fromJson(json['style']),
-      materials: (json['materials'] as List)
-          .map((e) => Material.fromJson(e))
-          .toList(),
+      materials:
+          (json['materials'] as List).map((e) => Material.fromJson(e)).toList(),
+    );
+  }
+  Product convertToProduct() {
+    return Product(
+      productId: productId,
+      name: name,
+      image: image,
+      description: description,
+      price: price,
+      soldItems: soldItems,
+      available: available,
+      isDeleted: false,
     );
   }
 }
@@ -57,10 +70,7 @@ class Category {
   Category({required this.id, required this.name});
 
   factory Category.fromJson(Map<String, dynamic> json) {
-    return Category(
-      id: json['id'],
-      name: json['name'],
-    );
+    return Category(id: json['id'], name: json['name']);
   }
 }
 
@@ -71,10 +81,7 @@ class Brand {
   Brand({required this.id, required this.name});
 
   factory Brand.fromJson(Map<String, dynamic> json) {
-    return Brand(
-      id: json['id'],
-      name: json['name'],
-    );
+    return Brand(id: json['id'], name: json['name']);
   }
 }
 
@@ -85,10 +92,7 @@ class Power {
   Power({required this.id, required this.name});
 
   factory Power.fromJson(Map<String, dynamic> json) {
-    return Power(
-      id: json['id'],
-      name: json['name'],
-    );
+    return Power(id: json['id'], name: json['name']);
   }
 }
 
@@ -99,10 +103,7 @@ class Style {
   Style({required this.id, required this.name});
 
   factory Style.fromJson(Map<String, dynamic> json) {
-    return Style(
-      id: json['id'],
-      name: json['name'],
-    );
+    return Style(id: json['id'], name: json['name']);
   }
 }
 
@@ -113,9 +114,6 @@ class Material {
   Material({this.id, this.name});
 
   factory Material.fromJson(Map<String, dynamic> json) {
-    return Material(
-      id: json['id'],
-      name: json['name'],
-    );
+    return Material(id: json['id'], name: json['name']);
   }
 }

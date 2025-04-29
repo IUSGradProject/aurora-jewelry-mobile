@@ -1,4 +1,5 @@
 import 'package:aurora_jewelry/models/Cart/cart_item_contract_model.dart';
+import 'package:aurora_jewelry/models/Products/product_model.dart';
 import 'package:aurora_jewelry/providers/Auth/user_provider.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -79,12 +80,10 @@ class CartProvider extends ChangeNotifier {
       _cartItems.clear();
       _cartItems.addAll(cartResponse);
 
-
       // Closing and opening bottom sheet
       if (_cartItems.isNotEmpty) {
         setIsBottomSheetOpened(true);
-      }
-      else{
+      } else {
         setIsBottomSheetOpened(false);
       }
 
@@ -142,72 +141,43 @@ class CartProvider extends ChangeNotifier {
       _isLoading = false;
       notifyListeners();
     } catch (e) {
-      print('Failed to remove item from cart: $e');
       rethrow;
     }
   }
 
-  // Add item to cart
-  // Future<void> addToCart(String productId, {int quantity = 1}) async {
-  //   try {
-  //     final existingItem = _cartItems.firstWhere(
-  //       (item) => item.productId == productId,
-  //       orElse: () => CartItemContractModel(productId: '', quantity: 0),
-  //     );
+  /// function to add product to cart
+  Future<void> addProductToCart(Product product, BuildContext context) async {
+    //Convert Product to CartItemContractModel
+    final cartItem = CartItemContractModel(
+      productId: product.productId,
+      name: product.name,
+      imageUrl: product.image,
+      price: product.price.toInt(),
+      available: product.available,
+      quantity: 1, // Default quantity to 1
+    );
+    String? userToken =
+        Provider.of<UserProvider>(
+          context,
+          listen: false,
+        ).currentUser!.authToken;
 
-  //     if (existingItem.productId.isNotEmpty) {
-  //       // If item exists, increase quantity
-  //       existingItem.quantity += quantity;
-  //     } else {
-  //       _cartItems.add(
-  //         CartItemContractModel(productId: productId, quantity: quantity),
-  //       );
-  //     }
+    try {
+      _isLoading = true;
+      notifyListeners();
+      await _apiService.addToCart(cartItem, userToken!);
 
-  //     await _syncCartWithBackend();
-  //     notifyListeners();
-  //   } catch (e) {
-  //     print('Failed to add to cart: $e');
-  //     rethrow;
-  //   }
-  // }
+      // ignore: use_build_context_synchronously
+      await fetchCart(context);
+      _isLoading = false;
 
-  // Remove item from cart
-  // Future<void> removeFromCart(String productId) async {
-  //   try {
-  //     _cartItems.removeWhere((item) => item.productId == productId);
-  //     await _syncCartWithBackend();
-  //     notifyListeners();
-  //   } catch (e) {
-  //     print('Failed to remove from cart: $e');
-  //     rethrow;
-  //   }
-  // }
-
-  // Clear all items
-  // Future<void> clearCart() async {
-  //   try {
-  //     _cartItems.clear();
-  //     await _syncCartWithBackend();
-  //     notifyListeners();
-  //   } catch (e) {
-  //     print('Failed to clear cart: $e');
-  //     rethrow;
-  //   }
-  // }
-
-  // Private: Sync cart with backend
-  // Future<void> _syncCartWithBackend() async {
-  //   try {
-  //     final cartRequest = CartRequestModel(items: _cartItems);
-  //     final cartResponse = await _apiService.updateCart(cartRequest);
-
-  //     _totalPrice = cartResponse.totalPrice;
-  //   } catch (e) {
-  //     print('Failed to sync cart with backend: $e');
-  //     rethrow;
-  //   }
-  // }
+      notifyListeners();
+    } catch (e) {
+      _isLoading = false;
+      notifyListeners();
+      rethrow;
+    }
+  }
 
   void addToCart() {
     notifyListeners();
