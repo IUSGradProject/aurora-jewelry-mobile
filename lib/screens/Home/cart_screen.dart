@@ -1,4 +1,5 @@
 import 'package:aurora_jewelry/providers/Cart/cart_provider.dart';
+import 'package:aurora_jewelry/screens/Home/Product/invoice_screen.dart';
 import 'package:aurora_jewelry/widgets/Cart/cart_items_widget.dart';
 import 'package:aurora_jewelry/widgets/profile_avatar_widget.dart';
 import 'package:flutter/cupertino.dart';
@@ -129,43 +130,62 @@ class _CartScreenState extends State<CartScreen> {
                                     : AnimatedOpacity(
                                       duration: Duration(milliseconds: 300),
                                       opacity:
-                                          cartProvider.checkoutItems.isNotEmpty
+                                          cartProvider.checkoutItemsIds.isNotEmpty
                                               ? 1
                                               : 0.5,
-                                      child: Container(
-                                        padding: EdgeInsets.symmetric(
-                                          horizontal: 16,
-                                        ),
-                                        height: 50,
-                                        decoration: BoxDecoration(
-                                          color: CupertinoColors.activeGreen,
-                                          borderRadius: BorderRadius.circular(
-                                            8,
+                                      child: CupertinoButton(
+                                        padding: EdgeInsets.zero,
+                                        onPressed: () {
+                                          if (cartProvider
+                                                  .checkoutItemsIds.isEmpty) {
+                                            return;
+                                          }
+                                          Navigator.of(
+                                            context,
+                                            rootNavigator: true,
+                                          ).push(
+                                            CupertinoPageRoute<void>(
+                                              builder:
+                                                  (BuildContext context) =>
+                                                      InvoiceScreen(),
+                                            ),
+                                          );
+                                        },
+                                        child: Container(
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: 16,
                                           ),
-                                        ),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Icon(
-                                              CupertinoIcons.cart,
-                                              color: CupertinoColors.white,
+                                          height: 50,
+                                          decoration: BoxDecoration(
+                                            color: CupertinoColors.activeGreen,
+                                            borderRadius: BorderRadius.circular(
+                                              8,
                                             ),
-                                            SizedBox(width: 8),
-                                            Text(
-                                              "Proceed to Checkout",
-                                              style: TextStyle(
+                                          ),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Icon(
+                                                CupertinoIcons.cart,
                                                 color: CupertinoColors.white,
                                               ),
-                                            ),
-                                            Text(
-                                              " \$ ${cartProvider.calculateCheckoutItemsTotalPrice()}",
-                                              style: TextStyle(
-                                                color: CupertinoColors.white,
-                                                fontWeight: FontWeight.bold,
+                                              SizedBox(width: 8),
+                                              Text(
+                                                "Proceed to Checkout",
+                                                style: TextStyle(
+                                                  color: CupertinoColors.white,
+                                                ),
                                               ),
-                                            ),
-                                          ],
+                                              Text(
+                                                " \$ ${cartProvider.calculateCheckoutItemsTotalPrice()}",
+                                                style: TextStyle(
+                                                  color: CupertinoColors.white,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ),
                                     ),

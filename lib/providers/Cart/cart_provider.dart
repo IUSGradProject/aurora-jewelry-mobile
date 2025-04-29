@@ -9,7 +9,11 @@ import 'package:provider/provider.dart'; // Adjust the path if different
 class CartProvider extends ChangeNotifier {
   final ApiService _apiService = ApiService();
   final List<CartItemContractModel> _cartItems = [];
-  final List<String> _checkoutItems = [];
+
+  // List of product IDs that are in the checkout
+  final List<String> _checkoutItemsIds = [];
+  // List of items to be sent to the invoice screen
+  final List<CartItemContractModel> _invoiceItems = [];
 
   final GlobalKey cartIconButtonKey = GlobalKey();
 
@@ -18,7 +22,8 @@ class CartProvider extends ChangeNotifier {
 
   // Getters
   List<CartItemContractModel> get cartItems => _cartItems;
-  List<String> get checkoutItems => _checkoutItems;
+  List<String> get checkoutItemsIds => _checkoutItemsIds;
+  List<CartItemContractModel> get invoiceItems => _invoiceItems;
   bool get isLoading => _isLoading;
   bool get isBottomSheetOpened => _isBottomSheetOpened;
 
@@ -31,22 +36,24 @@ class CartProvider extends ChangeNotifier {
   }
 
   void addCheckoutItem(CartItemContractModel item) {
-    _checkoutItems.add(item.productId);
+    _invoiceItems.add(item);
+    _checkoutItemsIds.add(item.productId);
     notifyListeners();
   }
 
   void removeCheckoutItem(CartItemContractModel item) {
-    _checkoutItems.remove(item.productId);
+    _invoiceItems.remove(item);
+    _checkoutItemsIds.remove(item.productId);
     notifyListeners();
   }
 
   bool isItemInCheckout(CartItemContractModel item) {
-    return _checkoutItems.contains(item.productId);
+    return _checkoutItemsIds.contains(item.productId);
   }
 
   int calculateCheckoutItemsTotalPrice() {
     int total = 0;
-    for (var item in _checkoutItems) {
+    for (var item in _checkoutItemsIds) {
       final cartItem = _cartItems.firstWhere(
         (cartItem) => cartItem.productId == item,
         orElse:
@@ -89,11 +96,11 @@ class CartProvider extends ChangeNotifier {
 
       //Edge case: If some items are set to 0 quantity in the backend
       // but still exist in the checkout items, remove them from checkout items
-      if (_checkoutItems.isNotEmpty) {
-        if (cartItems.length != _checkoutItems.length) {
+      if (_checkoutItemsIds.isNotEmpty) {
+        if (cartItems.length != _checkoutItemsIds.length) {
           final List<String> itemsToRemove = [];
 
-          for (var item in _checkoutItems) {
+          for (var item in _checkoutItemsIds) {
             final cartItem = _cartItems.firstWhere(
               (cartItem) => cartItem.productId == item,
               orElse:
@@ -111,7 +118,7 @@ class CartProvider extends ChangeNotifier {
             }
           }
 
-          _checkoutItems.removeWhere((item) => itemsToRemove.contains(item));
+          _checkoutItemsIds.removeWhere((item) => itemsToRemove.contains(item));
         }
       }
 

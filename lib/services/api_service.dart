@@ -313,7 +313,6 @@ class ApiService {
     CartItemContractModel cartItem,
     String userToken,
   ) async {
-
     final url = Uri.parse('$auroraBackendUrl/Carts/');
 
     final headers = {
@@ -333,6 +332,5 @@ class ApiService {
       print("Error: " + error.toString());
       throw Exception(error['message'] ?? 'Failed to update item in cart');
     }
-
   }
 }
