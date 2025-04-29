@@ -89,10 +89,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     BuildContext context,
                                   ) => CupertinoActionSheet(
                                     title: const Text(
-                                      'Are you sure you want to delete your Account?',
+                                      'Are you sure you want to deactivate your Account?',
                                     ),
                                     message: const Text(
-                                      "After deleting it there is no comming back! Your history of orders will vanish.",
+                                      "After deactivating it there is no comming back! Your history of orders will vanish.",
                                     ),
                                     actions: <CupertinoActionSheetAction>[
                                       CupertinoActionSheetAction(
@@ -100,7 +100,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         onPressed: () {
                                           Navigator.pop(context);
                                         },
-                                        child: const Text('Delete Account'),
+                                        child: const Text('Deactivate Account'),
                                       ),
                                     ],
                                     cancelButton: CupertinoActionSheetAction(
@@ -118,7 +118,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   ),
                             );
                           },
-                          title: "Delete Account",
+                          title: "Deactivate Account",
                         ),
                       ];
                     },

@@ -242,6 +242,7 @@ class CartProvider extends ChangeNotifier {
         ).currentUser!.authToken;
     try {
       await _apiService.updateCartItem(cartItem, userToken!);
+      // ignore: use_build_context_synchronously
       await fetchCart(context);
       notifyListeners();
     } catch (e) {
