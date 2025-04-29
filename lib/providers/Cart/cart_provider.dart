@@ -1,4 +1,5 @@
 import 'package:aurora_jewelry/models/Cart/cart_item_contract_model.dart';
+import 'package:aurora_jewelry/models/Cart/delivery_address_model.dart';
 import 'package:aurora_jewelry/models/Products/product_model.dart';
 import 'package:aurora_jewelry/providers/Auth/user_provider.dart';
 import 'package:flutter/cupertino.dart';
@@ -15,6 +16,16 @@ class CartProvider extends ChangeNotifier {
   // List of items to be sent to the invoice screen
   final List<CartItemContractModel> _invoiceItems = [];
 
+  //Delivery addres of order
+
+  bool _isDeliveryAddressSet = false;
+  DeliveryAddressModel _deliveryAddress = DeliveryAddressModel(
+    fullName: '',
+    address: '',
+    city: '',
+    postalCode: 0,
+  );
+
   final GlobalKey cartIconButtonKey = GlobalKey();
 
   bool _isLoading = false;
@@ -26,7 +37,9 @@ class CartProvider extends ChangeNotifier {
   List<CartItemContractModel> get invoiceItems => _invoiceItems;
   bool get isLoading => _isLoading;
   bool get isBottomSheetOpened => _isBottomSheetOpened;
-
+  DeliveryAddressModel get deliveryAddress => _deliveryAddress;
+  bool get isDeliveryAddressSet => _isDeliveryAddressSet;
+ 
   final double _totalPrice = 0.0;
   double get totalPrice => _totalPrice;
 
@@ -235,4 +248,23 @@ class CartProvider extends ChangeNotifier {
       rethrow;
     }
   }
+
+  /// function to set delivery address
+  void setDeliveryAddress(DeliveryAddressModel value) {
+    _isDeliveryAddressSet = true;
+    _deliveryAddress = value;
+    notifyListeners();
+  }
+
+  void clearDeliveryAddress() {
+    _isDeliveryAddressSet = false;
+    _deliveryAddress = DeliveryAddressModel(
+      fullName: '',
+      address: '',
+      city: '',
+      postalCode: 0,
+    );
+    notifyListeners();
+  }
+
 }
