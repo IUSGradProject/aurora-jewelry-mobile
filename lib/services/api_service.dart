@@ -329,7 +329,6 @@ class ApiService {
       // Item updated successfully
     } else {
       final error = jsonDecode(response.body);
-      print("Error: " + error.toString());
       throw Exception(error['message'] ?? 'Failed to update item in cart');
     }
   }
