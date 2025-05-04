@@ -25,14 +25,15 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
 
               leading: CupertinoNavigationBarBackButton(
                 previousPageTitle: "Back",
-                onPressed: () {
+                onPressed: () async {
                   if (widget.isBuyNowRoot) {
                     cartProvider.resetInvoiceScreen();
+
                     Navigator.of(context).pop();
+                    await cartProvider.fetchCart(context);
                   } else {
                     Navigator.of(context).pop();
                   }
-                 
                 },
               ),
             ),
