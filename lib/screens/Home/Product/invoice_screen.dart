@@ -361,7 +361,11 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                             color: CupertinoColors.white,
                           ),
                         ),
-                        onPressed: () {},
+                        onPressed: () async {
+                          if (cartProvider.isDeliveryAddressSet) {
+                            await cartProvider.placeOrder(context);
+                          }
+                        },
                       ),
                     ),
                   ),

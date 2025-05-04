@@ -38,7 +38,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
-        padding: EdgeInsetsDirectional.only(end: 16, top: 8),
+        padding: EdgeInsetsDirectional.only(end: 8, top: 8),
         middle: Text("Profile"),
         trailing: CupertinoButton(
           padding: EdgeInsets.zero,

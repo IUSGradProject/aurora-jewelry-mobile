@@ -11,9 +11,10 @@ class CartProvider extends ChangeNotifier {
   final ApiService _apiService = ApiService();
   final List<CartItemContractModel> _cartItems = [];
 
-  // List of product IDs that are in the checkout
+  // List of product IDs that have been added to the checkout
   final List<String> _checkoutItemsIds = [];
-  // List of items to be sent to the invoice screen
+  // List of items to be sent to the invoice screen, same as checkout items
+  // but with Model
   final List<CartItemContractModel> _invoiceItems = [];
 
   //Delivery addres of order
@@ -30,6 +31,7 @@ class CartProvider extends ChangeNotifier {
 
   bool _isLoading = false;
   bool _isBottomSheetOpened = false;
+  bool _isOrderPlacedSuccesfully = false;
 
   // Getters
   List<CartItemContractModel> get cartItems => _cartItems;
@@ -39,7 +41,8 @@ class CartProvider extends ChangeNotifier {
   bool get isBottomSheetOpened => _isBottomSheetOpened;
   DeliveryAddressModel get deliveryAddress => _deliveryAddress;
   bool get isDeliveryAddressSet => _isDeliveryAddressSet;
- 
+  bool get isOrderPlacedSuccesfully => _isOrderPlacedSuccesfully;
+
   final double _totalPrice = 0.0;
   double get totalPrice => _totalPrice;
 
@@ -112,7 +115,7 @@ class CartProvider extends ChangeNotifier {
       if (_checkoutItemsIds.isNotEmpty) {
         if (cartItems.length != _checkoutItemsIds.length) {
           final List<String> itemsToRemove = [];
-
+        
           for (var item in _checkoutItemsIds) {
             final cartItem = _cartItems.firstWhere(
               (cartItem) => cartItem.productId == item,
@@ -250,6 +253,26 @@ class CartProvider extends ChangeNotifier {
     }
   }
 
+  Future<void> placeOrder(BuildContext context) async {
+    String? userToken =
+        Provider.of<UserProvider>(
+          context,
+          listen: false,
+        ).currentUser!.authToken;
+    try {
+      _isOrderPlacedSuccesfully = false;
+      notifyListeners();
+      await _apiService.placeOrder(_invoiceItems, userToken!);
+      _isOrderPlacedSuccesfully = true;
+      //Clearing tmp lists that are used to store checkout items
+      _checkoutItemsIds.clear();
+      _invoiceItems.clear();
+      notifyListeners();
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   /// function to set delivery address
   void setDeliveryAddress(DeliveryAddressModel value) {
     _isDeliveryAddressSet = true;
@@ -267,5 +290,4 @@ class CartProvider extends ChangeNotifier {
     );
     notifyListeners();
   }
-
 }

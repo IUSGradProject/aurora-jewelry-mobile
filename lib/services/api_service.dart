@@ -332,4 +332,32 @@ class ApiService {
       throw Exception(error['message'] ?? 'Failed to update item in cart');
     }
   }
+
+  Future<void> placeOrder(
+    List<CartItemContractModel> cartItems,
+    String userToken,
+  ) async {
+    final url = Uri.parse('$auroraBackendUrl/Carts/Order');
+
+    final headers = {
+      'Content-Type': 'application/json',
+      'Accept': '*/*',
+      'Cookie': 'jwt=$userToken',
+    };
+
+    final body = jsonEncode({
+      "cart": cartItems.map((item) => item.toJson()).toList(),
+    });
+
+    final response = await http.post(url, headers: headers, body: body);
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      print('Order placed successfully');
+      // Order submitted successfully
+    } else {
+      print(response.body);
+      // final error = jsonDecode(response.body);
+      // throw Exception(error['message'] ?? 'Failed to submit order');
+    }
+  }
 }
