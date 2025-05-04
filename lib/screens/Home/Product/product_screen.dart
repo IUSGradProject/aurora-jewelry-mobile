@@ -623,7 +623,9 @@ class _ProductScreenState extends State<ProductScreen>
                                           CupertinoPageRoute<void>(
                                             builder:
                                                 (BuildContext context) =>
-                                                    InvoiceScreen(),
+                                                    InvoiceScreen(
+                                                      isBuyNowRoot: true,
+                                                    ),
                                           ),
                                         );
                                       } else {

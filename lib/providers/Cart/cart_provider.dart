@@ -104,7 +104,7 @@ class CartProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void emptyCheckoutItems() {
+  void resetInvoiceScreen() {
     _invoiceItems.clear();
     _checkoutItemsIds.clear();
     _cartItems.clear();
