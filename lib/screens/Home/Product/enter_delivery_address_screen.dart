@@ -4,6 +4,7 @@ import 'package:aurora_jewelry/providers/Cart/cart_provider.dart';
 import 'package:aurora_jewelry/screens/Home/home_screen.dart';
 import 'package:aurora_jewelry/screens/Home/profile_screen.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class EnterDeliveryAddressScreen extends StatefulWidget {
@@ -250,6 +251,70 @@ class _EnterDeliveryAddressScreenState
                     ),
                   ),
                 ],
+              ),
+              SizedBox(height: 16),
+              AnimatedOpacity(
+                duration: Duration(milliseconds: 300),
+                opacity: canUserPressDone() ? 1 : 0.5,
+                child: CupertinoButton(
+                  padding: EdgeInsets.zero,
+                  onPressed: () {},
+                  child: Container(
+                    padding: EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+
+                      border: Border.all(
+                        color:
+                            MediaQuery.of(context).platformBrightness ==
+                                    Brightness.dark
+                                ? Colors.grey[800]!
+                                : CupertinoColors.systemGrey5,
+                      ),
+                    ),
+
+                    child: Column(
+                      children: [
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Transform.scale(
+                              scale: 1.5,
+                              child: CupertinoCheckbox(
+                                value: false,
+                                onChanged: (value) {},
+                              ),
+                            ),
+                            SizedBox(
+                              width: 8,
+                            ), // optional spacing between checkbox and text
+                            Expanded(
+                              child: Text(
+                                "Save this Delivery Address for Future Orders.",
+                                style: TextStyle(
+                                  fontSize: 17,
+                                  color: CupertinoColors.activeBlue,
+                                ),
+                                softWrap: true,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 8),
+                        Padding(
+                          padding: EdgeInsets.only(left: 50, right: 16),
+                          child: Text(
+                            "After saving your address you will be able to edit it in future.",
+                            style: TextStyle(
+                              fontSize: 15,
+                              color: CupertinoColors.systemGrey,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ),
             ],
           ),
