@@ -147,7 +147,9 @@ class _CartScreenState extends State<CartScreen> {
                                             CupertinoPageRoute<void>(
                                               builder:
                                                   (BuildContext context) =>
-                                                      InvoiceScreen(),
+                                                      InvoiceScreen(
+                                                        isBuyNowRoot: false,
+                                                      ),
                                             ),
                                           );
                                         },

@@ -6,7 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class InvoiceScreen extends StatefulWidget {
-  const InvoiceScreen({super.key});
+  final bool isBuyNowRoot;
+  const InvoiceScreen({super.key, required this.isBuyNowRoot});
 
   @override
   State<InvoiceScreen> createState() => _InvoiceScreenState();
@@ -19,8 +20,22 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
       builder:
           (context, cartProvider, child) => CupertinoPageScaffold(
             navigationBar: CupertinoNavigationBar(
+              padding: EdgeInsetsDirectional.zero,
               middle: Text("Invoice"),
-              previousPageTitle: "Back",
+
+              leading: CupertinoNavigationBarBackButton(
+                previousPageTitle: "Back",
+                onPressed: () async {
+                  if (widget.isBuyNowRoot) {
+                    cartProvider.resetInvoiceScreen();
+
+                    Navigator.of(context).pop();
+                    await cartProvider.fetchCart(context);
+                  } else {
+                    Navigator.of(context).pop();
+                  }
+                },
+              ),
             ),
             child: ListView(
               padding: EdgeInsets.only(bottom: 60, top: 100),

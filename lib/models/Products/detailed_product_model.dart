@@ -1,3 +1,4 @@
+import 'package:aurora_jewelry/models/Cart/cart_item_contract_model.dart';
 import 'package:aurora_jewelry/models/Products/product_model.dart';
 
 class DetailedProduct {
@@ -49,6 +50,28 @@ class DetailedProduct {
           (json['materials'] as List).map((e) => Material.fromJson(e)).toList(),
     );
   }
+  
+  
+  // CartItemContractModel({
+  //   required this.productId,
+  //   required this.name,
+  //   required this.imageUrl,
+  //   required this.price,
+  //   required this.available,
+  //   required this.quantity,
+  // });
+  
+  CartItemContractModel convertToCartItem(int quantity) {
+    return CartItemContractModel(
+      productId: productId,
+      name: name,
+      imageUrl: image,
+      price: price.toInt(),
+      available: available,
+      quantity: quantity,
+    );
+  }
+
   Product convertToProduct() {
     return Product(
       productId: productId,

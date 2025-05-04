@@ -88,6 +88,29 @@ class CartProvider extends ChangeNotifier {
     return total;
   }
 
+  void addBuyNowItem(CartItemContractModel item) {
+    if (_invoiceItems.isNotEmpty) {
+      //This indicates that there is already items in every 
+      //list(lists that are connected with logic of adding/buyin/ordering items).
+      _cartItems.clear();
+      _invoiceItems.clear();
+      _checkoutItemsIds.clear();
+    }
+    _invoiceItems.add(item);
+    _checkoutItemsIds.add(item.productId);
+    //Adding item to cart items as well
+    //Because of current logic we will need to add it -> calculating total price
+    _cartItems.add(item);
+    notifyListeners();
+  }
+
+  void resetInvoiceScreen() {
+    _invoiceItems.clear();
+    _checkoutItemsIds.clear();
+    _cartItems.clear();
+    notifyListeners();
+  }
+
   // Load cart from backend
   Future<void> fetchCart(BuildContext context) async {
     try {
@@ -115,7 +138,7 @@ class CartProvider extends ChangeNotifier {
       if (_checkoutItemsIds.isNotEmpty) {
         if (cartItems.length != _checkoutItemsIds.length) {
           final List<String> itemsToRemove = [];
-        
+
           for (var item in _checkoutItemsIds) {
             final cartItem = _cartItems.firstWhere(
               (cartItem) => cartItem.productId == item,
