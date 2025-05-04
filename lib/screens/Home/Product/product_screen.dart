@@ -103,10 +103,11 @@ class _ProductScreenState extends State<ProductScreen>
           listen: false,
         ).detailedProduct!.convertToProduct(),
         context,
-        quantity: Provider.of<SearchProvider>(
-          context,
-          listen: false,
-        ).currentProductQuantity,
+        quantity:
+            Provider.of<SearchProvider>(
+              context,
+              listen: false,
+            ).currentProductQuantity,
       );
     });
   }
@@ -604,6 +605,17 @@ class _ProductScreenState extends State<ProductScreen>
                                           ).isUserAuthenticated;
 
                                       if (isUserRegistered) {
+                                        //Adding current product to invoice screen and automatically
+                                        //converting it to [CartItemContractModel] 
+                                        cartProvider.addBuyNowItem(
+                                          databaseProvider.detailedProduct!
+                                              .convertToCartItem(
+                                                Provider.of<SearchProvider>(
+                                                  context,
+                                                  listen: false,
+                                                ).currentProductQuantity,
+                                              ),
+                                        );
                                         Navigator.of(
                                           context,
                                           rootNavigator: true,
