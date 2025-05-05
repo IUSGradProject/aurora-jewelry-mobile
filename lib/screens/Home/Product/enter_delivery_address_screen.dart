@@ -22,6 +22,14 @@ class _EnterDeliveryAddressScreenState
   final TextEditingController _cityController = TextEditingController();
   final TextEditingController _postalCodeController = TextEditingController();
 
+  // This variable is used to store prefs delivery address
+  DeliveryAddressModel _prefsDeliveryAddress = DeliveryAddressModel(
+    fullName: '',
+    address: '',
+    city: '',
+    postalCode: 0,
+  );
+
   bool canUserPressDone() {
     if (_fullNameController.text.isNotEmpty &&
         _addressController.text.isNotEmpty &&
@@ -106,14 +114,57 @@ class _EnterDeliveryAddressScreenState
     );
   }
 
+  Future<void> _initDeliveryAddress() async {
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+
+    final isSet = await userProvider.isUserDeliveryAddressSet();
+    if (isSet) {
+      final deliveryAddress = await userProvider.getUserDeliveryAddress();
+      setState(() {
+        _prefsDeliveryAddress = deliveryAddress;
+        _fullNameController.text = deliveryAddress.fullName;
+        _addressController.text = deliveryAddress.address;
+        _cityController.text = deliveryAddress.city;
+        _postalCodeController.text = deliveryAddress.postalCode.toString();
+      });
+      // Do something with deliveryAddress if needed
+    }
+  }
+
+  bool wereThereDifferenceBetweenDeliveryAddress() {
+    if (_fullNameController.text != _prefsDeliveryAddress.fullName ||
+        _addressController.text != _prefsDeliveryAddress.address ||
+        _cityController.text != _prefsDeliveryAddress.city ||
+        int.parse(_postalCodeController.text) !=
+            _prefsDeliveryAddress.postalCode) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   @override
   void initState() {
+    UserProvider userProvider = Provider.of<UserProvider>(
+      context,
+      listen: false,
+    );
+
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final user =
-          Provider.of<UserProvider>(context, listen: false).currentUser!;
+      _initDeliveryAddress();
+      final user = userProvider.currentUser!;
       _fullNameController.text = "${user.firstName} ${user.lastName}";
     });
+  }
+
+  @override
+  void dispose() {
+    _fullNameController.dispose();
+    _addressController.dispose();
+    _cityController.dispose();
+    _postalCodeController.dispose();
+    super.dispose();
   }
 
   @override
@@ -178,6 +229,8 @@ class _EnterDeliveryAddressScreenState
               CupertinoTextField(
                 controller: _addressController,
                 placeholder: "Address",
+                clearButtonMode: OverlayVisibilityMode.editing,
+
                 padding: const EdgeInsets.symmetric(
                   vertical: 12,
                   horizontal: 10,
@@ -207,6 +260,8 @@ class _EnterDeliveryAddressScreenState
                         CupertinoTextField(
                           controller: _cityController,
                           placeholder: "City",
+                          clearButtonMode: OverlayVisibilityMode.editing,
+
                           padding: const EdgeInsets.symmetric(
                             vertical: 12,
                             horizontal: 10,
@@ -237,6 +292,8 @@ class _EnterDeliveryAddressScreenState
                           controller: _postalCodeController,
                           placeholder: "Postal Code",
                           keyboardType: TextInputType.number,
+                          clearButtonMode: OverlayVisibilityMode.editing,
+
                           padding: const EdgeInsets.symmetric(
                             vertical: 12,
                             horizontal: 10,
@@ -253,67 +310,112 @@ class _EnterDeliveryAddressScreenState
                 ],
               ),
               SizedBox(height: 16),
-              AnimatedOpacity(
-                duration: Duration(milliseconds: 300),
-                opacity: canUserPressDone() ? 1 : 0.5,
-                child: CupertinoButton(
-                  padding: EdgeInsets.zero,
-                  onPressed: () {},
-                  child: Container(
-                    padding: EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
+              Consumer<UserProvider>(
+                builder:
+                    (context, userProvider, child) => AnimatedOpacity(
+                      duration: Duration(milliseconds: 300),
+                      opacity: canUserPressDone() ? 1 : 0.5,
+                      child: CupertinoButton(
+                        padding: EdgeInsets.zero,
+                        onPressed: () {
+                          if (canUserPressDone()) {
+                            userProvider.saveUserDeliveryAddressToPrefs(
+                              _fullNameController.text,
+                              _addressController.text,
+                              _cityController.text,
+                              int.parse(_postalCodeController.text),
+                            );
+                          }
+                        },
+                        child: Container(
+                          padding: EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
 
-                      border: Border.all(
-                        color:
-                            MediaQuery.of(context).platformBrightness ==
-                                    Brightness.dark
-                                ? Colors.grey[800]!
-                                : CupertinoColors.systemGrey5,
-                      ),
-                    ),
-
-                    child: Column(
-                      children: [
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Transform.scale(
-                              scale: 1.5,
-                              child: CupertinoCheckbox(
-                                value: false,
-                                onChanged: (value) {},
-                              ),
-                            ),
-                            SizedBox(
-                              width: 8,
-                            ), // optional spacing between checkbox and text
-                            Expanded(
-                              child: Text(
-                                "Save this Delivery Address for Future Orders.",
-                                style: TextStyle(
-                                  fontSize: 17,
-                                  color: CupertinoColors.activeBlue,
-                                ),
-                                softWrap: true,
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 8),
-                        Padding(
-                          padding: EdgeInsets.only(left: 50, right: 16),
-                          child: Text(
-                            "After saving your address you will be able to edit it in future.",
-                            style: TextStyle(
-                              fontSize: 15,
-                              color: CupertinoColors.systemGrey,
+                            border: Border.all(
+                              color:
+                                  MediaQuery.of(context).platformBrightness ==
+                                          Brightness.dark
+                                      ? Colors.grey[800]!
+                                      : CupertinoColors.systemGrey5,
                             ),
                           ),
+
+                          child: Column(
+                            children: [
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  FutureBuilder<bool>(
+                                    future:
+                                        userProvider.isUserDeliveryAddressSet(),
+                                    builder: (context, snapshot) {
+                                      if (!snapshot.hasData) {
+                                        return CupertinoActivityIndicator(
+                                          radius: 15,
+                                        ); // or a loading indicator
+                                      }
+
+                                      return Transform.scale(
+                                        scale: 1.5,
+                                        child: CupertinoCheckbox(
+                                          value: snapshot.data,
+                                          onChanged: (value) {},
+                                        ),
+                                      );
+                                    },
+                                  ),
+
+                                  SizedBox(
+                                    width: 8,
+                                  ), // optional spacing between checkbox and text
+                                  Expanded(
+                                    child: Text(
+                                      "Save this Delivery Address for Future Orders.",
+                                      style: TextStyle(
+                                        fontSize: 17,
+                                        color: CupertinoColors.activeBlue,
+                                      ),
+                                      softWrap: true,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 8),
+                              Padding(
+                                padding: EdgeInsets.only(left: 50, right: 16),
+                                child: Text(
+                                  "After saving your address you will be able to edit it in future.",
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    color: CupertinoColors.systemGrey,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ],
+                      ),
                     ),
-                  ),
+              ),
+              AnimatedContainer(
+                height: wereThereDifferenceBetweenDeliveryAddress() ? 50 : 0,
+                duration: Duration(milliseconds: 300),
+                child: ListView(
+                  padding: EdgeInsets.zero,
+                  scrollDirection: Axis.vertical,
+                  children: [
+                    SizedBox(height: 8,),
+                    Text(
+                      "Delivery Address Updated",
+                      style: TextStyle(
+                        fontSize: 15,
+                        color: CupertinoColors.activeBlue.withValues(
+                          alpha: 0.8,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],

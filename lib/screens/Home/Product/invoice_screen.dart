@@ -1,4 +1,6 @@
 import 'package:aurora_jewelry/components/Cart/delivery_address_invoice_component.dart';
+import 'package:aurora_jewelry/components/Cart/delivery_address_shared_prefs_component.dart';
+import 'package:aurora_jewelry/providers/Auth/user_provider.dart';
 import 'package:aurora_jewelry/providers/Cart/cart_provider.dart';
 import 'package:aurora_jewelry/screens/Home/Product/enter_delivery_address_screen.dart';
 import 'package:flutter/cupertino.dart';
@@ -15,10 +17,35 @@ class InvoiceScreen extends StatefulWidget {
 
 class _InvoiceScreenState extends State<InvoiceScreen> {
   @override
+  void initState() {
+    super.initState();
+
+    Future.microtask(() async {
+      await Provider.of<UserProvider>(
+        context,
+        listen: false,
+      ).checkIfDeliveryAddressIsSavedToSharedPrefs();
+
+      bool isDeliveryAddressSet =
+          Provider.of<UserProvider>(
+            context,
+            listen: false,
+          ).isDeliveryAddressSet;
+
+      if (isDeliveryAddressSet) {
+        await Provider.of<UserProvider>(
+          context,
+          listen: false,
+        ).getUserDeliveryAddressFromSharedPrefs();
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Consumer<CartProvider>(
+    return Consumer2<CartProvider, UserProvider>(
       builder:
-          (context, cartProvider, child) => CupertinoPageScaffold(
+          (context, cartProvider, userProvider, child) => CupertinoPageScaffold(
             navigationBar: CupertinoNavigationBar(
               padding: EdgeInsetsDirectional.zero,
               middle: Text("Invoice"),
@@ -307,53 +334,65 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                         ),
                       ),
                       SizedBox(height: 16),
-                      !cartProvider.isDeliveryAddressSet
-                          ? CupertinoButton(
-                            padding: EdgeInsets.zero,
-                            onPressed: () {
-                              Navigator.of(context).push(
-                                CupertinoSheetRoute(
-                                  builder:
-                                      (BuildContext context) =>
-                                          const EnterDeliveryAddressScreen(),
+                      // Checking if the user has a delivery address set to shared prefs
+                      // If not, show the static delivery address (set/or edit).
+                      !userProvider.isDeliveryAddressSet
+                          ? !cartProvider.isDeliveryAddressSet
+                              ? CupertinoButton(
+                                padding: EdgeInsets.zero,
+                                onPressed: () {
+                                  Navigator.of(context).push(
+                                    CupertinoSheetRoute(
+                                      builder:
+                                          (BuildContext context) =>
+                                              const EnterDeliveryAddressScreen(),
+                                    ),
+                                  );
+                                },
+                                child: Container(
+                                  height: 40,
+                                  padding: EdgeInsets.only(left: 8, right: 8),
+                                  decoration: BoxDecoration(
+                                    color:
+                                        MediaQuery.of(
+                                                  context,
+                                                ).platformBrightness ==
+                                                Brightness.dark
+                                            ? CupertinoColors
+                                                .secondarySystemFill
+                                            : CupertinoColors.white,
+                                    borderRadius: BorderRadius.circular(8),
+                                    boxShadow:
+                                        MediaQuery.of(
+                                                  context,
+                                                ).platformBrightness ==
+                                                Brightness.dark
+                                            ? []
+                                            : [
+                                              BoxShadow(
+                                                color: CupertinoColors
+                                                    .systemGrey
+                                                    .withOpacity(0.2),
+                                                blurRadius: 4,
+                                                offset: const Offset(0, 2),
+                                              ),
+                                            ],
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text("Add Delivery Address"),
+                                      Icon(CupertinoIcons.add_circled),
+                                    ],
+                                  ),
                                 ),
-                              );
-                            },
-                            child: Container(
-                              height: 40,
-                              padding: EdgeInsets.only(left: 8, right: 8),
-                              decoration: BoxDecoration(
-                                color:
-                                    MediaQuery.of(context).platformBrightness ==
-                                            Brightness.dark
-                                        ? CupertinoColors.secondarySystemFill
-                                        : CupertinoColors.white,
-                                borderRadius: BorderRadius.circular(8),
-                                boxShadow:
-                                    MediaQuery.of(context).platformBrightness ==
-                                            Brightness.dark
-                                        ? []
-                                        : [
-                                          BoxShadow(
-                                            color: CupertinoColors.systemGrey
-                                                .withOpacity(0.2),
-                                            blurRadius: 4,
-                                            offset: const Offset(0, 2),
-                                          ),
-                                        ],
-                              ),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text("Add Delivery Address"),
-                                  Icon(CupertinoIcons.add_circled),
-                                ],
-                              ),
-                            ),
-                          )
-                          : DeliveryAddressInvoiceComponent(
-                            deliveryAddress: cartProvider.deliveryAddress,
+                              )
+                              : DeliveryAddressInvoiceComponent(
+                                deliveryAddress: cartProvider.deliveryAddress,
+                              )
+                          : DeliveryAddressSharedPrefsComponent(
+                            deliveryAddress: userProvider.userDeliveryAddress,
                           ),
                     ],
                   ),

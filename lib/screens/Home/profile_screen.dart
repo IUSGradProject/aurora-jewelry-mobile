@@ -3,6 +3,7 @@ import 'package:aurora_jewelry/models/Products/product_order_model.dart';
 import 'package:aurora_jewelry/providers/Auth/auth_provider.dart';
 import 'package:aurora_jewelry/providers/Auth/user_provider.dart';
 import 'package:aurora_jewelry/providers/Database/database_provider.dart';
+import 'package:aurora_jewelry/screens/Home/Product/enter_delivery_address_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -71,6 +72,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     menuOffset: -16,
                     itemBuilder: (context) {
                       return [
+                        PullDownMenuItem(
+                          icon: CupertinoIcons.cube_box,
+                          onTap: () async {
+                            Navigator.of(context).push(
+                              CupertinoSheetRoute(
+                                builder:
+                                    (BuildContext context) =>
+                                        const EnterDeliveryAddressScreen(),
+                              ),
+                            );
+                          },
+                          title: "Delivery Address",
+                        ),
+                        PullDownMenuDivider.large(),
                         PullDownMenuItem(
                           onTap: () async {
                             await authProvider.logout();
