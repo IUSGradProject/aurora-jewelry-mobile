@@ -13,7 +13,7 @@ class DeliveryAddressSharedPrefsComponent extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.only(left: 16, top: 16, right: 16, bottom: 8),
+      padding: const EdgeInsets.only(left: 16, top: 0, right: 16, bottom: 16),
       decoration: BoxDecoration(
         color:
             MediaQuery.of(context).platformBrightness == Brightness.dark
@@ -34,9 +34,30 @@ class DeliveryAddressSharedPrefsComponent extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            "Saved Delivery Address",
-            style: TextStyle(color: CupertinoColors.systemGrey, fontSize: 15),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "Saved Delivery Address",
+                style: TextStyle(
+                  color: CupertinoColors.systemGrey,
+                  fontSize: 15,
+                ),
+              ),
+              CupertinoButton(
+                padding: EdgeInsets.zero,
+                child: Text("Edit "),
+                onPressed: () {
+                  Navigator.of(context).push(
+                    CupertinoSheetRoute(
+                      builder:
+                          (BuildContext context) =>
+                              const EnterDeliveryAddressScreen(),
+                    ),
+                  );
+                },
+              ),
+            ],
           ),
           SizedBox(height: 8),
           // Name
@@ -66,21 +87,6 @@ class DeliveryAddressSharedPrefsComponent extends StatelessWidget {
               fontSize: 16,
               color: CupertinoColors.systemGrey,
             ),
-          ),
-          const SizedBox(height: 8),
-
-          CupertinoButton(
-            padding: EdgeInsets.zero,
-            child: Text("Edit Delivery Address"),
-            onPressed: () {
-              Navigator.of(context).push(
-                CupertinoSheetRoute(
-                  builder:
-                      (BuildContext context) =>
-                          const EnterDeliveryAddressScreen(),
-                ),
-              );
-            },
           ),
         ],
       ),

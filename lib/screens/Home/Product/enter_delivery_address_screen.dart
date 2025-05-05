@@ -17,6 +17,8 @@ class EnterDeliveryAddressScreen extends StatefulWidget {
 
 class _EnterDeliveryAddressScreenState
     extends State<EnterDeliveryAddressScreen> {
+  bool isDeliveryAddressUpdating = false;
+
   final TextEditingController _fullNameController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
   final TextEditingController _cityController = TextEditingController();
@@ -143,6 +145,25 @@ class _EnterDeliveryAddressScreenState
     }
   }
 
+  Future<void> updateDeliveryAddress() async{
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    userProvider.saveUserDeliveryAddressToPrefs(
+      _fullNameController.text,
+      _addressController.text,
+      _cityController.text,
+      int.parse(_postalCodeController.text),
+    );
+    setState(() {
+      isDeliveryAddressUpdating = true;
+    });
+
+    Future.delayed(Duration(seconds: 1), () {
+      setState(() {
+        isDeliveryAddressUpdating = false;
+      });
+    });
+  }
+
   @override
   void initState() {
     UserProvider userProvider = Provider.of<UserProvider>(
@@ -212,7 +233,15 @@ class _EnterDeliveryAddressScreenState
                   color: CupertinoColors.systemFill,
                   borderRadius: BorderRadius.circular(12),
                 ),
-                onChanged: (value) => setState(() {}),
+                onChanged:
+                    (value) => setState(() async{
+                      if (Provider.of<UserProvider>(
+                        context,
+                        listen: false,
+                      ).isDeliveryAddressSet) {
+                       await updateDeliveryAddress();
+                      }
+                    }),
               ),
               const SizedBox(height: 16),
               // Address Label
@@ -239,7 +268,15 @@ class _EnterDeliveryAddressScreenState
                   color: CupertinoColors.systemFill,
                   borderRadius: BorderRadius.circular(12),
                 ),
-                onChanged: (value) => setState(() {}),
+                onChanged:
+                    (value) => setState(() {
+                      if (Provider.of<UserProvider>(
+                        context,
+                        listen: false,
+                      ).isDeliveryAddressSet) {
+                        updateDeliveryAddress();
+                      }
+                    }),
               ),
               const SizedBox(height: 16),
 
@@ -270,7 +307,16 @@ class _EnterDeliveryAddressScreenState
                             color: CupertinoColors.systemFill,
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          onChanged: (value) => setState(() {}),
+                          onChanged:
+                              (value) => setState(() async{
+                                if (Provider.of<UserProvider>(
+                                  context,
+                                  listen: false,
+                                ).isDeliveryAddressSet) {
+                       await updateDeliveryAddress();
+                     
+                                }
+                              }),
                         ),
                       ],
                     ),
@@ -302,7 +348,16 @@ class _EnterDeliveryAddressScreenState
                             color: CupertinoColors.systemFill,
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          onChanged: (value) => setState(() {}),
+                          onChanged:
+                              (value) => setState(() async{
+                                if (Provider.of<UserProvider>(
+                                  context,
+                                  listen: false,
+                                ).isDeliveryAddressSet) {
+                       await updateDeliveryAddress();
+                                 
+                                }
+                              }),
                         ),
                       ],
                     ),
@@ -434,7 +489,7 @@ class _EnterDeliveryAddressScreenState
                                   ),
                                   AnimatedContainer(
                                     height:
-                                        wereThereDifferenceBetweenDeliveryAddress()
+                                        isDeliveryAddressUpdating
                                             ? 25
                                             : 0,
                                     duration: Duration(milliseconds: 300),
