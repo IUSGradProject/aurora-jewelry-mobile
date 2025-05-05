@@ -312,110 +312,187 @@ class _EnterDeliveryAddressScreenState
               SizedBox(height: 16),
               Consumer<UserProvider>(
                 builder:
-                    (context, userProvider, child) => AnimatedOpacity(
-                      duration: Duration(milliseconds: 300),
-                      opacity: canUserPressDone() ? 1 : 0.5,
-                      child: CupertinoButton(
-                        padding: EdgeInsets.zero,
-                        onPressed: () {
-                          if (canUserPressDone()) {
-                            userProvider.saveUserDeliveryAddressToPrefs(
-                              _fullNameController.text,
-                              _addressController.text,
-                              _cityController.text,
-                              int.parse(_postalCodeController.text),
-                            );
-                          }
-                        },
-                        child: Container(
-                          padding: EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8),
+                    (context, userProvider, child) =>
+                        !userProvider.isDeliveryAddressSet
+                            ? AnimatedOpacity(
+                              duration: Duration(milliseconds: 300),
+                              opacity: canUserPressDone() ? 1 : 0.5,
+                              child: CupertinoButton(
+                                padding: EdgeInsets.zero,
+                                onPressed: () async {
+                                  if (canUserPressDone()) {
+                                    await userProvider
+                                        .saveUserDeliveryAddressToPrefs(
+                                          _fullNameController.text,
+                                          _addressController.text,
+                                          _cityController.text,
+                                          int.parse(_postalCodeController.text),
+                                        );
+                                  }
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.all(12),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8),
 
-                            border: Border.all(
-                              color:
-                                  MediaQuery.of(context).platformBrightness ==
-                                          Brightness.dark
-                                      ? Colors.grey[800]!
-                                      : CupertinoColors.systemGrey5,
-                            ),
-                          ),
-
-                          child: Column(
-                            children: [
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  FutureBuilder<bool>(
-                                    future:
-                                        userProvider.isUserDeliveryAddressSet(),
-                                    builder: (context, snapshot) {
-                                      if (!snapshot.hasData) {
-                                        return CupertinoActivityIndicator(
-                                          radius: 15,
-                                        ); // or a loading indicator
-                                      }
-
-                                      return Transform.scale(
-                                        scale: 1.5,
-                                        child: CupertinoCheckbox(
-                                          value: snapshot.data,
-                                          onChanged: (value) {},
-                                        ),
-                                      );
-                                    },
+                                    border: Border.all(
+                                      color:
+                                          MediaQuery.of(
+                                                    context,
+                                                  ).platformBrightness ==
+                                                  Brightness.dark
+                                              ? Colors.grey[800]!
+                                              : CupertinoColors.systemGrey5,
+                                    ),
                                   ),
 
-                                  SizedBox(
-                                    width: 8,
-                                  ), // optional spacing between checkbox and text
-                                  Expanded(
-                                    child: Text(
-                                      "Save this Delivery Address for Future Orders.",
-                                      style: TextStyle(
-                                        fontSize: 17,
-                                        color: CupertinoColors.activeBlue,
+                                  child: Column(
+                                    children: [
+                                      Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          FutureBuilder<bool>(
+                                            future:
+                                                userProvider
+                                                    .isUserDeliveryAddressSet(),
+                                            builder: (context, snapshot) {
+                                              if (!snapshot.hasData) {
+                                                return CupertinoActivityIndicator(
+                                                  radius: 15,
+                                                ); // or a loading indicator
+                                              }
+
+                                              return Transform.scale(
+                                                scale: 1.5,
+                                                child: CupertinoCheckbox(
+                                                  value: snapshot.data,
+                                                  onChanged: (value) {},
+                                                ),
+                                              );
+                                            },
+                                          ),
+
+                                          SizedBox(
+                                            width: 8,
+                                          ), // optional spacing between checkbox and text
+                                          Expanded(
+                                            child: Text(
+                                              "Save this Delivery Address for Future Orders.",
+                                              style: TextStyle(
+                                                fontSize: 17,
+                                                color:
+                                                    CupertinoColors.activeBlue,
+                                              ),
+                                              softWrap: true,
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                      softWrap: true,
+                                      SizedBox(height: 8),
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                          left: 50,
+                                          right: 16,
+                                        ),
+                                        child: Text(
+                                          "After saving your address you will be able to edit it in future.",
+                                          style: TextStyle(
+                                            fontSize: 15,
+                                            color: CupertinoColors.systemGrey,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            )
+                            : Container(
+                              padding: EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8),
+
+                                border: Border.all(
+                                  color:
+                                      MediaQuery.of(
+                                                context,
+                                              ).platformBrightness ==
+                                              Brightness.dark
+                                          ? Colors.grey[800]!
+                                          : CupertinoColors.systemGrey5,
+                                ),
+                              ),
+
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "You have a saved Delivery Address.",
+                                    style: TextStyle(fontSize: 17),
+                                    softWrap: true,
+                                  ),
+                                  AnimatedContainer(
+                                    height:
+                                        wereThereDifferenceBetweenDeliveryAddress()
+                                            ? 25
+                                            : 0,
+                                    duration: Duration(milliseconds: 300),
+                                    child: ListView(
+                                      padding: EdgeInsets.zero,
+                                      scrollDirection: Axis.vertical,
+                                      children: [
+                                        SizedBox(height: 8),
+                                        Text(
+                                          "Delivery Address Updated",
+                                          style: TextStyle(
+                                            fontSize: 15,
+                                            color: CupertinoColors.systemGrey
+                                                .withValues(alpha: 0.8),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ],
                               ),
-                              SizedBox(height: 8),
-                              Padding(
-                                padding: EdgeInsets.only(left: 50, right: 16),
-                                child: Text(
-                                  "After saving your address you will be able to edit it in future.",
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    color: CupertinoColors.systemGrey,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
+                            ),
               ),
-              AnimatedContainer(
-                height: wereThereDifferenceBetweenDeliveryAddress() ? 50 : 0,
+
+              AnimatedOpacity(
                 duration: Duration(milliseconds: 300),
-                child: ListView(
-                  padding: EdgeInsets.zero,
-                  scrollDirection: Axis.vertical,
-                  children: [
-                    SizedBox(height: 8,),
-                    Text(
-                      "Delivery Address Updated",
-                      style: TextStyle(
-                        fontSize: 15,
-                        color: CupertinoColors.activeBlue.withValues(
-                          alpha: 0.8,
-                        ),
-                      ),
+                opacity:
+                    Provider.of<UserProvider>(
+                          context,
+                          listen: true,
+                        ).isDeliveryAddressSet
+                        ? 1
+                        : 0,
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: CupertinoButton(
+                    padding: EdgeInsets.zero,
+                    child: Text(
+                      "Remove",
+                      style: TextStyle(color: CupertinoColors.systemRed),
                     ),
-                  ],
+                    onPressed: () {
+                      if (Provider.of<UserProvider>(
+                        context,
+                        listen: false,
+                      ).isDeliveryAddressSet) {
+                        //Remove delivery address from shared prefs
+                        Provider.of<UserProvider>(
+                          context,
+                          listen: false,
+                        ).removeSharedPrefsDeliveryAddress();
+                        Provider.of<UserProvider>(
+                          context,
+                          listen: false,
+                        ).checkIfDeliveryAddressIsSavedToSharedPrefs();
+                      }
+                    },
+                  ),
                 ),
               ),
             ],

@@ -42,7 +42,7 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void saveUserDeliveryAddressToPrefs(
+  Future<void> saveUserDeliveryAddressToPrefs(
     String fullName,
     String address,
     String city,
@@ -117,6 +117,15 @@ class UserProvider extends ChangeNotifier {
       postalCode: postalCode,
     );
   }
+
+  Future<void> removeSharedPrefsDeliveryAddress() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('fullName');
+    await prefs.remove('address');
+    await prefs.remove('city');
+    await prefs.remove('postalCode');
+  }
+
 }
 
 
