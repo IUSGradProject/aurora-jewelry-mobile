@@ -520,7 +520,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   _loginEmailController.text.isNotEmpty &&
                                   _loginPasswordController.text.isNotEmpty) {
                                 try {
-                                  await authProvider.login(
+                                  await authProvider.login(context,
                                     _loginEmailController.text,
                                     _loginPasswordController.text,
                                   );
@@ -541,7 +541,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               } else {
                                 try {
                                   if (canUserBeRegistrated(context)) {
-                                    await authProvider.registerAndLogin(
+                                    await authProvider.registerAndLogin(context,
                                       _registrationNameController.text,
                                       _registrationLastNameController.text,
                                       _registrationEmailController.text,

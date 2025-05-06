@@ -49,7 +49,14 @@ class AuthProvider extends ChangeNotifier {
   }
 
   ///Login function that saves the tooken to SharedPreferences
-  Future<void> login(String email, String password) async {
+  Future<void> login(
+    BuildContext context,
+    String email,
+    String password,
+  ) async {
+    CartProvider cartProvider =
+    // ignore: use_build_context_synchronously
+    Provider.of<CartProvider>(context, listen: false);
     try {
       _isLoading = true;
       notifyListeners();
@@ -66,6 +73,9 @@ class AuthProvider extends ChangeNotifier {
           response.username,
         );
 
+        // ignore: use_build_context_synchronously
+        await cartProvider.fetchCart(context);
+
         _isUserAuthenticated = true;
         notifyListeners();
       }
@@ -81,6 +91,7 @@ class AuthProvider extends ChangeNotifier {
   ///If registration is success it also logins user
 
   Future<void> registerAndLogin(
+    BuildContext context,
     String firstName,
     String lastName,
     String email,
@@ -98,9 +109,8 @@ class AuthProvider extends ChangeNotifier {
         username: username,
       );
       // If registration succeeds, login user
-      login(email, password);
-
-      
+      // ignore: use_build_context_synchronously
+      login(context, email, password);
     } catch (e) {
       rethrow;
     } finally {
@@ -113,16 +123,16 @@ class AuthProvider extends ChangeNotifier {
   Future<void> logout(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
     NavigationBarProvider navigationBarProvider =
-        // ignore: use_build_context_synchronously
-        Provider.of<NavigationBarProvider>(context, listen: false); 
+    // ignore: use_build_context_synchronously
+    Provider.of<NavigationBarProvider>(context, listen: false);
     CartProvider cartProvider =
-        // ignore: use_build_context_synchronously
-        Provider.of<CartProvider>(context, listen: false);
+    // ignore: use_build_context_synchronously
+    Provider.of<CartProvider>(context, listen: false);
     await prefs.remove('jwt');
     _isUserAuthenticated = false;
     _loginResponse = null;
     cartProvider.clearAll();
-    if(navigationBarProvider.currentIndex == 2){
+    if (navigationBarProvider.currentIndex == 2) {
       navigationBarProvider.setCurrentIndex(0);
     }
     notifyListeners();
