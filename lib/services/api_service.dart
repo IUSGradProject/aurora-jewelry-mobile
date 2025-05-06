@@ -352,13 +352,13 @@ class ApiService {
     final response = await http.post(url, headers: headers, body: body);
 
     if (response.statusCode == 200 || response.statusCode == 201) {
-      print('Order placed successfully');
+     //Order success
 
       
     } else {
-      print(response.body);
-      // final error = jsonDecode(response.body);
-      // throw Exception(error['message'] ?? 'Failed to submit order');
+     
+       final error = jsonDecode(response.body);
+      throw Exception(error['message'] ?? 'Failed to submit order');
     }
   }
 }

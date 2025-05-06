@@ -1,8 +1,6 @@
 import 'package:aurora_jewelry/models/Cart/delivery_address_model.dart';
 import 'package:aurora_jewelry/providers/Auth/user_provider.dart';
 import 'package:aurora_jewelry/providers/Cart/cart_provider.dart';
-import 'package:aurora_jewelry/screens/Home/home_screen.dart';
-import 'package:aurora_jewelry/screens/Home/profile_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
