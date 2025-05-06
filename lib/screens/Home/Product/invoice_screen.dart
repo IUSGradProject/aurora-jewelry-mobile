@@ -49,6 +49,8 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
 
   void navigateToHomeAndShowConfirmation(BuildContext context) async {
     // ignore: use_build_context_synchronously
+    
+
 
     //this is to show to user Discover Screen
     NavigationBarProvider navigationBarProvider =
