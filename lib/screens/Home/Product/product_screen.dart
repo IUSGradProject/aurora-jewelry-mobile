@@ -507,7 +507,7 @@ class _ProductScreenState extends State<ProductScreen>
                               child: Column(
                                 children: [
                                   CupertinoButton(
-                                    color: CupertinoColors.activeBlue,
+                                   // color: CupertinoColors.activeBlue,
                                     borderRadius: BorderRadius.circular(8),
                                     sizeStyle: CupertinoButtonSize.medium,
                                     child: Row(
@@ -516,14 +516,14 @@ class _ProductScreenState extends State<ProductScreen>
                                       children: [
                                         Icon(
                                           CupertinoIcons.cart_fill_badge_plus,
-                                          color: CupertinoColors.white,
+                                         // color: CupertinoColors.white,
                                           size: 22,
                                         ),
                                         SizedBox(width: 8),
                                         Text(
                                           "Add to Cart",
                                           style: TextStyle(
-                                            color: CupertinoColors.white,
+                                           // color: CupertinoColors.white,
                                             fontWeight: FontWeight.w700,
                                             fontSize: 22,
                                           ),

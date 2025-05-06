@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class EnterDeliveryAddressScreen extends StatefulWidget {
-  
   const EnterDeliveryAddressScreen({super.key});
 
   @override
@@ -19,6 +18,7 @@ class EnterDeliveryAddressScreen extends StatefulWidget {
 class _EnterDeliveryAddressScreenState
     extends State<EnterDeliveryAddressScreen> {
   bool isDeliveryAddressUpdating = false;
+  bool isStaticDeliveryAddressSet = false;
 
   final TextEditingController _fullNameController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
@@ -171,12 +171,30 @@ class _EnterDeliveryAddressScreenState
       context,
       listen: false,
     );
+    CartProvider cartProvider = Provider.of<CartProvider>(
+      context,
+      listen: false,
+    );
 
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _initDeliveryAddress();
       final user = userProvider.currentUser!;
       _fullNameController.text = "${user.firstName} ${user.lastName}";
+
+      setState(() {
+        isStaticDeliveryAddressSet = cartProvider.isDeliveryAddressSet;
+      });
+
+      if (isStaticDeliveryAddressSet) {
+        setState(() {
+          _fullNameController.text = cartProvider.deliveryAddress.fullName;
+          _addressController.text = cartProvider.deliveryAddress.address;
+          _cityController.text = cartProvider.deliveryAddress.city;
+          _postalCodeController.text =
+              cartProvider.deliveryAddress.postalCode.toString();
+        });
+      }
     });
   }
 
@@ -234,15 +252,16 @@ class _EnterDeliveryAddressScreenState
                   color: CupertinoColors.systemFill,
                   borderRadius: BorderRadius.circular(12),
                 ),
-                onChanged:
-                    (value) => setState(() async {
-                      if (Provider.of<UserProvider>(
-                        context,
-                        listen: false,
-                      ).isDeliveryAddressSet) {
-                        await updateDeliveryAddress();
-                      }
-                    }),
+                onChanged: (value) async {
+                  setState(() {
+                    if (Provider.of<UserProvider>(
+                      context,
+                      listen: false,
+                    ).isDeliveryAddressSet) {
+                      updateDeliveryAddress();
+                    }
+                  });
+                },
               ),
               const SizedBox(height: 16),
               // Address Label
@@ -414,7 +433,9 @@ class _EnterDeliveryAddressScreenState
                                                     .isUserDeliveryAddressSet(),
                                             builder: (context, snapshot) {
                                               if (!snapshot.hasData) {
-                                                return Container(width: 48,); // or a loading indicator
+                                                return Container(
+                                                  width: 48,
+                                                ); // or a loading indicator
                                               }
 
                                               return Transform.scale(
