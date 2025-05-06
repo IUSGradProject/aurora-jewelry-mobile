@@ -319,4 +319,25 @@ class CartProvider extends ChangeNotifier {
     );
     notifyListeners();
   }
+
+  void clearCart() {
+    _cartItems.clear();
+    _checkoutItemsIds.clear();
+    _invoiceItems.clear();
+    notifyListeners();
+  }
+  void clearAll() {
+    _cartItems.clear();
+    _checkoutItemsIds.clear();
+    _invoiceItems.clear();
+    _isDeliveryAddressSet = false;
+    _deliveryAddress = DeliveryAddressModel(
+      fullName: '',
+      address: '',
+      city: '',
+      postalCode: 0,
+    );
+    notifyListeners();
+  }
+
 }
