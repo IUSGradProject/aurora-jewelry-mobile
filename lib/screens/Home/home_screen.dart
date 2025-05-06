@@ -49,6 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    
     return Consumer<CartProvider>(
       builder:
           (context, cartProvider, child) => CupertinoTabScaffold(

@@ -287,7 +287,13 @@ class CartProvider extends ChangeNotifier {
       notifyListeners();
       await _apiService.placeOrder(_invoiceItems, userToken!);
       _isOrderPlacedSuccesfully = true;
+
+      // Order submitted successfully
       //Clearing tmp lists that are used to store checkout items
+
+      //Following things needs to be done: 
+      // Clear the cart
+      // Navigate user to home screen
       _checkoutItemsIds.clear();
       _invoiceItems.clear();
       notifyListeners();

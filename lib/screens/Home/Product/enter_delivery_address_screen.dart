@@ -44,78 +44,7 @@ class _EnterDeliveryAddressScreenState
     }
   }
 
-  void placeOrder(BuildContext context) async {
-    await Future.delayed(Duration(seconds: 3));
-
-    // Push HomeScreen and remove all previous routes
-    // ignore: use_build_context_synchronously
-    Navigator.of(context).pushAndRemoveUntil(
-      CupertinoPageRoute(builder: (_) => HomeScreen()),
-      (route) => false, // Remove all previous routes
-    );
-    // Wait a frame to ensure the new screen is rendered before showing popup
-    await Future.delayed(Duration(milliseconds: 300));
-
-    showCupertinoModalPopup(
-      // ignore: use_build_context_synchronously
-      context: context,
-      builder:
-          (context) => Container(
-            padding: EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: CupertinoColors.systemBackground.resolveFrom(context),
-              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-            ),
-            child: SafeArea(
-              top: false,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    CupertinoIcons.check_mark_circled_solid,
-                    color: CupertinoColors.activeGreen,
-                    size: 45,
-                  ),
-                  SizedBox(height: 32),
-                  Text(
-                    "Thank you Mirza for ordering from Aurora Jewelry !",
-                    style: TextStyle(fontSize: 18),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 16),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 16.0, right: 16),
-                    child: Text(
-                      "You can see you current and previous orders inside of your Profile.",
-                      style: CupertinoTheme.of(
-                        context,
-                      ).textTheme.navTitleTextStyle.copyWith(
-                        fontWeight: FontWeight.normal,
-                        fontSize: 15,
-                        color: CupertinoColors.systemGrey,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  SizedBox(height: 10),
-                  CupertinoButton(
-                    child: Text("Open Orders"),
-                    onPressed: () {
-                      Navigator.pop(context);
-                      Navigator.of(context).push(
-                        CupertinoSheetRoute<void>(
-                          builder:
-                              (BuildContext context) => const ProfileScreen(),
-                        ),
-                      );
-                    },
-                  ),
-                ],
-              ),
-            ),
-          ),
-    );
-  }
+  
 
   Future<void> _initDeliveryAddress() async {
     final userProvider = Provider.of<UserProvider>(context, listen: false);

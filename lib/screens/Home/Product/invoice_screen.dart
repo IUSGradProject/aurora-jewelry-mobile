@@ -3,6 +3,8 @@ import 'package:aurora_jewelry/components/Cart/delivery_address_shared_prefs_com
 import 'package:aurora_jewelry/providers/Auth/user_provider.dart';
 import 'package:aurora_jewelry/providers/Cart/cart_provider.dart';
 import 'package:aurora_jewelry/screens/Home/Product/enter_delivery_address_screen.dart';
+import 'package:aurora_jewelry/screens/Home/home_screen.dart';
+import 'package:aurora_jewelry/screens/Home/profile_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -39,6 +41,78 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
         ).getUserDeliveryAddressFromSharedPrefs();
       }
     });
+  }
+
+  void navigateToHomeAndShowConfirmation(BuildContext context) async {
+
+    // Push HomeScreen and remove all previous routes
+    // ignore: use_build_context_synchronously
+    Navigator.of(context).pushAndRemoveUntil(
+      CupertinoPageRoute(builder: (_) => HomeScreen()),
+      (route) => false, // Remove all previous routes
+    );
+    // Wait a frame to ensure the new screen is rendered before showing popup
+    await Future.delayed(Duration(milliseconds: 500));
+
+    showCupertinoModalPopup(
+      // ignore: use_build_context_synchronously
+      context: context,
+      builder:
+          (context) => Container(
+            padding: EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: CupertinoColors.systemBackground.resolveFrom(context),
+              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+            ),
+            child: SafeArea(
+              top: false,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    CupertinoIcons.check_mark_circled_solid,
+                    color: CupertinoColors.activeGreen,
+                    size: 45,
+                  ),
+                  SizedBox(height: 32),
+                  Text(
+                    "Thank you Mirza for ordering from Aurora Jewelry !",
+                    style: TextStyle(fontSize: 18),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 16),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 16.0, right: 16),
+                    child: Text(
+                      "You can see you current and previous orders inside of your Profile.",
+                      style: CupertinoTheme.of(
+                        context,
+                      ).textTheme.navTitleTextStyle.copyWith(
+                        fontWeight: FontWeight.normal,
+                        fontSize: 15,
+                        color: CupertinoColors.systemGrey,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  CupertinoButton(
+                    child: Text("Open Orders"),
+                    onPressed: () {
+                      Navigator.pop(context);
+                      Navigator.of(context).push(
+                        CupertinoSheetRoute<void>(
+                          builder:
+                              (BuildContext context) => const ProfileScreen(),
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ),
+    );
   }
 
   @override
@@ -418,6 +492,32 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                         onPressed: () async {
                           if (cartProvider.isDeliveryAddressSet) {
                             await cartProvider.placeOrder(context);
+                            if (cartProvider.isOrderPlacedSuccesfully) {
+                              // Order placed successfully
+                              // Clear the cart
+                              await cartProvider.fetchCart(context);
+                              navigateToHomeAndShowConfirmation(context);
+                            } else {
+                              // Show error message
+                              showCupertinoDialog(
+                                context: context,
+                                builder:
+                                    (context) => CupertinoAlertDialog(
+                                      title: const Text("Error"),
+                                      content: const Text(
+                                        "Failed to place order. Please try again.",
+                                      ),
+                                      actions: [
+                                        CupertinoDialogAction(
+                                          child: const Text("OK"),
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                              );
+                            }
                           }
                         },
                       ),
