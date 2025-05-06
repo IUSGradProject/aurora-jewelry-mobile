@@ -4,6 +4,7 @@ import 'package:aurora_jewelry/providers/Cart/cart_provider.dart';
 import 'package:aurora_jewelry/providers/Database/database_provider.dart';
 import 'package:aurora_jewelry/screens/Authentication/login_screen.dart';
 import 'package:aurora_jewelry/screens/Home/Product/product_screen.dart';
+import 'package:aurora_jewelry/screens/Home/home_screen.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
@@ -244,18 +245,17 @@ class _ListProductComponentState extends State<ListProductComponent>
                             renderBox?.localToGlobal(Offset.zero) ??
                             Offset.zero;
 
-                        if (cartProvider.cartIconButtonKey.currentContext ==
-                            null) {
-                          return;
+                        final cartKey = HomeScreen.cartIconKeyGlobal;
+                        final cartContext = cartKey?.currentContext;
+                        
+                        if (cartContext != null) {
+                          animateProductToCart(
+                            context,
+                            cartKey!,
+                            "lib/assets/necklace.jpg",
+                            position,
+                          );
                         }
-
-                        animateProductToCart(
-                          context,
-                          cartProvider
-                              .cartIconButtonKey, // ✅ Ensure this is assigned in navbar
-                          "lib/assets/necklace.jpg",
-                          position,
-                        );
                         HapticFeedback.mediumImpact();
                       } else {
                         Navigator.of(context, rootNavigator: true).push(

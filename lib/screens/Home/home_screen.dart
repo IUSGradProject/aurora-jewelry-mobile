@@ -10,6 +10,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
+  static GlobalKey? cartIconKeyGlobal;
   const HomeScreen({super.key});
 
   @override
@@ -17,7 +18,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final GlobalKey cartKey = GlobalKey();
+  final GlobalKey cartIconKey = GlobalKey(); // move this from CartProvider
 
   final pages = [
     () => DiscoverScreen(),
@@ -30,6 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    HomeScreen.cartIconKeyGlobal = cartIconKey;
 
     // Delay the call until after build is done
     Future.microtask(() async {
@@ -40,20 +42,22 @@ class _HomeScreenState extends State<HomeScreen> {
       // ignore: use_build_context_synchronously
       await authProvider.checkIfAuthenticated(context);
       if (authProvider.isUserAuthenticated) {
-
         // ignore: use_build_context_synchronously
         await cartProvider.fetchCart(context);
-        
       }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    
     return Consumer2<CartProvider, NavigationBarProvider>(
       builder:
-          (context, cartProvider,navigationBarProvider, child) => CupertinoTabScaffold(
+          (
+            context,
+            cartProvider,
+            navigationBarProvider,
+            child,
+          ) => CupertinoTabScaffold(
             tabBar: CupertinoTabBar(
               currentIndex: navigationBarProvider.currentIndex,
               onTap: (index) {
@@ -71,7 +75,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   return;
                 } else {
                   navigationBarProvider.setCurrentIndex(index);
-                
                 }
               },
               items: <BottomNavigationBarItem>[
@@ -79,7 +82,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   icon: Icon(
                     CupertinoIcons.home,
                     color:
-                         navigationBarProvider.currentIndex == 0
+                        navigationBarProvider.currentIndex == 0
                             ? CupertinoColors.activeBlue
                             : CupertinoColors.systemGrey,
                   ),
@@ -88,7 +91,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   icon: Icon(
                     CupertinoIcons.search,
                     color:
-                         navigationBarProvider.currentIndex == 1
+                        navigationBarProvider.currentIndex == 1
                             ? CupertinoColors.activeBlue
                             : CupertinoColors.systemGrey,
                   ),
@@ -100,9 +103,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         clipBehavior: Clip.none,
                         children: [
                           Container(
-                            key:
-                                cartProvider
-                                    .cartIconButtonKey, // Assign key here
+                            key: cartIconKey, //Key for animation
                             child: Icon(
                               CupertinoIcons.cart,
                               color:

@@ -8,6 +8,7 @@ import 'package:aurora_jewelry/providers/Search/search_provider.dart';
 import 'package:aurora_jewelry/screens/Authentication/login_screen.dart';
 import 'package:aurora_jewelry/screens/Home/Product/image_preview_screen.dart';
 import 'package:aurora_jewelry/screens/Home/Product/invoice_screen.dart';
+import 'package:aurora_jewelry/screens/Home/home_screen.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
@@ -507,7 +508,7 @@ class _ProductScreenState extends State<ProductScreen>
                               child: Column(
                                 children: [
                                   CupertinoButton(
-                                   // color: CupertinoColors.activeBlue,
+                                    // color: CupertinoColors.activeBlue,
                                     borderRadius: BorderRadius.circular(8),
                                     sizeStyle: CupertinoButtonSize.medium,
                                     child: Row(
@@ -516,14 +517,14 @@ class _ProductScreenState extends State<ProductScreen>
                                       children: [
                                         Icon(
                                           CupertinoIcons.cart_fill_badge_plus,
-                                         // color: CupertinoColors.white,
+                                          // color: CupertinoColors.white,
                                           size: 22,
                                         ),
                                         SizedBox(width: 8),
                                         Text(
                                           "Add to Cart",
                                           style: TextStyle(
-                                           // color: CupertinoColors.white,
+                                            // color: CupertinoColors.white,
                                             fontWeight: FontWeight.w700,
                                             fontSize: 22,
                                           ),
@@ -538,25 +539,25 @@ class _ProductScreenState extends State<ProductScreen>
                                           ).isUserAuthenticated;
 
                                       if (isUserRegistered) {
-                                        final positon = Offset(
+                                        final position = Offset(
                                           MediaQuery.of(context).size.width / 2,
                                           MediaQuery.of(context).size.width /
                                               0.6,
                                         );
 
-                                        if (cartProvider
-                                                .cartIconButtonKey
-                                                .currentContext ==
-                                            null) {
-                                          return;
+                                        final cartKey =
+                                            HomeScreen.cartIconKeyGlobal;
+                                        final cartContext =
+                                            cartKey?.currentContext;
+                                        if (cartContext != null) {
+                                          animateProductToCart(
+                                            context,
+                                            cartKey!,
+                                            "lib/assets/necklace.jpg",
+                                            position,
+                                          );
                                         }
-                                        animateProductToCart(
-                                          context,
-                                          cartProvider
-                                              .cartIconButtonKey, // ✅ Ensure this is assigned in navbar
-                                          "lib/assets/necklace.jpg",
-                                          positon,
-                                        );
+
                                         HapticFeedback.mediumImpact();
                                       } else {
                                         Navigator.of(
@@ -606,7 +607,7 @@ class _ProductScreenState extends State<ProductScreen>
 
                                       if (isUserRegistered) {
                                         //Adding current product to invoice screen and automatically
-                                        //converting it to [CartItemContractModel] 
+                                        //converting it to [CartItemContractModel]
                                         cartProvider.addBuyNowItem(
                                           databaseProvider.detailedProduct!
                                               .convertToCartItem(

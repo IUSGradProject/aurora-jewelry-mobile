@@ -27,7 +27,7 @@ class CartProvider extends ChangeNotifier {
     postalCode: 0,
   );
 
-  final GlobalKey cartIconButtonKey = GlobalKey();
+  GlobalKey cartIconButtonKey = GlobalKey();
 
   bool _isLoading = false;
   bool _isBottomSheetOpened = false;
@@ -45,6 +45,13 @@ class CartProvider extends ChangeNotifier {
 
   final double _totalPrice = 0.0;
   double get totalPrice => _totalPrice;
+
+
+
+  void reloadCartIconGlobalKey() {
+    cartIconButtonKey = GlobalKey();
+    notifyListeners();
+  }
 
   void setIsBottomSheetOpened(bool value) {
     _isBottomSheetOpened = value;
@@ -90,7 +97,7 @@ class CartProvider extends ChangeNotifier {
 
   void addBuyNowItem(CartItemContractModel item) {
     if (_invoiceItems.isNotEmpty) {
-      //This indicates that there is already items in every 
+      //This indicates that there is already items in every
       //list(lists that are connected with logic of adding/buyin/ordering items).
       _cartItems.clear();
       _invoiceItems.clear();
@@ -291,7 +298,7 @@ class CartProvider extends ChangeNotifier {
       // Order submitted successfully
       //Clearing tmp lists that are used to store checkout items
 
-      //Following things needs to be done: 
+      //Following things needs to be done:
       // Clear the cart
       // Navigate user to home screen
       _checkoutItemsIds.clear();
@@ -326,6 +333,7 @@ class CartProvider extends ChangeNotifier {
     _invoiceItems.clear();
     notifyListeners();
   }
+
   void clearAll() {
     _cartItems.clear();
     _checkoutItemsIds.clear();
@@ -339,5 +347,4 @@ class CartProvider extends ChangeNotifier {
     );
     notifyListeners();
   }
-
 }

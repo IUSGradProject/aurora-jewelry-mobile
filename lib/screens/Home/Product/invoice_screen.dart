@@ -2,6 +2,7 @@ import 'package:aurora_jewelry/components/Cart/delivery_address_invoice_componen
 import 'package:aurora_jewelry/components/Cart/delivery_address_shared_prefs_component.dart';
 import 'package:aurora_jewelry/providers/Auth/user_provider.dart';
 import 'package:aurora_jewelry/providers/Cart/cart_provider.dart';
+import 'package:aurora_jewelry/providers/Home/navigation_bar_provider.dart';
 import 'package:aurora_jewelry/screens/Home/Product/enter_delivery_address_screen.dart';
 import 'package:aurora_jewelry/screens/Home/home_screen.dart';
 import 'package:aurora_jewelry/screens/Home/profile_screen.dart';
@@ -47,15 +48,18 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
   }
 
   void navigateToHomeAndShowConfirmation(BuildContext context) async {
+    // ignore: use_build_context_synchronously
+
+    //this is to show to user Discover Screen
+    NavigationBarProvider navigationBarProvider =
+        Provider.of<NavigationBarProvider>(context, listen: false);
+    navigationBarProvider.setCurrentIndex(0);
 
     // Push HomeScreen and remove all previous routes
-    // ignore: use_build_context_synchronously
     Navigator.of(context).pushAndRemoveUntil(
       CupertinoPageRoute(builder: (_) => HomeScreen()),
-      (route) => false, // Remove all previous routes
+      (Route<dynamic> route) => false, // Remove all previous routes
     );
-    // Wait a frame to ensure the new screen is rendered before showing popup
-    await Future.delayed(Duration(milliseconds: 500));
 
     showCupertinoModalPopup(
       // ignore: use_build_context_synchronously
@@ -479,7 +483,12 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: AnimatedOpacity(
-                    opacity: cartProvider.isDeliveryAddressSet ? 1 : 0.5,
+                    opacity:
+                        userProvider.isDeliveryAddressSet
+                            ? 1
+                            : cartProvider.isDeliveryAddressSet
+                            ? 1
+                            : 0.5,
                     duration: const Duration(milliseconds: 300),
                     child: SizedBox(
                       width: double.infinity,
@@ -494,12 +503,14 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                         ),
                         onPressed: () async {
                           if (cartProvider.isDeliveryAddressSet) {
+                            ///This line below is important
                             await cartProvider.placeOrder(context);
+
                             if (cartProvider.isOrderPlacedSuccesfully) {
-                              // Order placed successfully
-                              // Clear the cart
                               // ignore: use_build_context_synchronously
                               await cartProvider.fetchCart(context);
+                              //Recreating the cart icon button key
+                              cartProvider.reloadCartIconGlobalKey();
                               // ignore: use_build_context_synchronously
                               navigateToHomeAndShowConfirmation(context);
                             } else {
