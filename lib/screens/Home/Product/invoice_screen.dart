@@ -397,7 +397,7 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                     ],
                   ),
                 ),
-                SizedBox(height: 70),
+                SizedBox(height: 16),
                 // Next Button
                 Padding(
                   padding: const EdgeInsets.all(16.0),

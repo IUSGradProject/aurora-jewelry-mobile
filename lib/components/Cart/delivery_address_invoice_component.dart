@@ -1,5 +1,6 @@
 import 'package:aurora_jewelry/models/Cart/delivery_address_model.dart';
 import 'package:aurora_jewelry/providers/Cart/cart_provider.dart';
+import 'package:aurora_jewelry/screens/Home/Product/enter_delivery_address_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 
@@ -69,7 +70,24 @@ class DeliveryAddressInvoiceComponent extends StatelessWidget {
           ),
         ),
         Positioned(
-          top: 16,
+          top: 8,
+          right: 8,
+          child: CupertinoButton(
+            padding: EdgeInsets.zero,
+            child: Text("Edit "),
+            onPressed: () {
+              Navigator.of(context).push(
+                CupertinoSheetRoute(
+                  builder:
+                      (BuildContext context) =>
+                          const EnterDeliveryAddressScreen(),
+                ),
+              );
+            },
+          ),
+        ),
+        Positioned(
+          bottom: 16,
           right: 16,
           child: CupertinoButton(
             minimumSize: const Size(0, 0),

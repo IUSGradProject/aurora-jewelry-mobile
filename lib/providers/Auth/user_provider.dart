@@ -48,6 +48,12 @@ class UserProvider extends ChangeNotifier {
     String city,
     int postalCode,
   ) async {
+    _userDeliveryAddress = DeliveryAddressModel(
+      fullName: fullName,
+      address: address,
+      city: city,
+      postalCode: postalCode,
+    );
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('fullName', fullName);
     await prefs.setString('address', address);

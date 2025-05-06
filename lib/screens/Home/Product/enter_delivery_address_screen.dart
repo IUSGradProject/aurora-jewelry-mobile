@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class EnterDeliveryAddressScreen extends StatefulWidget {
+  
   const EnterDeliveryAddressScreen({super.key});
 
   @override
@@ -145,7 +146,7 @@ class _EnterDeliveryAddressScreenState
     }
   }
 
-  Future<void> updateDeliveryAddress() async{
+  Future<void> updateDeliveryAddress() async {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     userProvider.saveUserDeliveryAddressToPrefs(
       _fullNameController.text,
@@ -234,12 +235,12 @@ class _EnterDeliveryAddressScreenState
                   borderRadius: BorderRadius.circular(12),
                 ),
                 onChanged:
-                    (value) => setState(() async{
+                    (value) => setState(() async {
                       if (Provider.of<UserProvider>(
                         context,
                         listen: false,
                       ).isDeliveryAddressSet) {
-                       await updateDeliveryAddress();
+                        await updateDeliveryAddress();
                       }
                     }),
               ),
@@ -307,16 +308,16 @@ class _EnterDeliveryAddressScreenState
                             color: CupertinoColors.systemFill,
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          onChanged:
-                              (value) => setState(() async{
-                                if (Provider.of<UserProvider>(
-                                  context,
-                                  listen: false,
-                                ).isDeliveryAddressSet) {
-                       await updateDeliveryAddress();
-                     
-                                }
-                              }),
+                          onChanged: (value) async {
+                            setState(() {
+                              if (Provider.of<UserProvider>(
+                                context,
+                                listen: false,
+                              ).isDeliveryAddressSet) {
+                                updateDeliveryAddress();
+                              }
+                            });
+                          },
                         ),
                       ],
                     ),
@@ -348,16 +349,16 @@ class _EnterDeliveryAddressScreenState
                             color: CupertinoColors.systemFill,
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          onChanged:
-                              (value) => setState(() async{
-                                if (Provider.of<UserProvider>(
-                                  context,
-                                  listen: false,
-                                ).isDeliveryAddressSet) {
-                       await updateDeliveryAddress();
-                                 
-                                }
-                              }),
+                          onChanged: (value) async {
+                            setState(() {
+                              if (Provider.of<UserProvider>(
+                                context,
+                                listen: false,
+                              ).isDeliveryAddressSet) {
+                                updateDeliveryAddress();
+                              }
+                            });
+                          },
                         ),
                       ],
                     ),
@@ -413,9 +414,7 @@ class _EnterDeliveryAddressScreenState
                                                     .isUserDeliveryAddressSet(),
                                             builder: (context, snapshot) {
                                               if (!snapshot.hasData) {
-                                                return CupertinoActivityIndicator(
-                                                  radius: 15,
-                                                ); // or a loading indicator
+                                                return Container(width: 48,); // or a loading indicator
                                               }
 
                                               return Transform.scale(
@@ -482,16 +481,24 @@ class _EnterDeliveryAddressScreenState
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    "You have a saved Delivery Address.",
-                                    style: TextStyle(fontSize: 17),
-                                    softWrap: true,
+                                  Row(
+                                    children: [
+                                      Transform.scale(
+                                        scale: 1.5,
+                                        child: CupertinoCheckbox(
+                                          value: true,
+                                          onChanged: (value) {},
+                                        ),
+                                      ),
+                                      Text(
+                                        "You have a saved Delivery Address.",
+                                        style: TextStyle(fontSize: 17),
+                                        softWrap: true,
+                                      ),
+                                    ],
                                   ),
                                   AnimatedContainer(
-                                    height:
-                                        isDeliveryAddressUpdating
-                                            ? 25
-                                            : 0,
+                                    height: isDeliveryAddressUpdating ? 25 : 0,
                                     duration: Duration(milliseconds: 300),
                                     child: ListView(
                                       padding: EdgeInsets.zero,
