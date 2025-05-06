@@ -1,6 +1,7 @@
 import 'package:animated_digit/animated_digit.dart';
 import 'package:aurora_jewelry/providers/Auth/auth_provider.dart';
 import 'package:aurora_jewelry/providers/Cart/cart_provider.dart';
+import 'package:aurora_jewelry/providers/Home/navigation_bar_provider.dart';
 import 'package:aurora_jewelry/screens/Authentication/login_screen.dart';
 import 'package:aurora_jewelry/screens/Home/cart_screen.dart';
 import 'package:aurora_jewelry/screens/Home/discover_screen.dart';
@@ -50,11 +51,11 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     
-    return Consumer<CartProvider>(
+    return Consumer2<CartProvider, NavigationBarProvider>(
       builder:
-          (context, cartProvider, child) => CupertinoTabScaffold(
+          (context, cartProvider,navigationBarProvider, child) => CupertinoTabScaffold(
             tabBar: CupertinoTabBar(
-              currentIndex: currentTabIndex,
+              currentIndex: navigationBarProvider.currentIndex,
               onTap: (index) {
                 final isUserRegistered =
                     Provider.of<AuthProvider>(
@@ -69,9 +70,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   );
                   return;
                 } else {
-                  setState(() {
-                    currentTabIndex = index;
-                  });
+                  navigationBarProvider.setCurrentIndex(index);
+                
                 }
               },
               items: <BottomNavigationBarItem>[
@@ -79,7 +79,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   icon: Icon(
                     CupertinoIcons.home,
                     color:
-                        currentTabIndex == 0
+                         navigationBarProvider.currentIndex == 0
                             ? CupertinoColors.activeBlue
                             : CupertinoColors.systemGrey,
                   ),
@@ -88,7 +88,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   icon: Icon(
                     CupertinoIcons.search,
                     color:
-                        currentTabIndex == 1
+                         navigationBarProvider.currentIndex == 1
                             ? CupertinoColors.activeBlue
                             : CupertinoColors.systemGrey,
                   ),
@@ -106,7 +106,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: Icon(
                               CupertinoIcons.cart,
                               color:
-                                  currentTabIndex == 2
+                                  navigationBarProvider.currentIndex == 2
                                       ? CupertinoColors.activeBlue
                                       : CupertinoColors.systemGrey,
                             ),
@@ -156,7 +156,7 @@ class _HomeScreenState extends State<HomeScreen> {
             tabBuilder: (BuildContext context, index) {
               return CupertinoTabView(
                 builder: (BuildContext context) {
-                  return pages[currentTabIndex]();
+                  return pages[navigationBarProvider.currentIndex]();
                 },
               );
             },

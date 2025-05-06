@@ -1,5 +1,6 @@
 import 'package:aurora_jewelry/models/Auth/login_response.dart';
 import 'package:aurora_jewelry/providers/Auth/user_provider.dart';
+import 'package:aurora_jewelry/providers/Home/navigation_bar_provider.dart';
 import 'package:aurora_jewelry/services/api_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
@@ -108,11 +109,17 @@ class AuthProvider extends ChangeNotifier {
   }
 
   ///Logout function to remove the token from SharedPreferences
-  Future<void> logout() async {
+  Future<void> logout(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
+    NavigationBarProvider navigationBarProvider =
+        // ignore: use_build_context_synchronously
+        Provider.of<NavigationBarProvider>(context, listen: false); // Create an instance of NavigationBarProvider
     await prefs.remove('jwt');
     _isUserAuthenticated = false;
     _loginResponse = null;
+    if(navigationBarProvider.currentIndex == 2){
+      navigationBarProvider.setCurrentIndex(0);
+    }
     notifyListeners();
   }
 }

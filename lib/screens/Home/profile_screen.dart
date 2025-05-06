@@ -88,7 +88,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         PullDownMenuDivider.large(),
                         PullDownMenuItem(
                           onTap: () async {
-                            await authProvider.logout();
+                            await authProvider.logout(context);
                             // ignore: use_build_context_synchronously
                             Navigator.pop(context);
                           },

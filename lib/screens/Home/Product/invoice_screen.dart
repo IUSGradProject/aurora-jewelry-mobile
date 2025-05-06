@@ -24,18 +24,21 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
 
     Future.microtask(() async {
       await Provider.of<UserProvider>(
+        // ignore: use_build_context_synchronously
         context,
         listen: false,
       ).checkIfDeliveryAddressIsSavedToSharedPrefs();
 
       bool isDeliveryAddressSet =
           Provider.of<UserProvider>(
+            // ignore: use_build_context_synchronously
             context,
             listen: false,
           ).isDeliveryAddressSet;
 
       if (isDeliveryAddressSet) {
         await Provider.of<UserProvider>(
+          // ignore: use_build_context_synchronously
           context,
           listen: false,
         ).getUserDeliveryAddressFromSharedPrefs();
@@ -495,11 +498,14 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                             if (cartProvider.isOrderPlacedSuccesfully) {
                               // Order placed successfully
                               // Clear the cart
+                              // ignore: use_build_context_synchronously
                               await cartProvider.fetchCart(context);
+                              // ignore: use_build_context_synchronously
                               navigateToHomeAndShowConfirmation(context);
                             } else {
                               // Show error message
                               showCupertinoDialog(
+                                // ignore: use_build_context_synchronously
                                 context: context,
                                 builder:
                                     (context) => CupertinoAlertDialog(
