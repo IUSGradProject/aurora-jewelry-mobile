@@ -27,8 +27,6 @@ class CartProvider extends ChangeNotifier {
     postalCode: 0,
   );
 
-  GlobalKey cartIconButtonKey = GlobalKey();
-
   bool _isLoading = false;
   bool _isBottomSheetOpened = false;
   bool _isOrderPlacedSuccesfully = false;
@@ -46,12 +44,6 @@ class CartProvider extends ChangeNotifier {
   final double _totalPrice = 0.0;
   double get totalPrice => _totalPrice;
 
-
-
-  void reloadCartIconGlobalKey() {
-    cartIconButtonKey = GlobalKey();
-    notifyListeners();
-  }
 
   void setIsBottomSheetOpened(bool value) {
     _isBottomSheetOpened = value;

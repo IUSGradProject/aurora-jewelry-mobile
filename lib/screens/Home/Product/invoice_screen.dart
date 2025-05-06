@@ -50,7 +50,8 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
   void navigateToHomeAndShowConfirmation(BuildContext context) async {
     // ignore: use_build_context_synchronously
     
-
+    UserProvider userProvider =
+        Provider.of<UserProvider>(context, listen: false);
 
     //this is to show to user Discover Screen
     NavigationBarProvider navigationBarProvider =
@@ -85,7 +86,7 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                   ),
                   SizedBox(height: 32),
                   Text(
-                    "Thank you Mirza for ordering from Aurora Jewelry !",
+                    "Thank you ${userProvider.currentUser!.firstName} for ordering from Aurora Jewelry !",
                     style: TextStyle(fontSize: 18),
                     textAlign: TextAlign.center,
                   ),
@@ -504,15 +505,14 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                           ),
                         ),
                         onPressed: () async {
-                          if (cartProvider.isDeliveryAddressSet) {
+                          if (cartProvider.isDeliveryAddressSet ||
+                              userProvider.isDeliveryAddressSet) {
                             ///This line below is important
                             await cartProvider.placeOrder(context);
 
                             if (cartProvider.isOrderPlacedSuccesfully) {
                               // ignore: use_build_context_synchronously
                               await cartProvider.fetchCart(context);
-                              //Recreating the cart icon button key
-                              cartProvider.reloadCartIconGlobalKey();
                               // ignore: use_build_context_synchronously
                               navigateToHomeAndShowConfirmation(context);
                             } else {
