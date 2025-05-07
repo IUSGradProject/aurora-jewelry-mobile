@@ -26,6 +26,10 @@ class _GridProductComponentState extends State<GridProductComponent>
     String imagePath,
     Offset startPosition,
   ) {
+    Provider.of<CartProvider>(
+      context,
+      listen: false,
+    ).setIsAnimatingToCart(true);
     final overlay = Overlay.of(context);
     final cartRenderBox =
         cartKey.currentContext?.findRenderObject() as RenderBox?;
@@ -98,6 +102,11 @@ class _GridProductComponentState extends State<GridProductComponent>
         context,
         listen: false,
       ).addProductToCart(widget.product, context);
+      Provider.of<CartProvider>(
+        // ignore: use_build_context_synchronously
+        context,
+        listen: false,
+      ).setIsAnimatingToCart(false);
     });
   }
 

@@ -26,6 +26,10 @@ class _ListProductComponentState extends State<ListProductComponent>
     String imagePath,
     Offset startPosition,
   ) {
+    Provider.of<CartProvider>(
+      context,
+      listen: false,
+    ).setIsAnimatingToCart(true);
     final overlay = Overlay.of(context);
     final cartRenderBox =
         cartKey.currentContext?.findRenderObject() as RenderBox?;
@@ -95,6 +99,11 @@ class _ListProductComponentState extends State<ListProductComponent>
         context,
         listen: false,
       ).addProductToCart(widget.product, context);
+      Provider.of<CartProvider>(
+        // ignore: use_build_context_synchronously
+        context,
+        listen: false,
+      ).setIsAnimatingToCart(false);
     });
   }
 
@@ -247,7 +256,7 @@ class _ListProductComponentState extends State<ListProductComponent>
 
                         final cartKey = HomeScreen.cartIconKeyGlobal;
                         final cartContext = cartKey?.currentContext;
-                        
+
                         if (cartContext != null) {
                           animateProductToCart(
                             context,

@@ -1,4 +1,3 @@
-import 'package:animated_digit/animated_digit.dart';
 import 'package:aurora_jewelry/providers/Auth/auth_provider.dart';
 import 'package:aurora_jewelry/providers/Cart/cart_provider.dart';
 import 'package:aurora_jewelry/providers/Home/navigation_bar_provider.dart';
@@ -73,7 +72,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   );
                   return;
-                } else {
+                }  else {
                   navigationBarProvider.setCurrentIndex(index);
                 }
               },
@@ -115,34 +114,37 @@ class _HomeScreenState extends State<HomeScreen> {
                           Positioned(
                             top: -5,
                             right: -10,
-                            child: AnimatedScale(
-                              scale: cartProvider.cartItems.isNotEmpty ? 1 : 0,
-                              duration: Duration(milliseconds: 300),
-                              child: Container(
-                                height: 20,
-                                width: 20,
-                                decoration: BoxDecoration(
-                                  color: CupertinoColors.systemRed,
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                child: Center(
-                                  child:
-                                      cartProvider.cartItems.length < 9
-                                          ? AnimatedDigitWidget(
-                                            value:
-                                                cartProvider.cartItems.length,
-                                            textStyle: TextStyle(
-                                              color: CupertinoColors.white,
-                                              fontSize: 17,
+                            child: IgnorePointer(
+                              child: AnimatedScale(
+                                scale:
+                                    cartProvider.cartItems.isNotEmpty ? 1 : 0,
+                                duration: Duration(milliseconds: 300),
+                                child: Container(
+                                  height: 20,
+                                  width: 20,
+                                  decoration: BoxDecoration(
+                                    color: CupertinoColors.systemRed,
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  child: Center(
+                                    child:
+                                        cartProvider.cartItems.length < 9
+                                            ? Text(
+                                              cartProvider.cartItems.length
+                                                  .toString(),
+                                              style: TextStyle(
+                                                color: CupertinoColors.white,
+                                                fontSize: 17,
+                                              ),
+                                            )
+                                            : Text(
+                                              "9+",
+                                              style: TextStyle(
+                                                color: CupertinoColors.white,
+                                                fontSize: 12,
+                                              ),
                                             ),
-                                          )
-                                          : Text(
-                                            "9+",
-                                            style: TextStyle(
-                                              color: CupertinoColors.white,
-                                              fontSize: 12,
-                                            ),
-                                          ),
+                                  ),
                                 ),
                               ),
                             ),

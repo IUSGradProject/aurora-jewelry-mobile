@@ -32,6 +32,10 @@ class CartProvider extends ChangeNotifier {
   bool _isOrderPlacedSuccesfully = false;
   bool _isOrderPlacing = false;
 
+  // This is used to check if the animation is in progress
+  // preventing user from clicking on the button cart icon in the app bar
+  bool _isAnimatingToCart = false;
+
   // Getters
   List<CartItemContractModel> get cartItems => _cartItems;
   List<String> get checkoutItemsIds => _checkoutItemsIds;
@@ -42,9 +46,18 @@ class CartProvider extends ChangeNotifier {
   bool get isDeliveryAddressSet => _isDeliveryAddressSet;
   bool get isOrderPlacedSuccesfully => _isOrderPlacedSuccesfully;
   bool get isOrderPlacing => _isOrderPlacing;
+  bool get isAnimatingToCart => _isAnimatingToCart;
 
   final double _totalPrice = 0.0;
   double get totalPrice => _totalPrice;
+
+
+  //Methods
+
+  void setIsAnimatingToCart(bool value) {
+    _isAnimatingToCart = value;
+    notifyListeners();
+  }
 
 
   void setIsBottomSheetOpened(bool value) {
@@ -344,4 +357,8 @@ class CartProvider extends ChangeNotifier {
     );
     notifyListeners();
   }
+
+
+
+
 }
