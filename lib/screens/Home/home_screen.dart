@@ -43,6 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
       if (authProvider.isUserAuthenticated) {
         // ignore: use_build_context_synchronously
         await cartProvider.fetchCart(context);
+        cartProvider.setIsBottomSheetOpened(false);
       }
     });
   }
@@ -77,7 +78,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 }
 
 
-                if(index ==0 || index == 1 || index == 2){
+                if(index ==0 || index == 1 ){
                   cartProvider.setIsBottomSheetOpened(false);
                 }
               },

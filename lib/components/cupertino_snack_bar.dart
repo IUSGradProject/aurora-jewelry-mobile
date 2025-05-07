@@ -45,10 +45,12 @@ class _CupertinoSnackBarState extends State<CupertinoSnackBar> {
             children: [
               Icon(CupertinoIcons.info),
               SizedBox(width: 16),
-              Text(
-                widget.message,
-                
-                textAlign: TextAlign.center,
+              Expanded(
+                child: Text(
+                  widget.message,
+                  
+                  textAlign: TextAlign.center,
+                ),
               ),
             ],
           ),

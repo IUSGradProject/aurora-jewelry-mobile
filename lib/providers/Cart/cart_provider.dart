@@ -51,14 +51,12 @@ class CartProvider extends ChangeNotifier {
   final double _totalPrice = 0.0;
   double get totalPrice => _totalPrice;
 
-
   //Methods
 
   void setIsAnimatingToCart(bool value) {
     _isAnimatingToCart = value;
     notifyListeners();
   }
-
 
   void setIsBottomSheetOpened(bool value) {
     _isBottomSheetOpened = value;
@@ -135,7 +133,6 @@ class CartProvider extends ChangeNotifier {
             context,
             listen: false,
           ).currentUser!.authToken;
-
       final cartResponse = await _apiService.getCart(userToken!);
       _cartItems.clear();
       _cartItems.addAll(cartResponse);
@@ -357,8 +354,4 @@ class CartProvider extends ChangeNotifier {
     );
     notifyListeners();
   }
-
-
-
-
 }

@@ -34,54 +34,44 @@ class _CartScreenState extends State<CartScreen> {
     return Consumer<CartProvider>(
       builder:
           (context, cartProvider, child) => CupertinoPageScaffold(
+            navigationBar: CupertinoNavigationBar.large(
+              largeTitle: Padding(
+                padding: const EdgeInsets.only(right: 16.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [Text("Cart"), ProfileAvatarWidget()],
+                ),
+              ),
+            ),
             child: Stack(
               children: [
-                CustomScrollView(
-                  slivers: [
-                    CupertinoSliverNavigationBar(
-                      alwaysShowMiddle: false,
-                      middle: Text("Cart"),
-
-                      largeTitle: Padding(
-                        padding: const EdgeInsets.only(right: 16.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [Text("Cart"), ProfileAvatarWidget()],
+                cartProvider.cartItems.isEmpty
+                    ? Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Spacer(flex: 2,),
+                        LottieBuilder.asset(
+                          "lib/assets/empty-cart-animation.json",
+                          height: 200,
                         ),
-                      ),
-                    ),
-
-                    cartProvider.cartItems.isEmpty
-                        ? SliverFillRemaining(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Spacer(),
-                              LottieBuilder.asset(
-                                "lib/assets/empty-cart-animation.json",
-                                height: 200,
-                              ),
-                              SizedBox(height: 32),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 32.0,
-                                ),
-                                child: Text(
-                                  "Your cart is waiting to be filled with wonderful things!",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: CupertinoColors.systemGrey,
-                                    fontSize: 18,
-                                  ),
-                                ),
-                              ),
-                              Spacer(flex: 2),
-                            ],
+                        SizedBox(height: 32),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 32.0,
                           ),
-                        )
-                        : CartItemsWidget(cartItems: cartProvider.cartItems),
-                  ],
-                ),
+                          child: Text(
+                            "Your cart is waiting to be filled with wonderful things!",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: CupertinoColors.systemGrey,
+                              fontSize: 18,
+                            ),
+                          ),
+                        ),
+                        Spacer(flex: 2),
+                      ],
+                    )
+                    : CartItemsWidget(cartItems: cartProvider.cartItems),
                 Positioned(
                   bottom: 84,
                   child: AnimatedContainer(
@@ -130,14 +120,17 @@ class _CartScreenState extends State<CartScreen> {
                                     : AnimatedOpacity(
                                       duration: Duration(milliseconds: 300),
                                       opacity:
-                                          cartProvider.checkoutItemsIds.isNotEmpty
+                                          cartProvider
+                                                  .checkoutItemsIds
+                                                  .isNotEmpty
                                               ? 1
                                               : 0.5,
                                       child: CupertinoButton(
                                         padding: EdgeInsets.zero,
                                         onPressed: () {
                                           if (cartProvider
-                                                  .checkoutItemsIds.isEmpty) {
+                                              .checkoutItemsIds
+                                              .isEmpty) {
                                             return;
                                           }
                                           Navigator.of(

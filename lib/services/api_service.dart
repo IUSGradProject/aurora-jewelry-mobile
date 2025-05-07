@@ -63,6 +63,7 @@ class ApiService {
 
       if (response.statusCode != 200 && response.statusCode != 201) {
         final error = jsonDecode(response.body);
+
         throw Exception(error['message'] ?? 'Registration failed');
       }
 

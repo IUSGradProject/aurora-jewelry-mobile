@@ -524,7 +524,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                     _loginEmailController.text,
                                     _loginPasswordController.text,
                                   );
-
+                     
+                                  //If user is logged in, check if delivery address is set
                                   //When user logins user data should be returned from
                                   //Shared preferences, because of that getCurrentUserIsCalled
                                   await userProvider.getCurrentUser();
@@ -561,8 +562,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                   showCupertinoSnackBar(
                                     // ignore: use_build_context_synchronously
                                     context: context,
-                                    message:
-                                        "There was error while registrating user.",
+                                    // message:
+                                    //     "Error occurred while registering user.",
+                                    message: e.toString(),
                                   );
                                 }
                               }

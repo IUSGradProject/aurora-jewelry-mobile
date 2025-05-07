@@ -74,7 +74,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     itemBuilder: (context) {
                       return [
                         PullDownMenuItem(
-                          icon: CupertinoIcons.cube_box,
+                          icon: userProvider.isDeliveryAddressSet? CupertinoIcons.cube_box :CupertinoIcons.add,
                           onTap: () async {
                             Navigator.of(context).push(
                               CupertinoSheetRoute(
@@ -85,6 +85,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             );
                           },
                           title: "Delivery Address",
+                          subtitle: userProvider.isDeliveryAddressSet? "Delivery Address Saved for Future Orders." : null,
                         ),
                         PullDownMenuDivider.large(),
                         PullDownMenuItem(
