@@ -30,6 +30,7 @@ class CartProvider extends ChangeNotifier {
   bool _isLoading = false;
   bool _isBottomSheetOpened = false;
   bool _isOrderPlacedSuccesfully = false;
+  bool _isOrderPlacing = false;
 
   // Getters
   List<CartItemContractModel> get cartItems => _cartItems;
@@ -40,6 +41,7 @@ class CartProvider extends ChangeNotifier {
   DeliveryAddressModel get deliveryAddress => _deliveryAddress;
   bool get isDeliveryAddressSet => _isDeliveryAddressSet;
   bool get isOrderPlacedSuccesfully => _isOrderPlacedSuccesfully;
+  bool get isOrderPlacing => _isOrderPlacing;
 
   final double _totalPrice = 0.0;
   double get totalPrice => _totalPrice;
@@ -282,6 +284,7 @@ class CartProvider extends ChangeNotifier {
           listen: false,
         ).currentUser!.authToken;
     try {
+      _isOrderPlacing = true;
       _isOrderPlacedSuccesfully = false;
       notifyListeners();
       await _apiService.placeOrder(_invoiceItems, userToken!);
@@ -295,6 +298,8 @@ class CartProvider extends ChangeNotifier {
       // Navigate user to home screen
       _checkoutItemsIds.clear();
       _invoiceItems.clear();
+      _isOrderPlacing = false;
+
       notifyListeners();
     } catch (e) {
       rethrow;
