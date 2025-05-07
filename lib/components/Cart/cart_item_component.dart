@@ -147,29 +147,25 @@ class CartItemComponent extends StatelessWidget {
                 Positioned(
                   top: 14,
                   right: 14,
-                  child: SizedBox(
-                    height: 25,
-                    width: 25,
-                    child: AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 300),
-                      child:
-                          cartProvider.isItemInCheckout(cartItem)
-                              ? Icon(
-                                CupertinoIcons.check_mark_circled_solid,
-                                color: CupertinoColors.activeGreen,
-                                size: 25,
-                              )
-                              : Container(
-                                height: 20,
-                                width: 20,
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                    color: CupertinoColors.activeBlue,
-                                    width: 1,
-                                  ),
-                                  shape: BoxShape.circle,
+                  child: IgnorePointer(
+                    child: SizedBox(
+                      height: 25,
+                      width: 25,
+                      child: AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 300),
+                        child:
+                            cartProvider.isItemInCheckout(cartItem)
+                                ? Icon(
+                                  CupertinoIcons.check_mark_circled_solid,
+                                  color: CupertinoColors.activeGreen,
+                                  size: 25,
+                                )
+                                :  Icon(
+                                  CupertinoIcons.add_circled,
+                                  color: CupertinoColors.activeGreen,
+                                  size: 25,
                                 ),
-                              ),
+                      ),
                     ),
                   ),
                 ),
