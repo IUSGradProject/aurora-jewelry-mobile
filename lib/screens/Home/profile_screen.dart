@@ -113,10 +113,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     actions: <CupertinoActionSheetAction>[
                                       CupertinoActionSheetAction(
                                         isDestructiveAction: true,
-                                        onPressed: () {
+                                        onPressed: () async {
+                                          await authProvider.deactivateAccount(
+                                            context,
+                                          );
+                                          // ignore: use_build_context_synchronously
+                                          Navigator.pop(context);
+                                          // ignore: use_build_context_synchronously
                                           Navigator.pop(context);
                                         },
-                                        child: const Text('Deactivate Account'),
+                                        child:
+                                            authProvider.isLoading
+                                                ? CupertinoActivityIndicator()
+                                                : Text('Deactivate Account'),
                                       ),
                                     ],
                                     cancelButton: CupertinoActionSheetAction(

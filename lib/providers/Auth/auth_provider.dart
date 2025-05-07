@@ -119,6 +119,23 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
+  Future<void> deactivateAccount(BuildContext context) async {
+    try {
+      String? currentUserEmail =
+          Provider.of<UserProvider>(context, listen: false).currentUser!.email;
+      _isLoading = true;
+      notifyListeners();
+      await ApiService().deactivateAccount(currentUserEmail);
+      // ignore: use_build_context_synchronously
+      await logout(context);
+    } catch (e) {
+      rethrow;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
   ///Logout function to remove the token from SharedPreferences
   Future<void> logout(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();

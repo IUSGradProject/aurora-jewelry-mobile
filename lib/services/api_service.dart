@@ -72,6 +72,27 @@ class ApiService {
     }
   }
 
+  Future<void> deactivateAccount(String email) async {
+    if (email.isEmpty) {
+      throw Exception('Email is required to deactivate a user.');
+    }
+
+    final encodedEmail = Uri.encodeComponent(email);
+    final url = Uri.parse('$auroraBackendUrl/Users/deactivate/$encodedEmail');
+
+    try {
+      final response = await http.delete(url);
+
+      if (response.statusCode != 200) {
+        throw Exception(
+          'Failed to deactivate user. Status code: ${response.statusCode}',
+        );
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<PaginatedProductsResponse> getProducts({
     int page = 1,
     int pageSize = 20,
@@ -352,12 +373,9 @@ class ApiService {
     final response = await http.post(url, headers: headers, body: body);
 
     if (response.statusCode == 200 || response.statusCode == 201) {
-     //Order success
-
-      
+      //Order success
     } else {
-     
-       final error = jsonDecode(response.body);
+      final error = jsonDecode(response.body);
       throw Exception(error['message'] ?? 'Failed to submit order');
     }
   }
