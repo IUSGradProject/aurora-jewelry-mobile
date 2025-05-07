@@ -75,6 +75,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 }  else {
                   navigationBarProvider.setCurrentIndex(index);
                 }
+
+
+                if(index ==0 || index == 1 || index == 2){
+                  cartProvider.setIsBottomSheetOpened(false);
+                }
               },
               items: <BottomNavigationBarItem>[
                 BottomNavigationBarItem(
