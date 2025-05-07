@@ -228,17 +228,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
 
                   SizedBox(height: 8),
-
-                  // Consumer<AuthProvider>(
-                  //   builder:
-                  //       (context, authProvider, child) => CupertinoButton(
-                  //         child: Text("Sign Out"),
-                  //         onPressed: () {
-                  //           authProvider.logout();
-                  //           Navigator.pop(context);
-                  //         },
-                  //       ),
-                  // ),
                   SizedBox(height: 16),
                   Align(
                     alignment: Alignment.centerLeft,

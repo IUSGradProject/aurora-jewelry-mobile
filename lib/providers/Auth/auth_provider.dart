@@ -65,7 +65,7 @@ class AuthProvider extends ChangeNotifier {
       if (response != null) {
         _loginResponse = response;
         // Save User Details to SharedPreferences
-        saveUserDetailsToPrefs(
+        await saveUserDetailsToPrefs(
           response.token,
           response.firstName,
           response.lastName,
@@ -110,7 +110,7 @@ class AuthProvider extends ChangeNotifier {
       );
       // If registration succeeds, login user
       // ignore: use_build_context_synchronously
-      login(context, email, password);
+      await login(context, email, password);
     } catch (e) {
       rethrow;
     } finally {
