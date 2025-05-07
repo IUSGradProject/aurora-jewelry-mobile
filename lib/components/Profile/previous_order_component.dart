@@ -1,20 +1,16 @@
 import 'package:aurora_jewelry/models/Products/product_order_model.dart';
 import 'package:aurora_jewelry/screens/Home/Product/image_preview_screen.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class PreviousOrderComponent extends StatelessWidget {
-  final DateTime date;
-  final String imageUrl;
-
   final List<ProductOrder> items;
   final double total;
 
   const PreviousOrderComponent({
     super.key,
-    required this.imageUrl,
-    required this.date,
     required this.items,
     required this.total,
   });
@@ -42,6 +38,16 @@ class PreviousOrderComponent extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Order Date and Time
+          Text(
+            DateFormat('d MMM yyyy \'at\' HH:mm').format(items[0].date),
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: CupertinoColors.systemGrey,
+            ),
+          ),
+          SizedBox(height: 16),
+
           // Order Image
           Row(
             children: [
@@ -53,7 +59,8 @@ class PreviousOrderComponent extends StatelessWidget {
                     Navigator.of(context, rootNavigator: true).push(
                       CupertinoDialogRoute(
                         builder:
-                            (context) => ImagePreviewScreen(imageURL: imageUrl),
+                            (context) =>
+                                ImagePreviewScreen(imageURL: items[0].imageURL),
                         context: context,
                       ),
                     );
@@ -61,32 +68,40 @@ class PreviousOrderComponent extends StatelessWidget {
                   child: Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color:
+                            MediaQuery.of(context).platformBrightness ==
+                                    Brightness.dark
+                                ? CupertinoColors.systemGrey
+                                : CupertinoColors.systemGrey5,
+                        width: 1,
+                      ),
                     ),
-                    child: Image.network(
-                      imageUrl,
-                      width: 100,
-                      height: 100,
-                      fit: BoxFit.cover,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: SizedBox(
+                        height: 80,
+                        width: 80,
+                        child: CachedNetworkImage(
+                          imageUrl: items[0].imageURL,
+                          fit: BoxFit.cover,
+                          placeholder:
+                              (context, url) => const Center(
+                                child: CupertinoActivityIndicator(),
+                              ),
+                          errorWidget:
+                              (context, url, error) =>
+                                  const Icon(CupertinoIcons.photo),
+                          fadeInDuration: const Duration(milliseconds: 300),
+                        ),
+                      ),
                     ),
                   ),
                 ),
               ),
             ],
           ),
-          SizedBox(height: 16),
-          // Order Date and Time
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                DateFormat('d MMM yyyy \'at\' HH:mm').format(date),
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: CupertinoColors.systemGrey,
-                ),
-              ),
-            ],
-          ),
+
           SizedBox(height: 12),
 
           // Item List

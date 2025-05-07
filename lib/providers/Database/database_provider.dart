@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:aurora_jewelry/models/Orders/previous_order_model.dart';
 import 'package:aurora_jewelry/models/Products/brand_model.dart';
 import 'package:aurora_jewelry/models/Products/category_model.dart';
@@ -28,8 +26,9 @@ class DatabaseProvider extends ChangeNotifier {
   bool _areCategoriesFetched = false;
 
   //User Details
-  List<PreviousOrderModel> _previousUserOrders = [];
-  List<List<PreviousOrderModel>> sortedPreviousOrders = [];
+  //After making sure that this variable is no more in need remove it [_previousUserOrders]
+  final List<PreviousOrderModel> _previousUserOrders = [];
+  List<List<PreviousOrderModel>> _sortedPreviousOrders = [];
   bool _isUserOrdersFetched = false;
 
   FilterRequestModel _filterRequestModel = FilterRequestModel(
@@ -52,6 +51,8 @@ class DatabaseProvider extends ChangeNotifier {
 
   ///User Related Getters
   List<PreviousOrderModel> get previousUserOrders => _previousUserOrders;
+  List<List<PreviousOrderModel>> get sortedPreviousOrders =>
+      _sortedPreviousOrders;
   bool get isUserOrdersFetched => _isUserOrdersFetched;
 
   ///Method to set searched products
@@ -261,7 +262,7 @@ class DatabaseProvider extends ChangeNotifier {
       }
 
       // Convert to List<List<PreviousOrderModel>> and sort by date descending
-      sortedPreviousOrders =
+      _sortedPreviousOrders =
           grouped.entries.map((entry) {
               final orders = entry.value;
               orders.sort(
@@ -279,36 +280,4 @@ class DatabaseProvider extends ChangeNotifier {
       debugPrint('Error fetching previous user orders: $e');
     }
   }
-
-  // Future<void> fetchPreviousUserOrders(
-  //   String userToken, {
-  //   int pageNumber = 1,
-  //   int pageSize = 10,
-  // }) async {
-  //   try {
-  //     //Making list insite of list because of some previous order can have
-  //     //multiple items inside it
-  //     List<PreviousOrderModel> allPreviousUserOrders = [];
-  //     List<List<PreviousOrderModel>> tempAllPreviousUserOrders= [];
-  //     _isUserOrdersFetched = false;
-  //     notifyListeners();
-  //     // Fetch the previous user orders from the API
-  //     allPreviousUserOrders = await _apiService.getUserPurchaseHistory(
-  //       userToken,
-  //       pageNumber: pageNumber,
-  //       pageSize: pageSize,
-  //     );
-
-  //     // _previousUserOrders = await _apiService.getUserPurchaseHistory(
-  //     //   userToken,
-  //     //   pageNumber: pageNumber,
-  //     //   pageSize: pageSize,
-  //     // );
-
-  //     _isUserOrdersFetched = true;
-  //     notifyListeners();
-  //   } catch (e) {
-  //     debugPrint('Error fetching previous user orders: $e');
-  //   }
-  // }
 }

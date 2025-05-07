@@ -291,21 +291,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                     price:
                                                         order.productPrice
                                                             .toDouble(),
+                                                    imageURL:
+                                                        order.productImage,
+                                                    date: order.orderDate,
                                                   ),
                                                 )
                                                 .toList(),
                                       );
                                     } else {
                                       return PreviousOrderComponent(
-                                        imageUrl:
-                                            databaseProvider
-                                                .sortedPreviousOrders[index][0]
-                                                .productImage,
-                                        date:
-                                            databaseProvider
-                                                .sortedPreviousOrders[index][0]
-                                                .orderDate,
-
                                         items: [
                                           ProductOrder(
                                             name:
@@ -321,6 +315,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                     .sortedPreviousOrders[index][0]
                                                     .productPrice
                                                     .toDouble(),
+                                            imageURL:
+                                                databaseProvider
+                                                    .sortedPreviousOrders[index][0]
+                                                    .productImage,
+                                            date:
+                                                databaseProvider
+                                                    .sortedPreviousOrders[index][0]
+                                                    .orderDate,
                                           ),
                                         ],
                                         total:
