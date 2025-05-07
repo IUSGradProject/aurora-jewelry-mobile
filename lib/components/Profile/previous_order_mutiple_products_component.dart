@@ -5,12 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class PreviousOrderMultipleProductsComponent extends StatelessWidget {
-  final DateTime date;
+
   final List<ProductOrder> items;
 
   const PreviousOrderMultipleProductsComponent({
     super.key,
-    required this.date,
+
     required this.items,
   });
 
@@ -23,13 +23,15 @@ class PreviousOrderMultipleProductsComponent extends StatelessWidget {
       padding: EdgeInsets.all(16),
       margin: EdgeInsets.symmetric(vertical: 8),
       decoration: BoxDecoration(
-        color: MediaQuery.of(context).platformBrightness == Brightness.dark
-            ? CupertinoColors.secondarySystemFill
-            : CupertinoColors.white,
+        color:
+            MediaQuery.of(context).platformBrightness == Brightness.dark
+                ? CupertinoColors.secondarySystemFill
+                : CupertinoColors.white,
         border: Border.all(
-          color: MediaQuery.of(context).platformBrightness == Brightness.dark
-              ? CupertinoColors.transparent
-              : CupertinoColors.systemGrey5,
+          color:
+              MediaQuery.of(context).platformBrightness == Brightness.dark
+                  ? CupertinoColors.transparent
+                  : CupertinoColors.systemGrey5,
           width: 1,
         ),
         borderRadius: BorderRadius.circular(16),
@@ -38,18 +40,18 @@ class PreviousOrderMultipleProductsComponent extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Order Date
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                DateFormat('d MMM yyyy \'at\' HH:mm').format(date),
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: CupertinoColors.systemGrey,
-                ),
-              ),
-            ],
-          ),
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //   children: [
+          //     Text(
+          //       DateFormat('d MMM yyyy \'at\' HH:mm').format(date),
+          //       style: TextStyle(
+          //         fontWeight: FontWeight.bold,
+          //         color: CupertinoColors.systemGrey,
+          //       ),
+          //     ),
+          //   ],
+          // ),
           SizedBox(height: 12),
 
           // First Product Image
@@ -80,6 +82,7 @@ class PreviousOrderMultipleProductsComponent extends StatelessWidget {
             //     ),
             //   ),
             // ),
+            Text("Multiple Products component"),
           SizedBox(height: 16),
 
           // List of Products

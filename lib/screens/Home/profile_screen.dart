@@ -1,4 +1,5 @@
 import 'package:aurora_jewelry/components/Profile/previous_order_component.dart';
+import 'package:aurora_jewelry/components/Profile/previous_order_mutiple_products_component.dart';
 import 'package:aurora_jewelry/models/Products/product_order_model.dart';
 import 'package:aurora_jewelry/providers/Auth/auth_provider.dart';
 import 'package:aurora_jewelry/providers/Auth/user_provider.dart';
@@ -247,7 +248,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     duration: Duration(milliseconds: 300),
                     child:
                         databaseProvider.isUserOrdersFetched
-                            ? (databaseProvider.previousUserOrders.isEmpty
+                            ? (databaseProvider.sortedPreviousOrders.isEmpty
                                 ? Column(
                                   children: [
                                     SizedBox(height: 120),
@@ -271,42 +272,64 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   physics: NeverScrollableScrollPhysics(),
                                   itemCount:
                                       databaseProvider
-                                          .previousUserOrders
+                                          .sortedPreviousOrders
                                           .length,
                                   itemBuilder: (context, index) {
-                                    return PreviousOrderComponent(
-                                      imageUrl:
-                                          databaseProvider
-                                              .previousUserOrders[index]
-                                              .productImage,
-                                      date:
-                                          databaseProvider
-                                              .previousUserOrders[index]
-                                              .orderDate,
+                                    if (databaseProvider
+                                            .sortedPreviousOrders[index]
+                                            .length >
+                                        1) {
+                                      return PreviousOrderMultipleProductsComponent(
+                                        //Passing items to the component -> multiple products history
+                                        items:
+                                            databaseProvider
+                                                .sortedPreviousOrders[index]
+                                                .map(
+                                                  (order) => ProductOrder(
+                                                    name: order.productName,
+                                                    quantity: order.quantity,
+                                                    price:
+                                                        order.productPrice
+                                                            .toDouble(),
+                                                  ),
+                                                )
+                                                .toList(),
+                                      );
+                                    } else {
+                                      return PreviousOrderComponent(
+                                        imageUrl:
+                                            databaseProvider
+                                                .sortedPreviousOrders[index][0]
+                                                .productImage,
+                                        date:
+                                            databaseProvider
+                                                .sortedPreviousOrders[index][0]
+                                                .orderDate,
 
-                                      items: [
-                                        ProductOrder(
-                                          name:
-                                              databaseProvider
-                                                  .previousUserOrders[index]
-                                                  .productName,
-                                          quantity:
-                                              databaseProvider
-                                                  .previousUserOrders[index]
-                                                  .quantity,
-                                          price:
-                                              databaseProvider
-                                                  .previousUserOrders[index]
-                                                  .productPrice
-                                                  .toDouble(),
-                                        ),
-                                      ],
-                                      total:
-                                          databaseProvider
-                                              .previousUserOrders[index]
-                                              .productPrice
-                                              .toDouble(),
-                                    );
+                                        items: [
+                                          ProductOrder(
+                                            name:
+                                                databaseProvider
+                                                    .sortedPreviousOrders[index][0]
+                                                    .productName,
+                                            quantity:
+                                                databaseProvider
+                                                    .sortedPreviousOrders[index][0]
+                                                    .quantity,
+                                            price:
+                                                databaseProvider
+                                                    .sortedPreviousOrders[index][0]
+                                                    .productPrice
+                                                    .toDouble(),
+                                          ),
+                                        ],
+                                        total:
+                                            databaseProvider
+                                                .sortedPreviousOrders[index][0]
+                                                .productPrice
+                                                .toDouble(),
+                                      );
+                                    }
                                   },
                                 ))
                             : SizedBox.shrink(),

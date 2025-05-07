@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:aurora_jewelry/models/Orders/previous_order_model.dart';
 import 'package:aurora_jewelry/models/Products/brand_model.dart';
 import 'package:aurora_jewelry/models/Products/category_model.dart';
@@ -27,6 +29,7 @@ class DatabaseProvider extends ChangeNotifier {
 
   //User Details
   List<PreviousOrderModel> _previousUserOrders = [];
+  List<List<PreviousOrderModel>> sortedPreviousOrders = [];
   bool _isUserOrdersFetched = false;
 
   FilterRequestModel _filterRequestModel = FilterRequestModel(
@@ -232,16 +235,80 @@ class DatabaseProvider extends ChangeNotifier {
     try {
       _isUserOrdersFetched = false;
       notifyListeners();
-      // Fetch the previous user orders from the API
-      _previousUserOrders = await _apiService.getUserPurchaseHistory(
-        userToken,
-        pageNumber: pageNumber,
-        pageSize: pageSize,
-      );
+
+      // Fetch all orders from the API
+      List<PreviousOrderModel> allPreviousUserOrders = await _apiService
+          .getUserPurchaseHistory(
+            userToken,
+            pageNumber: pageNumber,
+            pageSize: pageSize,
+          );
+
+      // Group orders by normalized date (rounded to minute)
+      Map<DateTime, List<PreviousOrderModel>> grouped = {};
+
+      for (var order in allPreviousUserOrders) {
+        final normalizedDate = DateTime(
+          order.orderDate.year,
+          order.orderDate.month,
+          order.orderDate.day,
+          order.orderDate.hour,
+          order.orderDate.minute,
+        );
+
+        grouped.putIfAbsent(normalizedDate, () => []);
+        grouped[normalizedDate]!.add(order);
+      }
+
+      // Convert to List<List<PreviousOrderModel>> and sort by date descending
+      sortedPreviousOrders =
+          grouped.entries.map((entry) {
+              final orders = entry.value;
+              orders.sort(
+                (a, b) => a.orderDate.compareTo(b.orderDate),
+              ); // sort items inside
+              return orders;
+            }).toList()
+            ..sort(
+              (a, b) => b.first.orderDate.compareTo(a.first.orderDate),
+            ); // sort groups
+
       _isUserOrdersFetched = true;
       notifyListeners();
     } catch (e) {
       debugPrint('Error fetching previous user orders: $e');
     }
   }
+
+  // Future<void> fetchPreviousUserOrders(
+  //   String userToken, {
+  //   int pageNumber = 1,
+  //   int pageSize = 10,
+  // }) async {
+  //   try {
+  //     //Making list insite of list because of some previous order can have
+  //     //multiple items inside it
+  //     List<PreviousOrderModel> allPreviousUserOrders = [];
+  //     List<List<PreviousOrderModel>> tempAllPreviousUserOrders= [];
+  //     _isUserOrdersFetched = false;
+  //     notifyListeners();
+  //     // Fetch the previous user orders from the API
+  //     allPreviousUserOrders = await _apiService.getUserPurchaseHistory(
+  //       userToken,
+  //       pageNumber: pageNumber,
+  //       pageSize: pageSize,
+  //     );
+
+  //     // _previousUserOrders = await _apiService.getUserPurchaseHistory(
+  //     //   userToken,
+  //     //   pageNumber: pageNumber,
+  //     //   pageSize: pageSize,
+  //     // );
+
+  //     _isUserOrdersFetched = true;
+  //     notifyListeners();
+  //   } catch (e) {
+  //     debugPrint('Error fetching previous user orders: $e');
+  //   }
+  // }
 }
