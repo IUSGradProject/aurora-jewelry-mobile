@@ -26,7 +26,9 @@ class DatabaseProvider extends ChangeNotifier {
   bool _areCategoriesFetched = false;
 
   //User Details
-  List<PreviousOrderModel> _previousUserOrders = [];
+  //After making sure that this variable is no more in need remove it [_previousUserOrders]
+  final List<PreviousOrderModel> _previousUserOrders = [];
+  List<List<PreviousOrderModel>> _sortedPreviousOrders = [];
   bool _isUserOrdersFetched = false;
 
   FilterRequestModel _filterRequestModel = FilterRequestModel(
@@ -49,6 +51,8 @@ class DatabaseProvider extends ChangeNotifier {
 
   ///User Related Getters
   List<PreviousOrderModel> get previousUserOrders => _previousUserOrders;
+  List<List<PreviousOrderModel>> get sortedPreviousOrders =>
+      _sortedPreviousOrders;
   bool get isUserOrdersFetched => _isUserOrdersFetched;
 
   ///Method to set searched products
@@ -232,12 +236,44 @@ class DatabaseProvider extends ChangeNotifier {
     try {
       _isUserOrdersFetched = false;
       notifyListeners();
-      // Fetch the previous user orders from the API
-      _previousUserOrders = await _apiService.getUserPurchaseHistory(
-        userToken,
-        pageNumber: pageNumber,
-        pageSize: pageSize,
-      );
+
+      // Fetch all orders from the API
+      List<PreviousOrderModel> allPreviousUserOrders = await _apiService
+          .getUserPurchaseHistory(
+            userToken,
+            pageNumber: pageNumber,
+            pageSize: pageSize,
+          );
+
+      // Group orders by normalized date (rounded to minute)
+      Map<DateTime, List<PreviousOrderModel>> grouped = {};
+
+      for (var order in allPreviousUserOrders) {
+        final normalizedDate = DateTime(
+          order.orderDate.year,
+          order.orderDate.month,
+          order.orderDate.day,
+          order.orderDate.hour,
+          order.orderDate.minute,
+        );
+
+        grouped.putIfAbsent(normalizedDate, () => []);
+        grouped[normalizedDate]!.add(order);
+      }
+
+      // Convert to List<List<PreviousOrderModel>> and sort by date descending
+      _sortedPreviousOrders =
+          grouped.entries.map((entry) {
+              final orders = entry.value;
+              orders.sort(
+                (a, b) => a.orderDate.compareTo(b.orderDate),
+              ); // sort items inside
+              return orders;
+            }).toList()
+            ..sort(
+              (a, b) => b.first.orderDate.compareTo(a.first.orderDate),
+            ); // sort groups
+
       _isUserOrdersFetched = true;
       notifyListeners();
     } catch (e) {
