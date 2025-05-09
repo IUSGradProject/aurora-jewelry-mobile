@@ -11,7 +11,7 @@ class CartItemsWidget extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: ListView(
-        padding: EdgeInsets.only(top: 150, bottom: 160),
+        padding: EdgeInsets.only(top: 160, bottom: 160),
         children: List.generate(cartItems.length, (index) {
           return CartItemComponent(cartItem: cartItems[index]);
         }),
