@@ -15,6 +15,9 @@ class DatabaseProvider extends ChangeNotifier {
   bool _areProductsFetched = false;
   bool _isDetailedProductFetched = false;
 
+  int _currentPage = 1;
+  bool _isFetchingMoreProducts = false;
+  bool _hasMore = true;
   List<Product> _products = [];
   List<Product> _searchedProducts = [];
   DetailedProduct? _detailedProduct;
@@ -43,6 +46,9 @@ class DatabaseProvider extends ChangeNotifier {
   List<Product> get searchedProducts => _searchedProducts;
   DetailedProduct? get detailedProduct => _detailedProduct;
   bool get isDetailedProductFetched => _isDetailedProductFetched;
+  bool get isFetchingMoreProducts => _isFetchingMoreProducts;
+  int get currentPage => _currentPage;
+  bool get hasMore => _hasMore;
   List<CategoryModel> get categories => _categories;
   bool get areCategoriesFetched => _areCategoriesFetched;
   FilterRequestModel get filterRequestModel => _filterRequestModel;
@@ -74,17 +80,19 @@ class DatabaseProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-
   ///Method to clear all products
   void clearAllProducts() {
     _products.clear();
     notifyListeners();
   }
 
-
   /// Method to fetch products
   Future<void> fetchProducts({int page = 1, int pageSize = 20}) async {
     try {
+      if (page == 1) {
+        _products.clear();
+      }
+
       _areProductsFetched = false;
 
       // Step 1: Fetch the initial paginated products
@@ -92,16 +100,41 @@ class DatabaseProvider extends ChangeNotifier {
         page: page,
         pageSize: pageSize,
       );
+      if (response.data.isEmpty || response.data.length < pageSize) {
+        _hasMore = false;
+      } else {
+        _hasMore = true;
+      }
+      if (page == 1) {
+        _products = response.data;
+      } else {
+        _products.addAll(response.data);
+      }
 
-      _products = response.data;
+      if (page == 1) {
+        _currentPage = page;
+      } else {
+        _currentPage++;
+      }
+
+      _currentPage = page;
       _areProductsFetched = true;
 
       notifyListeners();
     } catch (e) {
       debugPrint('Error fetching products: $e');
       _areProductsFetched = false;
+      _hasMore = false;
       notifyListeners();
     }
+  }
+
+  /// Method to fetch more products
+  Future<void> fetchMoreProducts() async {
+    if (_isFetchingMoreProducts || !_hasMore) return;
+    _isFetchingMoreProducts = true;
+    await fetchProducts(page: _currentPage + 1);
+    _isFetchingMoreProducts = false;
   }
 
   /// Method to set filter request model
@@ -146,7 +179,7 @@ class DatabaseProvider extends ChangeNotifier {
 
   /// Method to reset filter request model
   void resetFilterRequestModel() {
-    //Saving categoriy as previous one because it is used in the filter 
+    //Saving categoriy as previous one because it is used in the filter
     _filterRequestModel = FilterRequestModel(
       categories: _filterRequestModel.categories,
       brands: [],
