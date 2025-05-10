@@ -33,7 +33,11 @@ class _GridProductComponentState extends State<GridProductComponent>
     final overlay = Overlay.of(context);
     final cartRenderBox =
         cartKey.currentContext?.findRenderObject() as RenderBox?;
-
+// Update the cart provider after animation completes
+       Provider.of<CartProvider>(
+        context,
+        listen: false,
+      ).addProductToCart(widget.product, context);
     if (cartRenderBox == null) {
       debugPrint(
         "Cart Icon Button Key is NULL! Make sure it's assigned in Navbar.",
@@ -97,11 +101,11 @@ class _GridProductComponentState extends State<GridProductComponent>
       overlayEntry?.remove();
       animationController.dispose();
 
-      // Update the cart provider after animation completes
-      await Provider.of<CartProvider>(
-        context,
-        listen: false,
-      ).addProductToCart(widget.product, context);
+      // // Update the cart provider after animation completes
+      // await Provider.of<CartProvider>(
+      //   context,
+      //   listen: false,
+      // ).addProductToCart(widget.product, context);
       Provider.of<CartProvider>(
         // ignore: use_build_context_synchronously
         context,
