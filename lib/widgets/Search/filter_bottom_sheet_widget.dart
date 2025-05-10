@@ -513,8 +513,22 @@ class _FilterBottomSheetWidgetState extends State<FilterBottomSheetWidget> {
                                   if (searchProvider
                                       .checkIfThereWasChangesInFilters()) {
                                     searchProvider.clearAllFilters(context);
-                                    await databaseProvider
-                                        .fetchFilteredProducts();
+                                    //Check if there is some change inside of [_filterRequestModel]
+
+                                    if (Provider.of<DatabaseProvider>(
+                                          context,
+                                          listen: false,
+                                        ).filterRequestModel !=
+                                        FilterRequestModel(
+                                          categories: [],
+                                          brands: [],
+                                          styles: [],
+                                        )) {
+                                      await Provider.of<DatabaseProvider>(
+                                        context,
+                                        listen: false,
+                                      ).fetchFilteredProducts();
+                                    }
                                   }
                                 },
                               ),

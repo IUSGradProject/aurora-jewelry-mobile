@@ -1,5 +1,6 @@
 import 'package:aurora_jewelry/providers/Auth/auth_provider.dart';
 import 'package:aurora_jewelry/providers/Cart/cart_provider.dart';
+import 'package:aurora_jewelry/providers/Database/database_provider.dart';
 import 'package:aurora_jewelry/providers/Home/navigation_bar_provider.dart';
 import 'package:aurora_jewelry/screens/Authentication/login_screen.dart';
 import 'package:aurora_jewelry/screens/Home/cart_screen.dart';
@@ -61,6 +62,16 @@ class _HomeScreenState extends State<HomeScreen> {
             tabBar: CupertinoTabBar(
               currentIndex: navigationBarProvider.currentIndex,
               onTap: (index) {
+
+                ///Clearing all products from search provider when switching tabs
+                ///to avoid showing old products
+                if (index == 1) {
+                  Provider.of<DatabaseProvider>(
+                    context,
+                    listen: false,
+                  ).clearAllProducts();
+                }
+
                 final isUserRegistered =
                     Provider.of<AuthProvider>(
                       context,
@@ -73,12 +84,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   );
                   return;
-                }  else {
+                } else {
                   navigationBarProvider.setCurrentIndex(index);
                 }
 
-
-                if(index ==0 || index == 1 ){
+                if (index == 0 || index == 1) {
                   cartProvider.setIsBottomSheetOpened(false);
                 }
               },
