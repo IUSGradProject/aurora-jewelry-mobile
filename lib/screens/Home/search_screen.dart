@@ -6,6 +6,7 @@ import 'package:aurora_jewelry/components/Search/Category/category_component.dar
 import 'package:aurora_jewelry/components/Search/Category/shimmer_category_component.dart';
 import 'package:aurora_jewelry/components/Search/Searching/search_result_component.dart';
 import 'package:aurora_jewelry/components/Search/upper_component.dart';
+import 'package:aurora_jewelry/models/Products/filter_request_model.dart';
 import 'package:aurora_jewelry/providers/Database/database_provider.dart';
 import 'package:aurora_jewelry/providers/Search/search_provider.dart';
 import 'package:aurora_jewelry/widgets/profile_avatar_widget.dart';
@@ -25,6 +26,20 @@ class _SearchScreenState extends State<SearchScreen> {
   void initState() {
     super.initState();
     Provider.of<DatabaseProvider>(context, listen: false).fetchCategories();
+
+    //Check if there is some change inside of [_filterRequestModel]
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (Provider.of<DatabaseProvider>(
+            context,
+            listen: false,
+          ).filterRequestModel !=
+          FilterRequestModel(categories: [], brands: [], styles: [])) {
+        Provider.of<DatabaseProvider>(
+          context,
+          listen: false,
+        ).fetchFilteredProducts();
+      }
+    });
   }
 
   @override
