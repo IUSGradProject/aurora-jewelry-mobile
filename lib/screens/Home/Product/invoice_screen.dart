@@ -6,7 +6,6 @@ import 'package:aurora_jewelry/providers/Auth/user_provider.dart';
 import 'package:aurora_jewelry/providers/Cart/cart_provider.dart';
 import 'package:aurora_jewelry/providers/Home/navigation_bar_provider.dart';
 import 'package:aurora_jewelry/screens/Home/Product/enter_delivery_address_screen.dart';
-import 'package:aurora_jewelry/screens/Home/home_screen.dart';
 import 'package:aurora_jewelry/screens/Home/profile_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -49,7 +48,7 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
     });
   }
 
-  void navigateToHomeAndShowConfirmation(BuildContext context) async {
+  void showConfirmationOnHomeScreen(BuildContext context) async {
     // ignore: use_build_context_synchronously
 
     UserProvider userProvider = Provider.of<UserProvider>(
@@ -61,12 +60,6 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
     NavigationBarProvider navigationBarProvider =
         Provider.of<NavigationBarProvider>(context, listen: false);
     navigationBarProvider.setCurrentIndex(0);
-
-    // Push HomeScreen and remove all previous routes
-    Navigator.of(context).pushAndRemoveUntil(
-      CupertinoPageRoute(builder: (_) => HomeScreen()),
-      (Route<dynamic> route) => false, // Remove all previous routes
-    );
 
     showCupertinoModalPopup(
       // ignore: use_build_context_synchronously
@@ -532,7 +525,7 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                                   // ignore: use_build_context_synchronously
                                   await cartProvider.fetchCart(context);
                                   // ignore: use_build_context_synchronously
-                                  navigateToHomeAndShowConfirmation(context);
+                                  showConfirmationOnHomeScreen(context);
                                 } else {
                                   // Show error message
                                   showCupertinoDialog(
@@ -570,51 +563,34 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                   opacity: cartProvider.isOrderPlacing ? 1 : 0,
                   duration: const Duration(milliseconds: 300),
                   child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
+                    filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                     child: Stack(
+                      alignment: Alignment.bottomCenter,
                       children: [
                         Container(
-                          height: 160,
+                          height: 100,
                           width: 250,
                           padding: EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            color: CupertinoColors.activeBlue.withValues(
-                              alpha: 0.9,
-                            ),
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                "Your order is processing...",
-                                style: TextStyle(
-                                  color: CupertinoColors.white,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                                textAlign: TextAlign.center,
+                        ),
+                        Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              "Aurora Jewelery",
+                              style: TextStyle(
+                                fontSize: 32,
+                                fontFamily: 'Georgia',
                               ),
-                            ],
-                          ),
-                        ),
-                        Positioned(
-                          top: 8,
-                          left: 8,
-                          child: Text(
-                            "Aurora Jewelery",
-                            style: TextStyle(
-                              fontSize: 15,
-                              fontFamily: 'Georgia',
-                              color: CupertinoColors.white,
                             ),
-                          ),
-                        ),
-                        Positioned(
-                          bottom: 8,
-                          right: 8,
-                          child: CupertinoActivityIndicator(
-                            color: CupertinoColors.white,
-                          ),
+                            SizedBox(height: 16),
+                            Text(
+                              "Order Recieved!",
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontFamily: 'Georgia',
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),

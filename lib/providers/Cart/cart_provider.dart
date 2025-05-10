@@ -2,6 +2,7 @@ import 'package:aurora_jewelry/models/Cart/cart_item_contract_model.dart';
 import 'package:aurora_jewelry/models/Cart/delivery_address_model.dart';
 import 'package:aurora_jewelry/models/Products/product_model.dart';
 import 'package:aurora_jewelry/providers/Auth/user_provider.dart';
+import 'package:aurora_jewelry/screens/Home/home_screen.dart';
 import 'package:flutter/cupertino.dart';
 
 import 'package:aurora_jewelry/services/api_service.dart';
@@ -308,6 +309,13 @@ class CartProvider extends ChangeNotifier {
       // Navigate user to home screen
       _checkoutItemsIds.clear();
       _invoiceItems.clear();
+      await Future.delayed(const Duration(seconds: 2));
+      // Push HomeScreen and remove all previous routes
+      // ignore: use_build_context_synchronously
+      Navigator.of(context).pushAndRemoveUntil(
+        CupertinoPageRoute(builder: (_) => HomeScreen()),
+        (Route<dynamic> route) => false, // Remove all previous routes
+      );
       _isOrderPlacing = false;
 
       notifyListeners();
