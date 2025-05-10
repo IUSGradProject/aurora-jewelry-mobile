@@ -20,6 +20,7 @@ class ListProductComponent extends StatefulWidget {
 
 class _ListProductComponentState extends State<ListProductComponent>
     with SingleTickerProviderStateMixin {
+  late AnimationController _animationController;
   void animateProductToCart(
     BuildContext context,
     GlobalKey cartKey,
@@ -30,6 +31,7 @@ class _ListProductComponentState extends State<ListProductComponent>
       context,
       listen: false,
     ).setIsAnimatingToCart(true);
+    if (!mounted) return;
     final overlay = Overlay.of(context);
     final cartRenderBox =
         cartKey.currentContext?.findRenderObject() as RenderBox?;
@@ -40,10 +42,14 @@ class _ListProductComponentState extends State<ListProductComponent>
       );
       return;
     }
-
+    // Update the cart provider
+    Provider.of<CartProvider>(
+      context,
+      listen: false,
+    ).addProductToCart(widget.product, context);
     final cartPosition = cartRenderBox.localToGlobal(Offset.zero);
 
-    final animationController = AnimationController(
+    final _animationController = AnimationController(
       duration: const Duration(milliseconds: 700),
       vsync: Navigator.of(context),
     );
@@ -52,7 +58,7 @@ class _ListProductComponentState extends State<ListProductComponent>
       begin: startPosition,
       end: cartPosition,
     ).animate(
-      CurvedAnimation(parent: animationController, curve: Curves.easeInOut),
+      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
     );
 
     OverlayEntry? overlayEntry;
@@ -65,7 +71,7 @@ class _ListProductComponentState extends State<ListProductComponent>
               left: animation.value.dx,
               top: animation.value.dy,
               child: Opacity(
-                opacity: 1 - animationController.value,
+                opacity: 1 - _animationController.value,
                 child: SizedBox(
                   height: 50,
                   width: 50,
@@ -90,21 +96,36 @@ class _ListProductComponentState extends State<ListProductComponent>
     );
 
     overlay.insert(overlayEntry);
-    animationController.forward().whenComplete(() async {
+    _animationController.forward().whenComplete(() async {
       overlayEntry?.remove();
-      animationController.dispose();
+      _animationController.dispose();
 
-      // Update the cart provider after animation completes
-      await Provider.of<CartProvider>(
-        context,
-        listen: false,
-      ).addProductToCart(widget.product, context);
+      // // Update the cart provider after animation completes
+      // await Provider.of<CartProvider>(
+      //   context,
+      //   listen: false,
+      // ).addProductToCart(widget.product, context);
       Provider.of<CartProvider>(
         // ignore: use_build_context_synchronously
         context,
         listen: false,
       ).setIsAnimatingToCart(false);
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 700),
+    );
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
   }
 
   @override
