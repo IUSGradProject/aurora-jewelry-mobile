@@ -76,7 +76,7 @@ class AuthProvider extends ChangeNotifier {
         );
         
         // ignore: use_build_context_synchronously
-        await cartProvider.fetchCart(context);
+        //await cartProvider.fetchCart(context);
      
         _isUserAuthenticated = true;
         notifyListeners();
