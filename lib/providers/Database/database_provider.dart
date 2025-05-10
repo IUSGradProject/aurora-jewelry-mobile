@@ -15,9 +15,17 @@ class DatabaseProvider extends ChangeNotifier {
   bool _areProductsFetched = false;
   bool _isDetailedProductFetched = false;
 
+  //Pagination Variables (Fetch Products)
   int _currentPage = 1;
   bool _isFetchingMoreProducts = false;
   bool _hasMore = true;
+
+  //Pagination variables (Fetch Filtered Products)
+  int _filteredCurrentPage = 1;
+  bool _isFetchingMoreFiltered = false;
+  bool _hasMoreFilteredProducts = true;
+
+  //Products Variables
   List<Product> _products = [];
   List<Product> _searchedProducts = [];
   DetailedProduct? _detailedProduct;
@@ -47,6 +55,7 @@ class DatabaseProvider extends ChangeNotifier {
   DetailedProduct? get detailedProduct => _detailedProduct;
   bool get isDetailedProductFetched => _isDetailedProductFetched;
   bool get isFetchingMoreProducts => _isFetchingMoreProducts;
+  bool get isFetchingMoreFiltered => _isFetchingMoreFiltered;
   int get currentPage => _currentPage;
   bool get hasMore => _hasMore;
   List<CategoryModel> get categories => _categories;
@@ -133,6 +142,7 @@ class DatabaseProvider extends ChangeNotifier {
   Future<void> fetchMoreProducts() async {
     if (_isFetchingMoreProducts || !_hasMore) return;
     _isFetchingMoreProducts = true;
+
     await fetchProducts(page: _currentPage + 1);
     _isFetchingMoreProducts = false;
   }
@@ -193,16 +203,24 @@ class DatabaseProvider extends ChangeNotifier {
   Future<void> fetchFilteredProducts({int page = 1, int pageSize = 20}) async {
     try {
       _areProductsFetched = false;
+      _filteredCurrentPage = page;
+      _hasMoreFilteredProducts = true;
       notifyListeners();
 
-      // Step 1: Fetch the filtered products
       final response = await _apiService.getProductsWithFilters(
         _filterRequestModel,
         pageNumber: page,
         pageSize: pageSize,
       );
+
       _products = response.data;
       _areProductsFetched = true;
+
+      // If less than pageSize, we know there are no more pages
+      if (response.data.length < pageSize) {
+        _hasMoreFilteredProducts = false;
+      }
+
       notifyListeners();
     } catch (e) {
       _areProductsFetched = false;
@@ -210,6 +228,39 @@ class DatabaseProvider extends ChangeNotifier {
       debugPrint('Error fetching filtered products: $e');
     }
   }
+  /// Method to fetch more filtered products
+  Future<void> fetchMoreFilteredProducts({int pageSize = 20}) async {
+  if (_isFetchingMoreFiltered || !_hasMoreFilteredProducts) return;
+
+  try {
+    _isFetchingMoreFiltered = true;
+    notifyListeners();
+
+    final nextPage = _filteredCurrentPage + 1;
+    final response = await _apiService.getProductsWithFilters(
+      _filterRequestModel,
+      pageNumber: nextPage,
+      pageSize: pageSize,
+    );
+
+    if (response.data.isNotEmpty) {
+      _products.addAll(response.data);
+      _filteredCurrentPage = nextPage;
+    }
+
+    if (response.data.length < pageSize) {
+      _hasMoreFilteredProducts = false;
+    }
+
+    _isFetchingMoreFiltered = false;
+    notifyListeners();
+  } catch (e) {
+    _isFetchingMoreFiltered = false;
+    notifyListeners();
+    debugPrint('Error fetching more filtered products: $e');
+  }
+}
+
 
   /// Method to fetch detailed product
   Future<void> fetchDetailedProduct(

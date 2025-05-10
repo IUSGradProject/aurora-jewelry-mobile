@@ -21,6 +21,8 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
+  final ScrollController _scrollController = ScrollController();
+
   @override
   void initState() {
     super.initState();
@@ -39,10 +41,22 @@ class _SearchScreenState extends State<SearchScreen> {
         ).fetchFilteredProducts();
       }
     });
+
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        Provider.of<DatabaseProvider>(
+          context,
+          listen: false,
+        ).fetchMoreFilteredProducts();
+      }
+    });
   }
 
   @override
   void dispose() {
+    _scrollController.removeListener(() {});
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -71,135 +85,102 @@ class _SearchScreenState extends State<SearchScreen> {
                 !searchProvider.isSearchingActive
                     ? Expanded(
                       child: ListView(
-                      
+                        controller: _scrollController,
                         padding: const EdgeInsets.only(bottom: 80),
                         children: [
                           // MAIN BODY: CATEGORIES OR PRODUCTS
-                searchProvider.selectedCategories.isNotEmpty
-                                        ? databaseProvider.areProductsFetched
-                                            ? databaseProvider
-                                                    .products
-                                                    .isNotEmpty
-                                                ? ListView.builder(
-                                                  key: const ValueKey(
-                                                    'ProductList',
-                                                  ),
-                                                  padding: EdgeInsets.zero,
-                                                  shrinkWrap: true,
-                                                  physics:
-                                                      NeverScrollableScrollPhysics(),
-                                                  itemCount:
-                                                      databaseProvider
-                                                          .products
-                                                          .length,
-                                                  itemBuilder: (
-                                                    context,
-                                                    index,
-                                                  ) {
-                                                    return ListProductComponent(
-                                                      product:
-                                                          databaseProvider
-                                                              .products[index],
-                                                    );
-                                                  },
-                                                )
-                                                : Column(
-                                                  children: [
-                                                    SizedBox(height: 60),
-                                                    Text(
-                                                      "Sorry, No products found!",
-                                                      style: CupertinoTheme.of(
-                                                            context,
-                                                          ).textTheme.textStyle
-                                                          .copyWith(
-                                                            fontSize: 17,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                            color:
-                                                                CupertinoColors
-                                                                    .systemGrey,
-                                                          ),
-                                                    ),
-                                                    Lottie.asset(
-                                                      "lib/assets/nothing-found.json",
-                                                      height: 200,
-                                                    ),
-                                                  ],
-                                                )
-                                            : ListView.builder(
-                                              key: const ValueKey(
-                                                'ProductShimmer',
-                                              ),
-                                              shrinkWrap: true,
-                                              physics:
-                                                  NeverScrollableScrollPhysics(),
-                                              padding: EdgeInsets.zero,
-                                              itemCount: 6,
-                                              itemBuilder: (context, index) {
-                                                return ShimmerListProductComponent();
-                                              },
-                                            )
-                                        : databaseProvider.areCategoriesFetched
-                                        ? GridView.builder(
-                                          key: const ValueKey('CategoryList'),
-                                          shrinkWrap: true,
-                                          padding: EdgeInsets.zero,
-                                          physics:
-                                              NeverScrollableScrollPhysics(),
-                                          gridDelegate:
-                                              SliverGridDelegateWithMaxCrossAxisExtent(
-                                                maxCrossAxisExtent:
-                                                    MediaQuery.of(
-                                                      context,
-                                                    ).size.width /
-                                                    2,
-                                                mainAxisSpacing: 8,
-                                                crossAxisSpacing: 8,
-                                                childAspectRatio: 1.7,
-                                              ),
-                                          itemCount:
-                                              databaseProvider
-                                                  .categories
-                                                  .length +
-                                              1,
-                                          itemBuilder: (context, index) {
-                                            if (index ==
+                          searchProvider.selectedCategories.isNotEmpty
+                              ? databaseProvider.areProductsFetched
+                                  ? databaseProvider.products.isNotEmpty
+                                      ? ListView.builder(
+                                        key: const ValueKey('ProductList'),
+                                        padding: EdgeInsets.zero,
+                                        shrinkWrap: true,
+                                        physics: NeverScrollableScrollPhysics(),
+                                        itemCount:
+                                            databaseProvider.products.length,
+                                        itemBuilder: (context, index) {
+                                          return ListProductComponent(
+                                            product:
                                                 databaseProvider
-                                                    .categories
-                                                    .length) {
-                                              return AllCategoryComponent();
-                                            }
-                                            return CategoryComponent(
-                                              category:
-                                                  databaseProvider
-                                                      .categories[index],
-                                            );
-                                          },
-                                        )
-                                        : GridView.builder(
-                                          key: const ValueKey(
-                                            'CategoryShimmer',
+                                                    .products[index],
+                                          );
+                                        },
+                                      )
+                                      : Column(
+                                        children: [
+                                          SizedBox(height: 60),
+                                          Text(
+                                            "Sorry, No products found!",
+                                            style: CupertinoTheme.of(
+                                              context,
+                                            ).textTheme.textStyle.copyWith(
+                                              fontSize: 17,
+                                              fontWeight: FontWeight.w500,
+                                              color: CupertinoColors.systemGrey,
+                                            ),
                                           ),
-                                          padding: EdgeInsets.zero,
-                                          shrinkWrap: true,
-                                          physics:
-                                              NeverScrollableScrollPhysics(),
-                                          gridDelegate:
-                                              SliverGridDelegateWithMaxCrossAxisExtent(
-                                                maxCrossAxisExtent:
-                                                    MediaQuery.of(
-                                                      context,
-                                                    ).size.width /
-                                                    2,
-                                                mainAxisSpacing: 8,
-                                                crossAxisSpacing: 8,
-                                                childAspectRatio: 1.7,
-                                              ),
-                                          itemCount: 6,
-                                          itemBuilder: (context, index) {
-                                            return ShimmerCategoryComponent();
-                                          },
-                                        ),
+                                          Lottie.asset(
+                                            "lib/assets/nothing-found.json",
+                                            height: 200,
+                                          ),
+                                        ],
+                                      )
+                                  : ListView.builder(
+                                    key: const ValueKey('ProductShimmer'),
+                                    shrinkWrap: true,
+                                    physics: NeverScrollableScrollPhysics(),
+                                    padding: EdgeInsets.zero,
+                                    itemCount: 6,
+                                    itemBuilder: (context, index) {
+                                      return ShimmerListProductComponent();
+                                    },
+                                  )
+                              : databaseProvider.areCategoriesFetched
+                              ? GridView.builder(
+                                key: const ValueKey('CategoryList'),
+                                shrinkWrap: true,
+                                padding: EdgeInsets.zero,
+                                physics: NeverScrollableScrollPhysics(),
+                                gridDelegate:
+                                    SliverGridDelegateWithMaxCrossAxisExtent(
+                                      maxCrossAxisExtent:
+                                          MediaQuery.of(context).size.width / 2,
+                                      mainAxisSpacing: 8,
+                                      crossAxisSpacing: 8,
+                                      childAspectRatio: 1.7,
+                                    ),
+                                itemCount:
+                                    databaseProvider.categories.length + 1,
+                                itemBuilder: (context, index) {
+                                  if (index ==
+                                      databaseProvider.categories.length) {
+                                    return AllCategoryComponent();
+                                  }
+                                  return CategoryComponent(
+                                    category:
+                                        databaseProvider.categories[index],
+                                  );
+                                },
+                              )
+                              : GridView.builder(
+                                key: const ValueKey('CategoryShimmer'),
+                                padding: EdgeInsets.zero,
+                                shrinkWrap: true,
+                                physics: NeverScrollableScrollPhysics(),
+                                gridDelegate:
+                                    SliverGridDelegateWithMaxCrossAxisExtent(
+                                      maxCrossAxisExtent:
+                                          MediaQuery.of(context).size.width / 2,
+                                      mainAxisSpacing: 8,
+                                      crossAxisSpacing: 8,
+                                      childAspectRatio: 1.7,
+                                    ),
+                                itemCount: 6,
+                                itemBuilder: (context, index) {
+                                  return ShimmerCategoryComponent();
+                                },
+                              ),
                         ],
                       ),
                     )
