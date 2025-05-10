@@ -49,11 +49,7 @@ class _ListProductComponentState extends State<ListProductComponent>
     ).addProductToCart(widget.product, context);
     final cartPosition = cartRenderBox.localToGlobal(Offset.zero);
 
-    final _animationController = AnimationController(
-      duration: const Duration(milliseconds: 700),
-      vsync: Navigator.of(context),
-    );
-
+  
     final animation = Tween<Offset>(
       begin: startPosition,
       end: cartPosition,
