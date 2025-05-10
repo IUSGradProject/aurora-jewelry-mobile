@@ -25,6 +25,11 @@ class DatabaseProvider extends ChangeNotifier {
   bool _isFetchingMoreFiltered = false;
   bool _hasMoreFilteredProducts = true;
 
+  //Pagination variables (Fetch Previous User Orders)
+  bool _isFetchingMoreOrders = false;
+  bool _hasMoreUserOrders = true;
+  int _currentOrdersPage = 1;
+
   //Products Variables
   List<Product> _products = [];
   List<Product> _searchedProducts = [];
@@ -68,6 +73,9 @@ class DatabaseProvider extends ChangeNotifier {
   List<PreviousOrderModel> get previousUserOrders => _previousUserOrders;
   List<List<PreviousOrderModel>> get sortedPreviousOrders =>
       _sortedPreviousOrders;
+  bool get hasMoreUserOrders => _hasMoreUserOrders;
+  int get currentOrdersPage => _currentOrdersPage;
+  bool get isFetchingMoreOrders => _isFetchingMoreOrders;
   bool get isUserOrdersFetched => _isUserOrdersFetched;
 
   ///Method to set searched products
@@ -228,39 +236,39 @@ class DatabaseProvider extends ChangeNotifier {
       debugPrint('Error fetching filtered products: $e');
     }
   }
+
   /// Method to fetch more filtered products
   Future<void> fetchMoreFilteredProducts({int pageSize = 20}) async {
-  if (_isFetchingMoreFiltered || !_hasMoreFilteredProducts) return;
+    if (_isFetchingMoreFiltered || !_hasMoreFilteredProducts) return;
 
-  try {
-    _isFetchingMoreFiltered = true;
-    notifyListeners();
+    try {
+      _isFetchingMoreFiltered = true;
+      notifyListeners();
 
-    final nextPage = _filteredCurrentPage + 1;
-    final response = await _apiService.getProductsWithFilters(
-      _filterRequestModel,
-      pageNumber: nextPage,
-      pageSize: pageSize,
-    );
+      final nextPage = _filteredCurrentPage + 1;
+      final response = await _apiService.getProductsWithFilters(
+        _filterRequestModel,
+        pageNumber: nextPage,
+        pageSize: pageSize,
+      );
 
-    if (response.data.isNotEmpty) {
-      _products.addAll(response.data);
-      _filteredCurrentPage = nextPage;
+      if (response.data.isNotEmpty) {
+        _products.addAll(response.data);
+        _filteredCurrentPage = nextPage;
+      }
+
+      if (response.data.length < pageSize) {
+        _hasMoreFilteredProducts = false;
+      }
+
+      _isFetchingMoreFiltered = false;
+      notifyListeners();
+    } catch (e) {
+      _isFetchingMoreFiltered = false;
+      notifyListeners();
+      debugPrint('Error fetching more filtered products: $e');
     }
-
-    if (response.data.length < pageSize) {
-      _hasMoreFilteredProducts = false;
-    }
-
-    _isFetchingMoreFiltered = false;
-    notifyListeners();
-  } catch (e) {
-    _isFetchingMoreFiltered = false;
-    notifyListeners();
-    debugPrint('Error fetching more filtered products: $e');
   }
-}
-
 
   /// Method to fetch detailed product
   Future<void> fetchDetailedProduct(
@@ -331,9 +339,11 @@ class DatabaseProvider extends ChangeNotifier {
   }) async {
     try {
       _isUserOrdersFetched = false;
+      _hasMoreUserOrders = true;
+      _currentOrdersPage = pageNumber;
+      _sortedPreviousOrders = [];
       notifyListeners();
 
-      // Fetch all orders from the API
       List<PreviousOrderModel> allPreviousUserOrders = await _apiService
           .getUserPurchaseHistory(
             userToken,
@@ -341,39 +351,79 @@ class DatabaseProvider extends ChangeNotifier {
             pageSize: pageSize,
           );
 
-      // Group orders by normalized date (rounded to minute)
-      Map<DateTime, List<PreviousOrderModel>> grouped = {};
+      _sortedPreviousOrders = _groupOrders(allPreviousUserOrders);
 
-      for (var order in allPreviousUserOrders) {
-        final normalizedDate = DateTime(
-          order.orderDate.year,
-          order.orderDate.month,
-          order.orderDate.day,
-          order.orderDate.hour,
-          order.orderDate.minute,
-        );
-
-        grouped.putIfAbsent(normalizedDate, () => []);
-        grouped[normalizedDate]!.add(order);
+      if (allPreviousUserOrders.length < pageSize) {
+        _hasMoreUserOrders = false;
       }
-
-      // Convert to List<List<PreviousOrderModel>> and sort by date descending
-      _sortedPreviousOrders =
-          grouped.entries.map((entry) {
-              final orders = entry.value;
-              orders.sort(
-                (a, b) => a.orderDate.compareTo(b.orderDate),
-              ); // sort items inside
-              return orders;
-            }).toList()
-            ..sort(
-              (a, b) => b.first.orderDate.compareTo(a.first.orderDate),
-            ); // sort groups
 
       _isUserOrdersFetched = true;
       notifyListeners();
     } catch (e) {
       debugPrint('Error fetching previous user orders: $e');
+      _isUserOrdersFetched = true; // Still notify to end loading state
+      notifyListeners();
     }
+  }
+
+  Future<void> fetchMorePreviousUserOrders(
+    String userToken, {
+    int pageSize = 10,
+  }) async {
+    if (_isFetchingMoreOrders || !_hasMoreUserOrders) return;
+
+    try {
+      _isFetchingMoreOrders = true;
+      notifyListeners();
+
+      final nextPage = _currentOrdersPage + 1;
+
+      List<PreviousOrderModel> moreOrders = await _apiService
+          .getUserPurchaseHistory(
+            userToken,
+            pageNumber: nextPage,
+            pageSize: pageSize,
+          );
+
+      final newGrouped = _groupOrders(moreOrders);
+      _sortedPreviousOrders.addAll(newGrouped);
+
+      if (moreOrders.length < pageSize) {
+        _hasMoreUserOrders = false;
+      } else {
+        _currentOrdersPage = nextPage;
+      }
+
+      _isFetchingMoreOrders = false;
+      notifyListeners();
+    } catch (e) {
+      debugPrint('Error fetching more previous orders: $e');
+      _isFetchingMoreOrders = false;
+      notifyListeners();
+    }
+  }
+
+  List<List<PreviousOrderModel>> _groupOrders(List<PreviousOrderModel> orders) {
+    final grouped = <DateTime, List<PreviousOrderModel>>{};
+
+    for (var order in orders) {
+      final normalizedDate = DateTime(
+        order.orderDate.year,
+        order.orderDate.month,
+        order.orderDate.day,
+        order.orderDate.hour,
+        order.orderDate.minute,
+      );
+
+      grouped.putIfAbsent(normalizedDate, () => []);
+      grouped[normalizedDate]!.add(order);
+    }
+
+    return grouped.entries.map((entry) {
+        final group = entry.value;
+        group.sort((a, b) => a.orderDate.compareTo(b.orderDate));
+        return group;
+      }).toList()
+      ..sort((a, b) => b.first.orderDate.compareTo(a.first.orderDate));
   }
 }

@@ -18,7 +18,8 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  @override
+  final ScrollController _scrollController = ScrollController();
+
   @override
   void initState() {
     super.initState();
@@ -33,7 +34,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
       databaseProvider.fetchPreviousUserOrders(
         userProvider.currentUser!.authToken!,
       );
+      _scrollController.addListener(() {
+        if (_scrollController.position.pixels ==
+            _scrollController.position.maxScrollExtent) {
+          Provider.of<DatabaseProvider>(
+            context,
+            listen: false,
+          ).fetchMorePreviousUserOrders(userProvider.currentUser!.authToken!);
+        }
+      });
     });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(() {});
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -66,6 +83,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ) => Padding(
               padding: const EdgeInsets.only(top: 50.0, left: 16, right: 16),
               child: ListView(
+                controller: _scrollController,
                 padding: EdgeInsets.zero,
                 children: [
                   PullDownButton(
@@ -74,7 +92,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     itemBuilder: (context) {
                       return [
                         PullDownMenuItem(
-                          icon: userProvider.isDeliveryAddressSet? CupertinoIcons.cube_box :CupertinoIcons.add,
+                          icon:
+                              userProvider.isDeliveryAddressSet
+                                  ? CupertinoIcons.cube_box
+                                  : CupertinoIcons.add,
                           onTap: () async {
                             Navigator.of(context).push(
                               CupertinoSheetRoute(
@@ -85,7 +106,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             );
                           },
                           title: "Delivery Address",
-                          subtitle: userProvider.isDeliveryAddressSet? "Delivery Address Saved for Future Orders." : null,
+                          subtitle:
+                              userProvider.isDeliveryAddressSet
+                                  ? "Delivery Address Saved for Future Orders."
+                                  : null,
                         ),
                         PullDownMenuDivider.large(),
                         PullDownMenuItem(
@@ -266,6 +290,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   ],
                                 )
                                 : ListView.builder(
+  
                                   padding: EdgeInsets.only(bottom: 60),
                                   shrinkWrap: true,
                                   physics: NeverScrollableScrollPhysics(),
