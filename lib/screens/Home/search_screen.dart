@@ -1,4 +1,3 @@
-import 'package:animations/animations.dart';
 import 'package:aurora_jewelry/components/Products/List/shimmer_list_product_component.dart';
 import 'package:aurora_jewelry/components/Products/list_product_component.dart';
 import 'package:aurora_jewelry/components/Search/Category/all_category_component.dart';
@@ -75,28 +74,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         padding: const EdgeInsets.only(bottom: 80),
                         children: [
                           // MAIN BODY: CATEGORIES OR PRODUCTS
-                          AnimatedBuilder(
-                            animation: databaseProvider,
-                            builder: (context, _) {
-                              return PageTransitionSwitcher(
-                                duration: const Duration(milliseconds: 300),
-                                transitionBuilder: (
-                                  Widget child,
-                                  Animation<double> primaryAnimation,
-                                  Animation<double> secondaryAnimation,
-                                ) {
-                                  return FadeThroughTransition(
-                                    fillColor:
-                                        CupertinoTheme.of(
-                                          context,
-                                        ).scaffoldBackgroundColor,
-                                    animation: primaryAnimation,
-                                    secondaryAnimation: secondaryAnimation,
-                                    child: child,
-                                  );
-                                },
-                                child:
-                                    searchProvider.selectedCategories.isNotEmpty
+                searchProvider.selectedCategories.isNotEmpty
                                         ? databaseProvider.areProductsFetched
                                             ? databaseProvider
                                                     .products
@@ -221,9 +199,6 @@ class _SearchScreenState extends State<SearchScreen> {
                                             return ShimmerCategoryComponent();
                                           },
                                         ),
-                              );
-                            },
-                          ),
                         ],
                       ),
                     )
