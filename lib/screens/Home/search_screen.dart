@@ -71,6 +71,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 !searchProvider.isSearchingActive
                     ? Expanded(
                       child: ListView(
+                      
                         padding: const EdgeInsets.only(bottom: 80),
                         children: [
                           // MAIN BODY: CATEGORIES OR PRODUCTS

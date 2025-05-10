@@ -18,6 +18,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+
   final GlobalKey cartIconKey = GlobalKey(); // move this from CartProvider
 
   final pages = [
@@ -65,7 +66,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                 ///Clearing all products from search provider when switching tabs
                 ///to avoid showing old products
-                if (index == 1) {
+                if (index == 1 && navigationBarProvider.previousIndex == 1) {
                   Provider.of<DatabaseProvider>(
                     context,
                     listen: false,

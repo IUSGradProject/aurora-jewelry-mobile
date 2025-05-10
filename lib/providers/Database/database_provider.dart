@@ -146,6 +146,7 @@ class DatabaseProvider extends ChangeNotifier {
 
   /// Method to reset filter request model
   void resetFilterRequestModel() {
+    //Saving categoriy as previous one because it is used in the filter 
     _filterRequestModel = FilterRequestModel(
       categories: _filterRequestModel.categories,
       brands: [],
