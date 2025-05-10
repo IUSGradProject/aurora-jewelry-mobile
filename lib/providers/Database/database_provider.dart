@@ -74,9 +74,19 @@ class DatabaseProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+
+  ///Method to clear all products
+  void clearAllProducts() {
+    _products.clear();
+    notifyListeners();
+  }
+
+
   /// Method to fetch products
   Future<void> fetchProducts({int page = 1, int pageSize = 20}) async {
     try {
+      _areProductsFetched = false;
+
       // Step 1: Fetch the initial paginated products
       final response = await _apiService.getProducts(
         page: page,
@@ -136,8 +146,9 @@ class DatabaseProvider extends ChangeNotifier {
 
   /// Method to reset filter request model
   void resetFilterRequestModel() {
+    //Saving categoriy as previous one because it is used in the filter 
     _filterRequestModel = FilterRequestModel(
-      categories: [],
+      categories: _filterRequestModel.categories,
       brands: [],
       styles: [],
     );
@@ -159,9 +170,10 @@ class DatabaseProvider extends ChangeNotifier {
       );
       _products = response.data;
       _areProductsFetched = true;
-
       notifyListeners();
     } catch (e) {
+      _areProductsFetched = false;
+      notifyListeners();
       debugPrint('Error fetching filtered products: $e');
     }
   }

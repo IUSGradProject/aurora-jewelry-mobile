@@ -1,4 +1,3 @@
-import 'package:animations/animations.dart';
 import 'package:aurora_jewelry/components/Products/List/shimmer_list_product_component.dart';
 import 'package:aurora_jewelry/components/Products/list_product_component.dart';
 import 'package:aurora_jewelry/components/Search/Category/all_category_component.dart';
@@ -6,6 +5,7 @@ import 'package:aurora_jewelry/components/Search/Category/category_component.dar
 import 'package:aurora_jewelry/components/Search/Category/shimmer_category_component.dart';
 import 'package:aurora_jewelry/components/Search/Searching/search_result_component.dart';
 import 'package:aurora_jewelry/components/Search/upper_component.dart';
+import 'package:aurora_jewelry/models/Products/filter_request_model.dart';
 import 'package:aurora_jewelry/providers/Database/database_provider.dart';
 import 'package:aurora_jewelry/providers/Search/search_provider.dart';
 import 'package:aurora_jewelry/widgets/profile_avatar_widget.dart';
@@ -25,6 +25,20 @@ class _SearchScreenState extends State<SearchScreen> {
   void initState() {
     super.initState();
     Provider.of<DatabaseProvider>(context, listen: false).fetchCategories();
+
+    //Check if there is some change inside of [_filterRequestModel]
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (Provider.of<DatabaseProvider>(
+            context,
+            listen: false,
+          ).filterRequestModel !=
+          FilterRequestModel(categories: [], brands: [], styles: [])) {
+        Provider.of<DatabaseProvider>(
+          context,
+          listen: false,
+        ).fetchFilteredProducts();
+      }
+    });
   }
 
   @override
@@ -57,31 +71,11 @@ class _SearchScreenState extends State<SearchScreen> {
                 !searchProvider.isSearchingActive
                     ? Expanded(
                       child: ListView(
+                      
                         padding: const EdgeInsets.only(bottom: 80),
                         children: [
                           // MAIN BODY: CATEGORIES OR PRODUCTS
-                          AnimatedBuilder(
-                            animation: databaseProvider,
-                            builder: (context, _) {
-                              return PageTransitionSwitcher(
-                                duration: const Duration(milliseconds: 300),
-                                transitionBuilder: (
-                                  Widget child,
-                                  Animation<double> primaryAnimation,
-                                  Animation<double> secondaryAnimation,
-                                ) {
-                                  return FadeThroughTransition(
-                                    fillColor:
-                                        CupertinoTheme.of(
-                                          context,
-                                        ).scaffoldBackgroundColor,
-                                    animation: primaryAnimation,
-                                    secondaryAnimation: secondaryAnimation,
-                                    child: child,
-                                  );
-                                },
-                                child:
-                                    searchProvider.selectedCategories.isNotEmpty
+                searchProvider.selectedCategories.isNotEmpty
                                         ? databaseProvider.areProductsFetched
                                             ? databaseProvider
                                                     .products
@@ -206,9 +200,6 @@ class _SearchScreenState extends State<SearchScreen> {
                                             return ShimmerCategoryComponent();
                                           },
                                         ),
-                              );
-                            },
-                          ),
                         ],
                       ),
                     )
