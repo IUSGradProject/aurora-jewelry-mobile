@@ -73,6 +73,7 @@ class CartProvider extends ChangeNotifier {
   void removeCheckoutItem(CartItemContractModel item) {
     _invoiceItems.remove(item);
     _checkoutItemsIds.remove(item.productId);
+
     notifyListeners();
   }
 

@@ -160,7 +160,7 @@ class CartItemComponent extends StatelessWidget {
                                   color: CupertinoColors.activeGreen,
                                   size: 25,
                                 )
-                                :  Icon(
+                                : Icon(
                                   CupertinoIcons.add_circled,
                                   color: CupertinoColors.activeGreen,
                                   size: 25,
@@ -182,10 +182,12 @@ class CartItemComponent extends StatelessWidget {
                           padding: EdgeInsets.zero,
                           minimumSize: Size.zero,
                           onPressed: () {
-                            cartProvider.removeFromCart(
-                              context,
-                              cartItem.productId,
-                            );
+                            if (!cartProvider.isLoading) {
+                              cartProvider.removeFromCart(
+                                context,
+                                cartItem.productId,
+                              );
+                            }
                           },
                           child: Container(
                             height: 30,
