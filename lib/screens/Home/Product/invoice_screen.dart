@@ -129,432 +129,454 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
           (context, cartProvider, userProvider, child) => Stack(
             alignment: Alignment.center,
             children: [
-              CupertinoPageScaffold(
-                navigationBar: CupertinoNavigationBar(
-                  padding: EdgeInsetsDirectional.zero,
-                  middle: Text("Invoice"),
+              PopScope(
+                canPop: true,
+                onPopInvokedWithResult: (didPop, dynamic) async {
+                  if (didPop && widget.isBuyNowRoot) {
+                    cartProvider.resetInvoiceScreen();
 
-                  leading: CupertinoNavigationBarBackButton(
-                    previousPageTitle: "Back",
-                    onPressed: () async {
-                      if (widget.isBuyNowRoot) {
-                        cartProvider.resetInvoiceScreen();
+                    await cartProvider.fetchCart(context);
+                  }
+                },
+                child: CupertinoPageScaffold(
+                  navigationBar: CupertinoNavigationBar(
+                    padding: EdgeInsetsDirectional.zero,
+                    middle: Text("Invoice"),
 
-                        Navigator.of(context).pop();
-                        await cartProvider.fetchCart(context);
-                      } else {
-                        Navigator.of(context).pop();
-                      }
-                    },
+                    leading: CupertinoNavigationBarBackButton(
+                      previousPageTitle: "Back",
+                      onPressed: () async {
+                        if (widget.isBuyNowRoot) {
+                          cartProvider.resetInvoiceScreen();
+
+                          Navigator.of(context).pop();
+                          await cartProvider.fetchCart(context);
+                        } else {
+                          Navigator.of(context).pop();
+                        }
+                      },
+                    ),
                   ),
-                ),
-                child: ListView(
-                  padding: EdgeInsets.only(bottom: 60, top: 100),
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        left: 16.0,
-                        right: 16,
-                        top: 16,
-                      ),
-                      child: Container(
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: CupertinoColors.systemGrey.withOpacity(0.2),
+                  child: ListView(
+                    padding: EdgeInsets.only(bottom: 60, top: 100),
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          left: 16.0,
+                          right: 16,
+                          top: 16,
+                        ),
+                        child: Container(
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: CupertinoColors.systemGrey.withOpacity(
+                                0.2,
+                              ),
+                            ),
+                            color:
+                                MediaQuery.of(context).platformBrightness ==
+                                        Brightness.dark
+                                    ? CupertinoColors.secondarySystemFill
+                                    : CupertinoColors.white,
+                            borderRadius: BorderRadius.circular(8),
+                            boxShadow:
+                                MediaQuery.of(context).platformBrightness ==
+                                        Brightness.dark
+                                    ? []
+                                    : [
+                                      BoxShadow(
+                                        color: CupertinoColors.systemGrey
+                                            .withOpacity(0.2),
+                                        blurRadius: 4,
+                                        offset: const Offset(0, 2),
+                                      ),
+                                    ],
                           ),
-                          color:
-                              MediaQuery.of(context).platformBrightness ==
-                                      Brightness.dark
-                                  ? CupertinoColors.secondarySystemFill
-                                  : CupertinoColors.white,
-                          borderRadius: BorderRadius.circular(8),
-                          boxShadow:
-                              MediaQuery.of(context).platformBrightness ==
-                                      Brightness.dark
-                                  ? []
-                                  : [
-                                    BoxShadow(
-                                      color: CupertinoColors.systemGrey
-                                          .withOpacity(0.2),
-                                      blurRadius: 4,
-                                      offset: const Offset(0, 2),
+                          child: Column(
+                            // padding: const EdgeInsets.all(16),
+                            children: [
+                              // Section Header
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      "Order Summary",
+                                      style: CupertinoTheme.of(context)
+                                          .textTheme
+                                          .navLargeTitleTextStyle
+                                          .copyWith(
+                                            fontSize: 24,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                    ),
+                                    Icon(
+                                      Icons.receipt_long_outlined,
+                                      color: CupertinoColors.systemGrey,
                                     ),
                                   ],
-                        ),
-                        child: Column(
-                          // padding: const EdgeInsets.all(16),
-                          children: [
-                            // Section Header
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: Row(
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+
+                              // Product List
+                              ...cartProvider.invoiceItems.map(
+                                (item) => Container(
+                                  margin: const EdgeInsets.only(bottom: 12),
+                                  padding: const EdgeInsets.all(12),
+                                  decoration: BoxDecoration(
+                                    color:
+                                        MediaQuery.of(
+                                                  context,
+                                                ).platformBrightness ==
+                                                Brightness.dark
+                                            ? CupertinoColors
+                                                .secondarySystemFill
+                                            : CupertinoColors.white,
+                                    borderRadius: BorderRadius.circular(8),
+                                    boxShadow:
+                                        MediaQuery.of(
+                                                  context,
+                                                ).platformBrightness ==
+                                                Brightness.dark
+                                            ? []
+                                            : [
+                                              BoxShadow(
+                                                color: CupertinoColors
+                                                    .systemGrey
+                                                    .withOpacity(0.2),
+                                                blurRadius: 4,
+                                                offset: const Offset(0, 2),
+                                              ),
+                                            ],
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      // Product Name and Quantity
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              item.name,
+                                              style: CupertinoTheme.of(
+                                                context,
+                                              ).textTheme.textStyle.copyWith(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 4),
+                                            Text(
+                                              "x${item.quantity}",
+                                              style: TextStyle(
+                                                color:
+                                                    CupertinoColors.systemGrey,
+                                                fontSize: 14,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      // Price
+                                      Text(
+                                        "\$${(item.price * item.quantity).toStringAsFixed(2)}",
+                                        style: CupertinoTheme.of(
+                                          context,
+                                        ).textTheme.textStyle.copyWith(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+
+                              const Divider(height: 32, thickness: 0.5),
+
+                              // Total Section
+                              Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    "Order Summary",
+                                    "Total",
                                     style: CupertinoTheme.of(
                                       context,
-                                    ).textTheme.navLargeTitleTextStyle.copyWith(
-                                      fontSize: 24,
+                                    ).textTheme.textStyle.copyWith(
+                                      fontSize: 20,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
-                                  Icon(
-                                    Icons.receipt_long_outlined,
-                                    color: CupertinoColors.systemGrey,
+                                  Text(
+                                    "\$${cartProvider.calculateCheckoutItemsTotalPrice().toStringAsFixed(2)}",
+                                    style: CupertinoTheme.of(
+                                      context,
+                                    ).textTheme.textStyle.copyWith(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 32),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: Column(
+                          children: [
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                "Payment Method",
+                                style: CupertinoTheme.of(
+                                  context,
+                                ).textTheme.navLargeTitleTextStyle.copyWith(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 16),
+                            Container(
+                              padding: EdgeInsets.only(
+                                left: 8,
+                                right: 8,
+                                top: 8,
+                                bottom: 8,
+                              ),
+                              decoration: BoxDecoration(
+                                color:
+                                    MediaQuery.of(context).platformBrightness ==
+                                            Brightness.dark
+                                        ? CupertinoColors.secondarySystemFill
+                                        : CupertinoColors.white,
+                                borderRadius: BorderRadius.circular(8),
+                                boxShadow:
+                                    MediaQuery.of(context).platformBrightness ==
+                                            Brightness.dark
+                                        ? []
+                                        : [
+                                          BoxShadow(
+                                            color: CupertinoColors.systemGrey
+                                                .withOpacity(0.2),
+                                            blurRadius: 4,
+                                            offset: const Offset(0, 2),
+                                          ),
+                                        ],
+                              ),
+                              child: Column(
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text("Pay on Delivery"),
+
+                                      Icon(
+                                        CupertinoIcons.check_mark_circled_solid,
+                                        color: CupertinoColors.activeGreen,
+                                      ),
+                                    ],
+                                  ),
+                                  Divider(height: 16, thickness: 0.5),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        "Credit Card",
+                                        style: TextStyle(
+                                          color: CupertinoColors.systemGrey,
+                                        ),
+                                      ),
+
+                                      Row(
+                                        children: [
+                                          Text(
+                                            "Not Available",
+                                            style: TextStyle(
+                                              color: CupertinoColors.systemGrey,
+                                            ),
+                                          ),
+                                          SizedBox(width: 8),
+                                          Icon(
+                                            CupertinoIcons.circle,
+                                            color: CupertinoColors.systemGrey,
+                                          ),
+                                        ],
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ),
                             ),
-                            const SizedBox(height: 16),
-
-                            // Product List
-                            ...cartProvider.invoiceItems.map(
-                              (item) => Container(
-                                margin: const EdgeInsets.only(bottom: 12),
-                                padding: const EdgeInsets.all(12),
-                                decoration: BoxDecoration(
-                                  color:
-                                      MediaQuery.of(
-                                                context,
-                                              ).platformBrightness ==
-                                              Brightness.dark
-                                          ? CupertinoColors.secondarySystemFill
-                                          : CupertinoColors.white,
-                                  borderRadius: BorderRadius.circular(8),
-                                  boxShadow:
-                                      MediaQuery.of(
-                                                context,
-                                              ).platformBrightness ==
-                                              Brightness.dark
-                                          ? []
-                                          : [
-                                            BoxShadow(
-                                              color: CupertinoColors.systemGrey
-                                                  .withOpacity(0.2),
-                                              blurRadius: 4,
-                                              offset: const Offset(0, 2),
-                                            ),
-                                          ],
-                                ),
-                                child: Row(
-                                  children: [
-                                    // Product Name and Quantity
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            item.name,
-                                            style: CupertinoTheme.of(
-                                              context,
-                                            ).textTheme.textStyle.copyWith(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                          ),
-                                          const SizedBox(height: 4),
-                                          Text(
-                                            "x${item.quantity}",
-                                            style: TextStyle(
-                                              color: CupertinoColors.systemGrey,
-                                              fontSize: 14,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    // Price
-                                    Text(
-                                      "\$${(item.price * item.quantity).toStringAsFixed(2)}",
-                                      style: CupertinoTheme.of(
-                                        context,
-                                      ).textTheme.textStyle.copyWith(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-
-                            const Divider(height: 32, thickness: 0.5),
-
-                            // Total Section
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  "Total",
-                                  style: CupertinoTheme.of(
-                                    context,
-                                  ).textTheme.textStyle.copyWith(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                Text(
-                                  "\$${cartProvider.calculateCheckoutItemsTotalPrice().toStringAsFixed(2)}",
-                                  style: CupertinoTheme.of(
-                                    context,
-                                  ).textTheme.textStyle.copyWith(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            ),
                           ],
                         ),
                       ),
-                    ),
-                    SizedBox(height: 32),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Column(
-                        children: [
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              "Payment Method",
-                              style: CupertinoTheme.of(
-                                context,
-                              ).textTheme.navLargeTitleTextStyle.copyWith(
-                                fontSize: 24,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                          SizedBox(height: 16),
-                          Container(
-                            padding: EdgeInsets.only(
-                              left: 8,
-                              right: 8,
-                              top: 8,
-                              bottom: 8,
-                            ),
-                            decoration: BoxDecoration(
-                              color:
-                                  MediaQuery.of(context).platformBrightness ==
-                                          Brightness.dark
-                                      ? CupertinoColors.secondarySystemFill
-                                      : CupertinoColors.white,
-                              borderRadius: BorderRadius.circular(8),
-                              boxShadow:
-                                  MediaQuery.of(context).platformBrightness ==
-                                          Brightness.dark
-                                      ? []
-                                      : [
-                                        BoxShadow(
-                                          color: CupertinoColors.systemGrey
-                                              .withOpacity(0.2),
-                                          blurRadius: 4,
-                                          offset: const Offset(0, 2),
-                                        ),
-                                      ],
-                            ),
-                            child: Column(
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text("Pay on Delivery"),
-
-                                    Icon(
-                                      CupertinoIcons.check_mark_circled_solid,
-                                      color: CupertinoColors.activeGreen,
-                                    ),
-                                  ],
+                      SizedBox(height: 32),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: Column(
+                          children: [
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                "Delivery Address",
+                                style: CupertinoTheme.of(
+                                  context,
+                                ).textTheme.navLargeTitleTextStyle.copyWith(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
                                 ),
-                                Divider(height: 16, thickness: 0.5),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      "Credit Card",
-                                      style: TextStyle(
-                                        color: CupertinoColors.systemGrey,
-                                      ),
-                                    ),
-
-                                    Row(
-                                      children: [
-                                        Text(
-                                          "Not Available",
-                                          style: TextStyle(
-                                            color: CupertinoColors.systemGrey,
+                              ),
+                            ),
+                            SizedBox(height: 16),
+                            // Checking if the user has a delivery address set to shared prefs
+                            // If not, show the static delivery address (set/or edit).
+                            !userProvider.isDeliveryAddressSet
+                                ? !cartProvider.isDeliveryAddressSet
+                                    ? CupertinoButton(
+                                      padding: EdgeInsets.zero,
+                                      onPressed: () {
+                                        Navigator.of(context).push(
+                                          CupertinoSheetRoute(
+                                            builder:
+                                                (BuildContext context) =>
+                                                    const EnterDeliveryAddressScreen(),
                                           ),
+                                        );
+                                      },
+                                      child: Container(
+                                        height: 40,
+                                        padding: EdgeInsets.only(
+                                          left: 8,
+                                          right: 8,
                                         ),
-                                        SizedBox(width: 8),
-                                        Icon(
-                                          CupertinoIcons.circle,
-                                          color: CupertinoColors.systemGrey,
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 32),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Column(
-                        children: [
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              "Delivery Address",
-                              style: CupertinoTheme.of(
-                                context,
-                              ).textTheme.navLargeTitleTextStyle.copyWith(
-                                fontSize: 24,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                          SizedBox(height: 16),
-                          // Checking if the user has a delivery address set to shared prefs
-                          // If not, show the static delivery address (set/or edit).
-                          !userProvider.isDeliveryAddressSet
-                              ? !cartProvider.isDeliveryAddressSet
-                                  ? CupertinoButton(
-                                    padding: EdgeInsets.zero,
-                                    onPressed: () {
-                                      Navigator.of(context).push(
-                                        CupertinoSheetRoute(
-                                          builder:
-                                              (BuildContext context) =>
-                                                  const EnterDeliveryAddressScreen(),
-                                        ),
-                                      );
-                                    },
-                                    child: Container(
-                                      height: 40,
-                                      padding: EdgeInsets.only(
-                                        left: 8,
-                                        right: 8,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color:
-                                            MediaQuery.of(
-                                                      context,
-                                                    ).platformBrightness ==
-                                                    Brightness.dark
-                                                ? CupertinoColors
-                                                    .secondarySystemFill
-                                                : CupertinoColors.white,
-                                        borderRadius: BorderRadius.circular(8),
-                                        boxShadow:
-                                            MediaQuery.of(
-                                                      context,
-                                                    ).platformBrightness ==
-                                                    Brightness.dark
-                                                ? []
-                                                : [
-                                                  BoxShadow(
-                                                    color: CupertinoColors
-                                                        .systemGrey
-                                                        .withOpacity(0.2),
-                                                    blurRadius: 4,
-                                                    offset: const Offset(0, 2),
-                                                  ),
-                                                ],
-                                      ),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text("Add Delivery Address"),
-                                          Icon(CupertinoIcons.add_circled),
-                                        ],
-                                      ),
-                                    ),
-                                  )
-                                  : DeliveryAddressInvoiceComponent(
-                                    deliveryAddress:
-                                        cartProvider.deliveryAddress,
-                                  )
-                              : DeliveryAddressSharedPrefsComponent(
-                                deliveryAddress:
-                                    userProvider.userDeliveryAddress,
-                              ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 16),
-                    // Next Button
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: AnimatedOpacity(
-                        opacity:
-                            userProvider.isDeliveryAddressSet
-                                ? 1
-                                : cartProvider.isDeliveryAddressSet
-                                ? 1
-                                : 0.5,
-                        duration: const Duration(milliseconds: 300),
-                        child: SizedBox(
-                          width: double.infinity,
-                          child: CupertinoButton.filled(
-                            borderRadius: BorderRadius.circular(12),
-                            child: const Text(
-                              "Place Order",
-                              style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                color: CupertinoColors.white,
-                              ),
-                            ),
-                            onPressed: () async {
-                              if (cartProvider.isDeliveryAddressSet ||
-                                  userProvider.isDeliveryAddressSet) {
-                                ///This line below is important
-                                await cartProvider.placeOrder(context);
-
-                                if (cartProvider.isOrderPlacedSuccesfully) {
-                                  // ignore: use_build_context_synchronously
-                                  await cartProvider.fetchCart(context);
-                                  // ignore: use_build_context_synchronously
-                                  showConfirmationOnHomeScreen(context);
-                                } else {
-                                  // Show error message
-                                  showCupertinoDialog(
-                                    // ignore: use_build_context_synchronously
-                                    context: context,
-                                    builder:
-                                        (context) => CupertinoAlertDialog(
-                                          title: const Text("Error"),
-                                          content: const Text(
-                                            "Failed to place order. Please try again.",
+                                        decoration: BoxDecoration(
+                                          color:
+                                              MediaQuery.of(
+                                                        context,
+                                                      ).platformBrightness ==
+                                                      Brightness.dark
+                                                  ? CupertinoColors
+                                                      .secondarySystemFill
+                                                  : CupertinoColors.white,
+                                          borderRadius: BorderRadius.circular(
+                                            8,
                                           ),
-                                          actions: [
-                                            CupertinoDialogAction(
-                                              child: const Text("OK"),
-                                              onPressed: () {
-                                                Navigator.of(context).pop();
-                                              },
-                                            ),
+                                          boxShadow:
+                                              MediaQuery.of(
+                                                        context,
+                                                      ).platformBrightness ==
+                                                      Brightness.dark
+                                                  ? []
+                                                  : [
+                                                    BoxShadow(
+                                                      color: CupertinoColors
+                                                          .systemGrey
+                                                          .withOpacity(0.2),
+                                                      blurRadius: 4,
+                                                      offset: const Offset(
+                                                        0,
+                                                        2,
+                                                      ),
+                                                    ),
+                                                  ],
+                                        ),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text("Add Delivery Address"),
+                                            Icon(CupertinoIcons.add_circled),
                                           ],
                                         ),
-                                  );
+                                      ),
+                                    )
+                                    : DeliveryAddressInvoiceComponent(
+                                      deliveryAddress:
+                                          cartProvider.deliveryAddress,
+                                    )
+                                : DeliveryAddressSharedPrefsComponent(
+                                  deliveryAddress:
+                                      userProvider.userDeliveryAddress,
+                                ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 16),
+                      // Next Button
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: AnimatedOpacity(
+                          opacity:
+                              userProvider.isDeliveryAddressSet
+                                  ? 1
+                                  : cartProvider.isDeliveryAddressSet
+                                  ? 1
+                                  : 0.5,
+                          duration: const Duration(milliseconds: 300),
+                          child: SizedBox(
+                            width: double.infinity,
+                            child: CupertinoButton.filled(
+                              borderRadius: BorderRadius.circular(12),
+                              child: const Text(
+                                "Place Order",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  color: CupertinoColors.white,
+                                ),
+                              ),
+                              onPressed: () async {
+                                if (cartProvider.isDeliveryAddressSet ||
+                                    userProvider.isDeliveryAddressSet) {
+                                  ///This line below is important
+                                  await cartProvider.placeOrder(context);
+
+                                  if (cartProvider.isOrderPlacedSuccesfully) {
+                                    // ignore: use_build_context_synchronously
+                                    await cartProvider.fetchCart(context);
+                                    // ignore: use_build_context_synchronously
+                                    showConfirmationOnHomeScreen(context);
+                                  } else {
+                                    // Show error message
+                                    showCupertinoDialog(
+                                      // ignore: use_build_context_synchronously
+                                      context: context,
+                                      builder:
+                                          (context) => CupertinoAlertDialog(
+                                            title: const Text("Error"),
+                                            content: const Text(
+                                              "Failed to place order. Please try again.",
+                                            ),
+                                            actions: [
+                                              CupertinoDialogAction(
+                                                child: const Text("OK"),
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                              ),
+                                            ],
+                                          ),
+                                    );
+                                  }
                                 }
-                              }
-                            },
+                              },
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
 
