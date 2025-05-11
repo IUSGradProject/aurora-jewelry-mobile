@@ -6,9 +6,28 @@ import 'package:aurora_jewelry/providers/Home/navigation_bar_provider.dart';
 import 'package:aurora_jewelry/providers/Search/search_provider.dart';
 import 'package:aurora_jewelry/screens/Home/home_screen.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setSystemUIOverlayStyle(
+    WidgetsBinding.instance.platformDispatcher.platformBrightness == Brightness.dark
+        ? const SystemUiOverlayStyle(
+          statusBarColor: CupertinoColors.black,
+          systemNavigationBarColor: CupertinoColors.black,
+          systemNavigationBarIconBrightness: Brightness.light,
+          statusBarIconBrightness: Brightness.light,
+        )
+        : // For light mode
+        const SystemUiOverlayStyle(
+          statusBarColor: CupertinoColors.white,
+          systemNavigationBarColor: CupertinoColors.white,
+          systemNavigationBarIconBrightness: Brightness.dark,
+          statusBarIconBrightness: Brightness.dark,
+        ),
+  );
+
   runApp(MyApp());
 }
 
