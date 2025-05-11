@@ -173,7 +173,7 @@ class _ProductScreenState extends State<ProductScreen>
                       ) => Container(
                         padding: EdgeInsets.only(top: 16),
                         child: ListView(
-                          padding: EdgeInsets.only(bottom: 116, top: 100),
+                          padding: EdgeInsets.only(top: 100),
                           children: [
                             ///Single Image Product
                             Padding(
@@ -381,13 +381,6 @@ class _ProductScreenState extends State<ProductScreen>
                                     ),
                                   ],
                                 ),
-                                // child: Text(
-                                //   "1050 BAM",
-                                //   style:
-                                //       CupertinoTheme.of(
-                                //         context,
-                                //       ).textTheme.dateTimePickerTextStyle,
-                                // ),
                               ),
                             ),
                             SizedBox(height: 8),
@@ -508,11 +501,12 @@ class _ProductScreenState extends State<ProductScreen>
                                 ],
                               ),
                             ),
-                            SizedBox(height: 32),
+
                             Padding(
                               padding: const EdgeInsets.only(
                                 left: 16,
                                 right: 16,
+                                top: 32,
                               ),
                               child: Column(
                                 children: [
@@ -654,6 +648,10 @@ class _ProductScreenState extends State<ProductScreen>
                                   ),
                                 ],
                               ),
+                            ),
+                            SizedBox(
+                              height:
+                                  MediaQuery.of(context).padding.bottom + 32,
                             ),
                           ],
                         ),
