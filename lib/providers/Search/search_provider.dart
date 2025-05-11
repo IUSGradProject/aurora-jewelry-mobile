@@ -1,5 +1,6 @@
 import 'package:aurora_jewelry/models/Products/brand_model.dart';
 import 'package:aurora_jewelry/models/Products/category_model.dart';
+import 'package:aurora_jewelry/models/Products/sort_model.dart';
 import 'package:aurora_jewelry/models/Products/style_model.dart';
 import 'package:aurora_jewelry/providers/Database/database_provider.dart';
 import 'package:flutter/cupertino.dart';
@@ -15,7 +16,19 @@ class SearchProvider extends ChangeNotifier {
 
   final List<CategoryModel> _selectedCategories = [];
 
-  final List<String> _selectedSorting = [];
+  ///Select Sorting
+  final List<SortModel> _sortingOptions = [
+    SortModel(name: 'A to Z', sortBy: 'name', sortDesc: false),
+    SortModel(name: 'Z to A', sortBy: 'name', sortDesc: true),
+    SortModel(name: 'Highest to lowest price', sortBy: 'price', sortDesc: true),
+    SortModel(
+      name: 'Lowest to highest price',
+      sortBy: 'price',
+      sortDesc: false,
+    ),
+  ];
+
+  final List<SortModel> _selectedSorting = [];
   final List<BrandModel> _selectedFilterBrands = [];
   final List<StyleModel> _selectedFilterStyles = [];
   RangeValues _priceRange = RangeValues(1, 100000);
@@ -34,8 +47,9 @@ class SearchProvider extends ChangeNotifier {
   String get searchQuery => _searchQuery;
   List<CategoryModel> get categories => _categories;
   List<CategoryModel> get selectedCategories => _selectedCategories;
+  List<SortModel> get sortingOptions => _sortingOptions;
 
-  List<String> get selectedSorting => _selectedSorting;
+  List<SortModel> get selectedSorting => _selectedSorting;
   int get currentProductQuantity => _currentProductQuantity;
   double get currentProductPrice => _currentProductPrice;
   double get quantityProductPrice => _quantityProductPrice;
@@ -45,8 +59,7 @@ class SearchProvider extends ChangeNotifier {
   RangeValues get priceRange => _priceRange;
 
   ///Select Category
-
-
+  ///
 
   void setSearchingStatus(bool status) {
     _isSearchingActive = status;
@@ -57,6 +70,7 @@ class SearchProvider extends ChangeNotifier {
     _searchQuery = query;
     notifyListeners();
   }
+
   void clearSearchQuery() {
     _searchQuery = "";
     notifyListeners();
@@ -141,12 +155,18 @@ class SearchProvider extends ChangeNotifier {
 
   ///Sorting
 
-  void selectSort(String sortName) {
-    if (_selectedSorting.contains(sortName)) {
+  void selectSort(BuildContext context, SortModel sort) {
+    if (_selectedSorting.contains(sort)) {
       _selectedSorting.clear();
     } else {
       _selectedSorting.clear();
-      _selectedSorting.add(sortName);
+
+      _selectedSorting.add(sort);
+      //Setting values for the filter request model inside of [DatabaseProvider]
+      Provider.of<DatabaseProvider>(
+        context,
+        listen: false,
+      ).setSortForFilterRequestModel(sort);
     }
     notifyListeners();
   }
@@ -273,7 +293,7 @@ class SearchProvider extends ChangeNotifier {
       context,
       listen: false,
     ).resetFilterRequestModel();
-    
+
     notifyListeners();
   }
 }

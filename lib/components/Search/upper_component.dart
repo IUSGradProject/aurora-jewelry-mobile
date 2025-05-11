@@ -151,56 +151,35 @@ class _UpperComponentState extends State<UpperComponent> {
                           // Use Flexible instead of Expanded
                           child: PullDownButton(
                             itemBuilder: (context) {
-                              return [
-                                PullDownMenuItem.selectable(
-                                  selected: searchProvider.selectedSorting
-                                      .contains("Highest to lowest price"),
-                                  onTap: () {
-                                    HapticFeedback.selectionClick();
-                                    searchProvider.selectSort(
-                                      "Highest to lowest price",
-                                    );
-                                  },
-                                  title: "Highest to lowest price",
-                                  icon: CupertinoIcons.arrow_up,
-                                ),
-                                PullDownMenuItem.selectable(
-                                  selected: searchProvider.selectedSorting
-                                      .contains("Lowest to highest price"),
-                                  onTap: () {
-                                    HapticFeedback.selectionClick();
-                                    searchProvider.selectSort(
-                                      "Lowest to highest price",
-                                    );
-                                  },
-                                  title: "Lowest to highest price",
-                                  icon: CupertinoIcons.arrow_down,
-                                ),
-
-                                PullDownMenuItem.selectable(
-                                  selected: searchProvider.selectedSorting
-                                      .contains("A to Z"),
-                                  onTap: () {
-                                    HapticFeedback.selectionClick();
-                                    searchProvider.selectSort("A to Z");
-                                  },
-                                  title: "A to Z",
-                                  icon: CupertinoIcons.textformat_abc,
-                                ),
-
-                                PullDownMenuItem.selectable(
-                                  selected: searchProvider.selectedSorting
-                                      .contains("Z to A"),
-                                  onTap: () {
-                                    HapticFeedback.selectionClick();
-                                    searchProvider.selectSort("Z to A");
-                                  },
-                                  title: "Z to A",
-                                  icon:
-                                      CupertinoIcons
-                                          .textformat_abc_dottedunderline,
-                                ),
-                              ];
+                              return List.generate(
+                                searchProvider.sortingOptions.length,
+                                (index) {
+                                  return PullDownMenuItem.selectable(
+                                    selected: searchProvider.selectedSorting
+                                        .contains(
+                                          searchProvider.sortingOptions[index],
+                                        ),
+                                    onTap: () async {
+                                      HapticFeedback.selectionClick();
+                                      searchProvider.selectSort(
+                                        context,
+                                        searchProvider.sortingOptions[index],
+                                      );
+                                      if (databaseProvider
+                                          .products
+                                          .isNotEmpty) {
+                                        await databaseProvider
+                                            .fetchFilteredProducts();
+                                      }
+                                    },
+                                    title:
+                                        searchProvider
+                                            .sortingOptions[index]
+                                            .name,
+                                    //icon: CupertinoIcons.arrow_up,
+                                  );
+                                },
+                              );
                             },
                             buttonBuilder: (context, showMenu) {
                               return CupertinoButton(

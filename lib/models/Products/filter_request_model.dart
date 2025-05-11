@@ -6,8 +6,8 @@ class FilterRequestModel {
   double? maxPrice;
   final String? query;
   final int? queryCategoryId;
-  final String? sortBy;
-  final bool sortDesc;
+  String sortBy;
+  bool sortDesc;
 
   FilterRequestModel({
     required this.categories,
@@ -17,7 +17,7 @@ class FilterRequestModel {
     this.maxPrice,
     this.query,
     this.queryCategoryId,
-    this.sortBy,
+    this.sortBy = "name",
     this.sortDesc = false,
   });
 
