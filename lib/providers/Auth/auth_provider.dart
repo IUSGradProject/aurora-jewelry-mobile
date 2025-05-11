@@ -33,7 +33,6 @@ class AuthProvider extends ChangeNotifier {
       prefs.setString('email', email),
       prefs.setString('username', username),
     ]);
-
   }
 
   ///Check if the token exists in SharedPreferences
@@ -55,9 +54,12 @@ class AuthProvider extends ChangeNotifier {
     String email,
     String password,
   ) async {
-    CartProvider cartProvider =
     // ignore: use_build_context_synchronously
-    Provider.of<CartProvider>(context, listen: false);
+
+    // CartProvider cartProvider = Provider.of<CartProvider>(
+    //   context,
+    //   listen: false,
+    // );
     try {
       _isLoading = true;
       notifyListeners();
@@ -74,10 +76,10 @@ class AuthProvider extends ChangeNotifier {
           response.email,
           response.username,
         );
-        
+
         // ignore: use_build_context_synchronously
         //await cartProvider.fetchCart(context);
-     
+
         _isUserAuthenticated = true;
         notifyListeners();
       }
