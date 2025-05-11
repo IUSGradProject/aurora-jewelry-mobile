@@ -4,6 +4,7 @@ import 'package:aurora_jewelry/models/Products/category_model.dart';
 import 'package:aurora_jewelry/models/Products/detailed_product_model.dart';
 import 'package:aurora_jewelry/models/Products/filter_request_model.dart';
 import 'package:aurora_jewelry/models/Products/product_model.dart';
+import 'package:aurora_jewelry/models/Products/sort_model.dart';
 import 'package:aurora_jewelry/models/Products/style_model.dart';
 import 'package:aurora_jewelry/providers/Search/search_provider.dart';
 import 'package:aurora_jewelry/services/api_service.dart';
@@ -186,6 +187,18 @@ class DatabaseProvider extends ChangeNotifier {
 
   void clearSelectedStyles() {
     _filterRequestModel.styles.clear();
+    notifyListeners();
+  }
+
+  void setSortForFilterRequestModel(SortModel sort) {
+    _filterRequestModel.sortBy = sort.sortBy;
+    _filterRequestModel.sortDesc = sort.sortDesc;
+    notifyListeners();
+  }
+
+  void cleanSortForFilterRequestModel() {
+    _filterRequestModel.sortBy = 'name';
+    _filterRequestModel.sortDesc = false;
     notifyListeners();
   }
 
