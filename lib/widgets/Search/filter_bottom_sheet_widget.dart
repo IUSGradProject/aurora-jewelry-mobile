@@ -523,6 +523,22 @@ class _FilterBottomSheetWidgetState extends State<FilterBottomSheetWidget> {
                                           categories: [],
                                           brands: [],
                                           styles: [],
+                                          sortBy:
+                                              searchProvider
+                                                      .selectedSorting
+                                                      .isEmpty
+                                                  ? "name"
+                                                  : searchProvider
+                                                      .selectedSorting[0]
+                                                      .sortBy,
+                                          sortDesc:
+                                              searchProvider
+                                                      .selectedSorting
+                                                      .isEmpty
+                                                  ? false
+                                                  : searchProvider
+                                                      .selectedSorting[0]
+                                                      .sortDesc,
                                         )) {
                                       await Provider.of<DatabaseProvider>(
                                         context,
@@ -639,6 +655,22 @@ class _FilterBottomSheetWidgetState extends State<FilterBottomSheetWidget> {
                                         minPrice:
                                             searchProvider.priceRange.start,
                                         maxPrice: searchProvider.priceRange.end,
+                                        sortBy:
+                                            searchProvider
+                                                    .selectedSorting
+                                                    .isEmpty
+                                                ? "name"
+                                                : searchProvider
+                                                    .selectedSorting[0]
+                                                    .sortBy,
+                                        sortDesc:
+                                            searchProvider
+                                                    .selectedSorting
+                                                    .isEmpty
+                                                ? false
+                                                : searchProvider
+                                                    .selectedSorting[0]
+                                                    .sortDesc,
                                       ),
                                     );
                                     await Provider.of<DatabaseProvider>(
