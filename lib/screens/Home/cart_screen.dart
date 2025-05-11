@@ -73,7 +73,7 @@ class _CartScreenState extends State<CartScreen> {
                     )
                     : CartItemsWidget(cartItems: cartProvider.cartItems),
                 Positioned(
-                  bottom: 84,
+                  bottom: MediaQuery.of(context).padding.bottom,
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 300),
                     height: cartProvider.isBottomSheetOpened ? 80 : 0,
