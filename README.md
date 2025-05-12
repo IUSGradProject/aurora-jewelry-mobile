@@ -190,3 +190,7 @@ You can download and try the latest version of the app:
 
 ## 📎 License
 This project is licensed under the [MIT License](LICENSE).
+
+It was developed by Mirza Kadrić as part of a graduation project at the International University of Sarajevo (IUS).  
+While the application was coded entirely by Mirza Kadric, feature suggestions were contributed by team members:  
+Adna Dedić, Anes Piknjač, and Amina Mujezinović. 
