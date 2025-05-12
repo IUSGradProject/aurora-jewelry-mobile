@@ -200,7 +200,6 @@ class _ProductScreenState extends State<ProductScreen>
                                   );
                                 },
                                 child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(8),
                                   child: SizedBox(
                                     height: 250,
                                     width: double.infinity,
