@@ -22,8 +22,13 @@ class _FilterBottomSheetWidgetState extends State<FilterBottomSheetWidget> {
   void initState() {
     // Fetch brands, and styles when the widget is initialized
     if (mounted) {
-      Provider.of<DatabaseProvider>(context, listen: false).fetchBrands();
-      Provider.of<DatabaseProvider>(context, listen: false).fetchStyles();
+      final provider = Provider.of<DatabaseProvider>(context, listen: false);
+      if (provider.brands.isEmpty) {
+        Provider.of<DatabaseProvider>(context, listen: false).fetchBrands();
+      }
+      if (provider.styles.isEmpty) {
+        Provider.of<DatabaseProvider>(context, listen: false).fetchStyles();
+      }
     }
 
     super.initState();
